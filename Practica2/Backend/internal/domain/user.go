@@ -14,7 +14,7 @@ type User struct {
 
 type CreateUserRequest struct {
 	Email          string `json:"email" binding:"required,email"`
-	Password       string `json:"password" binding:"required,min=8"`
+	Password       string `json:"password" binding:"required,min=7"`
 	Role           string `json:"role" binding:"required,oneof=CLIENTE RESTAURANTE REPARTIDOR ADMINISTRADOR"`
 	NombreCompleto string `json:"nombre_completo" binding:"required"`
 	Telefono       string `json:"telefono,omitempty"`

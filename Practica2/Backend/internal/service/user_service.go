@@ -2,7 +2,7 @@ package service
 
 import (
 	"errors"
-	//"time"
+	"time"
 
 	"Backend/internal/domain"
 	"Backend/internal/pkg/password"
@@ -38,7 +38,7 @@ func (s *UserService) CreateUser(req domain.CreateUserRequest) (*domain.User, er
 		PasswordHash:   hashedPassword,
 		Role:           req.Role,
 		NombreCompleto: req.NombreCompleto,
-		//FechaRegistro:  time.Now(),
+		FechaRegistro:  time.Now(),
 	}
 
 	if req.Telefono != "" {

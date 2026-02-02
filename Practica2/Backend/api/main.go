@@ -64,14 +64,14 @@ func main() {
 	router := gin.Default()
 
 	// Public routes
-	public := router.Group("/api/v1")
+	public := router.Group("/api")
 	{
 		public.POST("/auth/login", authHandler.Login)
 		public.POST("/users", userHandler.CreateUser)
 	}
 
 	// Protected routes
-	protected := router.Group("/api/v1")
+	protected := router.Group("/api")
 	protected.Use(middleware.AuthMiddleware(authService))
 	{
 		// Auth routes
