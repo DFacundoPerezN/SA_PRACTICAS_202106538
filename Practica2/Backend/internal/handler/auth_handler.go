@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"Backend/internal/domain"
-	"Backend/internal/service"
+	"delivery-system/internal/domain"
+	"delivery-system/internal/service"
 
 	"github.com/gin-gonic/gin"
 )

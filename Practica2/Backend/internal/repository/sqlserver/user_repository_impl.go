@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"time"
 
-	"Backend/internal/domain"
+	"delivery-system/internal/domain"
 )
 
 type UserRepositoryImpl struct {

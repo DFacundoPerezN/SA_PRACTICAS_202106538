@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"Backend/internal/domain"
-	"Backend/internal/service"
+	"delivery-system/internal/domain"
+	"delivery-system/internal/service"
 
 	"github.com/gin-gonic/gin"
 )

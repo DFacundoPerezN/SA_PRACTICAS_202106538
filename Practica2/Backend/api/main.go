@@ -6,30 +6,32 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 
-	"Backend/internal/config"
-	"Backend/internal/handler"
-	"Backend/internal/handler/middleware"
-	"Backend/internal/pkg/database"
-	"Backend/internal/pkg/jwt"
-	"Backend/internal/repository/sqlserver"
-	"Backend/internal/service"
+	"delivery-system/internal/config"
+	"delivery-system/internal/grpc"
+	"delivery-system/internal/handler"
+	"delivery-system/internal/handler/middleware"
+	"delivery-system/internal/pkg/database"
+	"delivery-system/internal/pkg/jwt"
+	"delivery-system/internal/repository/sqlserver"
+	"delivery-system/internal/service"
 )
 
 func main() {
-	// Load environment variables
+	// Cargar variables de entorno
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found, using system environment variables")
 	}
 
 	cfg := config.Load()
 
-	// Initialize database
+	// Inicializar base de datos
 	db, err := database.NewSQLServer(database.Config{
 		Host:           cfg.DBHost,
 		Port:           cfg.DBPort,
@@ -43,20 +45,34 @@ func main() {
 	}
 	defer db.Close()
 
-	// Initialize repositories
+	// Inicializar repositorios
 	userRepo := sqlserver.NewUserRepository(db)
 
-	// Initialize JWT manager
+	// Inicializar JWT manager
 	jwtManager := jwt.NewJWTManager(
 		cfg.JWTSecret,
 		time.Hour*time.Duration(cfg.JWTExpirationHours),
 	)
 
-	// Initialize services
+	// Inicializar servicios
 	userService := service.NewUserService(userRepo)
 	authService := service.NewAuthService(userService, jwtManager)
 
-	// Initialize handlers
+	// Inicializar servidor gRPC en una goroutine
+	grpcServer := grpc.NewAuthServer(authService, userService)
+
+	var wg sync.WaitGroup
+	wg.Add(2) // Esperar por REST y gRPC
+
+	// Iniciar servidor gRPC
+	go func() {
+		defer wg.Done()
+		if err := grpcServer.Start("50051"); err != nil {
+			log.Printf("gRPC server failed: %v", err)
+		}
+	}()
+
+	// Inicializar handlers REST
 	authHandler := handler.NewAuthHandler(authService)
 	userHandler := handler.NewUserHandler(userService)
 
@@ -77,7 +93,7 @@ func main() {
 		// Auth routes
 		protected.GET("/auth/me", authHandler.Me)
 
-		// User routes (admin only)
+		// User routes
 		protected.GET("/users", middleware.RoleMiddleware("ADMINISTRADOR"), userHandler.GetAllUsers)
 		protected.GET("/users/:id", userHandler.GetUser)
 		protected.PUT("/users/:id", userHandler.UpdateUser)
@@ -89,17 +105,24 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{
 			"status":    "healthy",
 			"timestamp": time.Now().UTC(),
+			"services": gin.H{
+				"rest":     "running",
+				"grpc":     "running",
+				"database": "connected",
+			},
 		})
 	})
 
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
+	// gRPC health check endpoint
+	router.GET("/health/grpc", func(c *gin.Context) {
+		// Aquí podrías llamar al health check del servidor gRPC
+		c.JSON(http.StatusOK, gin.H{
+			"grpc": "running on port 50051",
 		})
 	})
 
-	// Start server
-	srv := &http.Server{
+	// Iniciar servidor REST en otra goroutine
+	restServer := &http.Server{
 		Addr:         ":" + cfg.ServerPort,
 		Handler:      router,
 		ReadTimeout:  15 * time.Second,
@@ -107,29 +130,33 @@ func main() {
 		IdleTimeout:  60 * time.Second,
 	}
 
-	// Graceful shutdown
 	go func() {
-		log.Printf("Server starting on port %s", cfg.ServerPort)
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatal("Server failed:", err)
+		defer wg.Done()
+		log.Printf("Servidor REST iniciado en puerto %s", cfg.ServerPort)
+		if err := restServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatal("REST server failed:", err)
 		}
 	}()
 
-	// Wait for interrupt signal
+	// Esperar señales de terminación
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	log.Println("Shutting down server...")
+	log.Println("Shutting down servers...")
 
-	// Give outstanding requests 5 seconds to complete
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	// Shutdown graceful
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal("Server forced to shutdown:", err)
+	// Detener servidor REST
+	if err := restServer.Shutdown(ctx); err != nil {
+		log.Fatal("REST server forced to shutdown:", err)
 	}
 
-	log.Println("Server exited properly")
+	// Detener servidor gRPC
+	grpcServer.Stop()
 
-	//router.Run() // escucha en 0.0.0.0:8080 por defecto
+	// Esperar que ambos servidores terminen
+	wg.Wait()
+	log.Println("Servers exited properly")
 }

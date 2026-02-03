@@ -4,9 +4,9 @@ import (
 	"errors"
 	"time"
 
-	"Backend/internal/domain"
-	"Backend/internal/pkg/jwt"
-	"Backend/internal/pkg/password"
+	"delivery-system/internal/domain"
+	"delivery-system/internal/pkg/jwt"
+	"delivery-system/internal/pkg/password"
 )
 
 type AuthService struct {
