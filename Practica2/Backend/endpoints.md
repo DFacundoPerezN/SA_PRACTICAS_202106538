@@ -4,7 +4,7 @@
 
 ### Crear usuario
 
-**POST: /api/users/**
+**POST: /api/users**
 
 Entrada:
 
