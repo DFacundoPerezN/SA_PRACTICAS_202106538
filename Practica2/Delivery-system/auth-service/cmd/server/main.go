@@ -1,6 +1,7 @@
 package main
 
 import (
+	"delivery-proto/userpb"
 	"log"
 	"net"
 	"time"
@@ -10,7 +11,7 @@ import (
 
 	"auth-service/internal/config"
 	grpcclient "auth-service/internal/grpc"
-	authhandler "auth-service/internal/handler/grpc"
+	handler "auth-service/internal/handler/grpc"
 	"auth-service/internal/jwt"
 	"auth-service/internal/service"
 	authpb "auth-service/proto"
@@ -19,22 +20,27 @@ import (
 func main() {
 
 	godotenv.Load()
-
 	cfg := config.Load()
 
-	// 🔴 cliente gRPC al user-service
-	userClient, err := grpcclient.NewUserClient("localhost:50052")
+	// conectar con user-service
+	conn, err := grpc.Dial("localhost:50052", grpc.WithInsecure())
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("could not connect to user service: %v", err)
 	}
 
+	userServiceClient := userpb.NewUserServiceClient(conn)
+	userClient := grpcclient.NewUserClient(userServiceClient)
+
+	// JWT MANAGER
 	jwtManager := jwt.NewJWTManager(
 		cfg.JWTSecret,
 		time.Hour*time.Duration(cfg.JWTExpirationHours),
 	)
 
+	// AUTH SERVICE (UNA SOLA VEZ)
 	authService := service.NewAuthService(userClient, jwtManager)
 
+	// gRPC SERVER
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		log.Fatal(err)
@@ -44,10 +50,9 @@ func main() {
 
 	authpb.RegisterAuthServiceServer(
 		grpcServer,
-		authhandler.NewAuthGRPCServer(authService),
+		handler.NewAuthGRPCServer(authService),
 	)
 
-	log.Println("Auth service running on :50051")
-
+	log.Println("Auth Service running on :50051")
 	grpcServer.Serve(lis)
 }

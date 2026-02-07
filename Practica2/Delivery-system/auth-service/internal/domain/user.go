@@ -36,6 +36,12 @@ type LoginResponse struct {
 	User  User   `json:"user"`
 }
 
+type LoginResult struct {
+	UserID string
+	Email  string
+	Token  string
+}
+
 type UserRepository interface {
 	Create(user *User) error
 	FindByID(id int) (*User, error)

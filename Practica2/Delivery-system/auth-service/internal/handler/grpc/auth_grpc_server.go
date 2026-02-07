@@ -3,9 +3,11 @@ package grpc
 import (
 	"context"
 
-	"auth-service/internal/domain"
 	"auth-service/internal/service"
 	authpb "auth-service/proto"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type AuthGRPCServer struct {
@@ -19,21 +21,15 @@ func NewAuthGRPCServer(authService *service.AuthService) *AuthGRPCServer {
 
 func (s *AuthGRPCServer) Login(ctx context.Context, req *authpb.LoginRequest) (*authpb.LoginResponse, error) {
 
-	response, err := s.authService.Login(domain.LoginRequest{
-		Email:    req.Email,
-		Password: req.Password,
-	})
+	result, err := s.authService.Login(ctx, req.Email, req.Password)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.Unauthenticated, err.Error())
 	}
 
 	return &authpb.LoginResponse{
-		Token:          response.Token,
-		UserId:         int32(response.User.ID),
-		Email:          response.User.Email,
-		Role:           response.User.Role,
-		NombreCompleto: response.User.NombreCompleto,
-		Telefono:       derefString(response.User.Telefono),
+		UserId: result.UserID,
+		Email:  result.Email,
+		Token:  result.Token,
 	}, nil
 }
 
@@ -45,7 +41,7 @@ func (s *AuthGRPCServer) ValidateToken(ctx context.Context, req *authpb.Validate
 	}
 
 	return &authpb.ValidateTokenResponse{
-		UserId: int32(claims.UserID),
+		UserId: claims.UserID,
 		Email:  claims.Email,
 		Role:   claims.Role,
 	}, nil

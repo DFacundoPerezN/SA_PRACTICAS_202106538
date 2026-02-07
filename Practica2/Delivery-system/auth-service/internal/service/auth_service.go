@@ -1,45 +1,61 @@
 package service
 
 import (
+	"context"
 	"errors"
 
-	userpb "delivery-system/proto/userpb"
-
+	"auth-service/internal/grpc"
 	"auth-service/internal/jwt"
-	"auth-service/internal/password"
 )
 
-type UserClient interface {
-	GetUserByEmail(email string) (*userpb.GetUserByEmailResponse, error)
+type LoginResult struct {
+	UserID int32
+	Email  string
+	Token  string
 }
 
 type AuthService struct {
-	userClient UserClient
+	userClient *grpc.UserClient
 	jwtManager *jwt.JWTManager
 }
 
-func NewAuthService(userClient UserClient, jwtManager *jwt.JWTManager) *AuthService {
+func NewAuthService(userClient *grpc.UserClient, jwtManager *jwt.JWTManager) *AuthService {
 	return &AuthService{
 		userClient: userClient,
 		jwtManager: jwtManager,
 	}
 }
 
-func (s *AuthService) Login(email, passwordInput string) (string, error) {
+func (s *AuthService) Login(ctx context.Context, email string, password string) (*LoginResult, error) {
 
-	user, err := s.userClient.GetUserByEmail(email)
+	user, err := s.userClient.GetUserByEmail(ctx, email)
 	if err != nil {
-		return "", errors.New("invalid credentials")
+		return nil, errors.New("invalid credentials")
 	}
 
-	if !password.CheckPasswordHash(passwordInput, user.Password) {
-		return "", errors.New("invalid credentials")
+	// ⚠️ aquí luego pondremos bcrypt
+	if user.Password != password {
+		return nil, errors.New("invalid credentials")
 	}
 
-	token, err := s.jwtManager.GenerateToken(user.Id, user.Email, "user")
+	token, err := s.jwtManager.GenerateToken(user.Id, user.Email, "USER")
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return token, nil
+	return &LoginResult{
+		UserID: user.Id,
+		Email:  user.Email,
+		Token:  token,
+	}, nil
+}
+
+func (s *AuthService) ValidateToken(token string) (*jwt.Claims, error) {
+
+	claims, err := s.jwtManager.VerifyToken(token)
+	if err != nil {
+		return nil, err
+	}
+
+	return claims, nil
 }
