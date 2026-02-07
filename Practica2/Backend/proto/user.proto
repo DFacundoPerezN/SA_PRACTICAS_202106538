@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "Backend/proto/user";
+
+import "google/protobuf/timestamp.proto";
+
+// User Service
+service UserService {
+  rpc CreateUser(CreateUserRequest) returns (UserResponse);
+  rpc GetUser(GetUserRequest) returns (UserResponse);
+  rpc GetUserByEmail(GetUserByEmailRequest) returns (UserResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UserResponse);
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+  rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse);
+}
+
+// Messages
+message User {
+  int32 id = 1;
+  string email = 2;
+  string password_hash = 3;
+  string role = 4;
+  string nombre_completo = 5;
+  string telefono = 6;
+  google.protobuf.Timestamp fecha_registro = 7;
+}
+
+message CreateUserRequest {
+  string email = 1;
+  string password = 2;
+  string role = 3;
+  string nombre_completo = 4;
+  string telefono = 5;
+}
+
+message GetUserRequest {
+  int32 id = 1;
+}
+
+message GetUserByEmailRequest {
+  string email = 1;
+}
+
+message UpdateUserRequest {
+  int32 id = 1;
+  string email = 2;
+  string nombre_completo = 3;
+  string telefono = 4;
+}
+
+message DeleteUserRequest {
+  int32 id = 1;
+}
+
+message DeleteUserResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message GetAllUsersRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+}
+
+message GetAllUsersResponse {
+  repeated User users = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+  int32 total_pages = 5;
+}
+
+message UserResponse {
+  User user = 1;
+  string error = 2;
+}

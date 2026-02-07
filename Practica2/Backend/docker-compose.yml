@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # Auth Service
+  auth-service:
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+    ports:
+      - "50051:50051"
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_WINDOWS_AUTH=${DB_WINDOWS_AUTH}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION_HOURS=${JWT_EXPIRATION_HOURS}
+    depends_on:
+      - sqlserver
+    restart: unless-stopped
+    networks:
+      - delivery-network
+
+  # User Service
+  user-service:
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
+    ports:
+      - "50052:50052"
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_WINDOWS_AUTH=${DB_WINDOWS_AUTH}
+    depends_on:
+      - sqlserver
+    restart: unless-stopped
+    networks:
+      - delivery-network
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - AUTH_SERVICE_URL=auth-service:50051
+      - USER_SERVICE_URL=user-service:50052
+    depends_on:
+      - auth-service
+      - user-service
+    restart: unless-stopped
+    networks:
+      - delivery-network
+
+  # SQL Server (opcional, si quieres incluirlo)
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    restart: unless-stopped
+    networks:
+      - delivery-network
+
+networks:
+  delivery-network:
+    driver: bridge
+
+volumes:
+  sqlserver-data:
