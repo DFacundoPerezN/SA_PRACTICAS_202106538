@@ -4,8 +4,8 @@ import (
 	"errors"
 	"time"
 
-	"Backend/internal/domain"
-	"Backend/internal/pkg/password"
+	"user-service/internal/domain"
+	"user-service/internal/password"
 )
 
 type UserService struct {

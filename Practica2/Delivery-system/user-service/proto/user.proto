@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "user-service/proto;userpb";
+
+service UserService {
+  rpc GetUserByEmail (GetUserByEmailRequest) returns (UserResponse);
+  rpc GetUserByID (GetUserByIDRequest) returns (UserResponse);
+}
+
+message GetUserByEmailRequest {
+  string email = 1;
+}
+
+message GetUserByIDRequest {
+  int64 id = 1;
+}
+
+message UserResponse {
+  int64 id = 1;
+  string email = 2;
+  string password = 3;
+  string role = 4;
+  string nombreCompleto = 5;
+}
