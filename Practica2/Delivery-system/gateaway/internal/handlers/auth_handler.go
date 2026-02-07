@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	authpb "api-gateway/proto/auth"
+	authpb "delivery-proto/auth"
 
 	"github.com/gin-gonic/gin"
 )

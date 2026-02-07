@@ -1,12 +1,21 @@
 syntax = "proto3";
 
-package user;
+package userpb;
 
 option go_package = "delivery-proto/userpb";
 
 service UserService {
-  rpc GetUserByEmail(GetUserByEmailRequest) returns (UserResponse);
-  rpc GetUserByID(GetUserByIDRequest) returns (UserResponse);
+  rpc GetUserByEmail (GetUserByEmailRequest) returns (UserResponse);
+  rpc GetUserByID (GetUserByIDRequest) returns (UserResponse);
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+}
+
+message User {
+  int32 id = 1;
+  string email = 2;
+  string password = 3;
+  string nombre_completo = 4;
+  string role = 5;
 }
 
 message GetUserByEmailRequest {
@@ -18,9 +27,18 @@ message GetUserByIDRequest {
 }
 
 message UserResponse {
+  User user = 1;
+}
+
+message CreateUserRequest {
+  string email = 1;
+  string password = 2;
+  string nombre_completo = 3;
+  string rol = 4;
+}
+
+message CreateUserResponse {
   int32 id = 1;
   string email = 2;
-  string passwordHash = 3;
-  string role = 4;
-  string nombreCompleto = 5;
+  string nombre_completo = 3;
 }

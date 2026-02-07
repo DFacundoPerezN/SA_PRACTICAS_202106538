@@ -3,7 +3,9 @@ package grpc
 import (
 	"context"
 
+	"user-service/internal/domain"
 	"user-service/internal/service"
+
 	userpb "user-service/proto"
 )
 
@@ -24,10 +26,31 @@ func (s *UserGRPCServer) GetUserByEmail(ctx context.Context, req *userpb.GetUser
 	}
 
 	return &userpb.UserResponse{
-		Id:             int64(user.ID),
+		User: &userpb.User{
+			Id:             int32(user.ID),
+			Email:          user.Email,
+			Password:       user.PasswordHash,
+			NombreCompleto: user.NombreCompleto,
+			Role:           user.Role,
+		},
+	}, nil
+}
+
+func (s *UserGRPCServer) CreateUser(ctx context.Context, req *userpb.CreateUserRequest) (*userpb.CreateUserResponse, error) {
+
+	user, err := s.userService.CreateUser(domain.CreateUserRequest{
+		Email:          req.Email,
+		Password:       req.Password,
+		NombreCompleto: req.NombreCompleto,
+		Role:           req.Rol,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &userpb.CreateUserResponse{
+		Id:             int32(user.ID),
 		Email:          user.Email,
-		Password:       user.PasswordHash,
-		Role:           user.Role,
 		NombreCompleto: user.NombreCompleto,
 	}, nil
 }

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	authpb "auth-service/proto"
+	authpb "delivery-proto/auth"
 
 	"google.golang.org/grpc"
 )
