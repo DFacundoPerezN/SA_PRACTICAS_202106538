@@ -1,7 +1,6 @@
 package main
 
 import (
-	"delivery-proto/userpb"
 	"log"
 	"net"
 	"time"
@@ -15,6 +14,8 @@ import (
 	"auth-service/internal/jwt"
 	"auth-service/internal/service"
 	authpb "auth-service/proto"
+
+	userpb "delivery-proto/userpb"
 )
 
 func main() {

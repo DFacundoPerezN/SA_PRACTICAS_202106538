@@ -6,6 +6,7 @@ import (
 
 	"auth-service/internal/grpc"
 	"auth-service/internal/jwt"
+	passwordlib "auth-service/internal/password"
 )
 
 type LoginResult struct {
@@ -33,8 +34,9 @@ func (s *AuthService) Login(ctx context.Context, email string, password string) 
 		return nil, errors.New("invalid credentials")
 	}
 
-	// ⚠️ aquí luego pondremos bcrypt
-	if user.Password != password {
+	resultPas := passwordlib.CheckPasswordHash(password, user.Password)
+
+	if !resultPas {
 		return nil, errors.New("invalid credentials")
 	}
 
