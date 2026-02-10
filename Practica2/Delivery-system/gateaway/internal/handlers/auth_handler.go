@@ -3,17 +3,18 @@ package handlers
 import (
 	"net/http"
 
-	authpb "delivery-proto/auth"
+	"api-gateway/internal/grpc"
 
 	"github.com/gin-gonic/gin"
 )
 
 type AuthHandler struct {
-	client authpb.AuthServiceClient
+	authClient *grpc.AuthClient
+	userClient *grpc.UserClient
 }
 
-func NewAuthHandler(c authpb.AuthServiceClient) *AuthHandler {
-	return &AuthHandler{client: c}
+func NewAuthHandler(authClient *grpc.AuthClient, userClient *grpc.UserClient) *AuthHandler {
+	return &AuthHandler{authClient: authClient, userClient: userClient}
 }
 
 type LoginRequest struct {
@@ -29,10 +30,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	res, err := h.client.Login(c, &authpb.LoginRequest{
-		Email:    req.Email,
-		Password: req.Password,
-	})
+	resp, err := h.authClient.Login(req.Email, req.Password)
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -40,13 +38,14 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"token": res.Token,
+		"token": resp.Token,
 	})
 }
 
 type RegisterRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Name     string `json:"name"`
 }
 
 func (h *AuthHandler) Register(c *gin.Context) {
@@ -57,10 +56,11 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		return
 	}
 
-	res, err := h.client.Register(c, &authpb.RegisterRequest{
-		Email:    req.Email,
-		Password: req.Password,
-	})
+	resp, err := h.userClient.Register(
+		req.Email,
+		req.Password,
+		req.Name,
+	)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -68,6 +68,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"user_id": res.UserId,
+		"id":    resp.Id,
+		"email": resp.Email,
 	})
 }

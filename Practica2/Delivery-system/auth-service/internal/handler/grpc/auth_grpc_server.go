@@ -43,7 +43,7 @@ func (s *AuthGRPCServer) ValidateToken(ctx context.Context, req *authpb.Validate
 	return &authpb.ValidateTokenResponse{
 		UserId: claims.UserID,
 		Email:  claims.Email,
-		Role:   claims.Role,
+		Rol:    claims.Role,
 	}, nil
 }
 

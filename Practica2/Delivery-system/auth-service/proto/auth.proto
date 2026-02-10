@@ -30,5 +30,5 @@ message ValidateTokenRequest {
 message ValidateTokenResponse {
   int32 user_id = 1;
   string email = 2;
-  string role = 3;
+  string rol = 3;
 }

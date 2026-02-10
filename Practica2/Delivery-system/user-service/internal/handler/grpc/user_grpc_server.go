@@ -6,7 +6,7 @@ import (
 	"user-service/internal/domain"
 	"user-service/internal/service"
 
-	userpb "user-service/proto"
+	userpb "delivery-proto/userpb" //userpb "delivery-proto/userpb"
 )
 
 type UserGRPCServer struct {
@@ -42,7 +42,7 @@ func (s *UserGRPCServer) CreateUser(ctx context.Context, req *userpb.CreateUserR
 		Email:          req.Email,
 		Password:       req.Password,
 		NombreCompleto: req.NombreCompleto,
-		Role:           req.Rol,
+		Role:           "CLIENTE", // Por defecto, asignamos el rol de CLIENTE
 	})
 	if err != nil {
 		return nil, err

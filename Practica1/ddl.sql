@@ -10,7 +10,7 @@ CREATE TABLE Usuario (
 
 
 CREATE TABLE Restaurante (
-    Id INT PRIMARY KEY FOREIGN KEY REFERENCES Usuario(Id),
+    Id INT PRIMARY KEY, -- Id del usuario que es el restaurante
     Nombre NVARCHAR(64) NOT NULL,
     Direccion NVARCHAR(200) NOT NULL,
     Latitud DECIMAL(10,8),
@@ -28,7 +28,7 @@ CREATE TABLE Producto (
     Descripcion NVARCHAR(255),
     Precio DECIMAL(10,2) NOT NULL CHECK (Precio >= 0),
     Disponible BIT DEFAULT 1,
-    RestauranteId INT NOT NULL FOREIGN KEY REFERENCES Restaurante(Id),
+    RestauranteId INT NOT NULL, -- FOREIGN KEY REFERENCES Restaurante(Id)
     Categoria NVARCHAR(32),
     --ImagenUrl NVARCHAR(500),
     --TiempoPreparacionEstimado INT, -- en minutos
@@ -38,9 +38,9 @@ CREATE TABLE Producto (
 
 CREATE TABLE Orden (
     Id INT PRIMARY KEY IDENTITY(1,1),
-    ClienteId INT NOT NULL FOREIGN KEY REFERENCES Usuario(Id),
-    RestauranteId INT NOT NULL FOREIGN KEY REFERENCES Restaurante(Id),
-    RepartidorId INT FOREIGN KEY REFERENCES Usuario(Id),
+    ClienteId INT NOT NULL,-- FOREIGN KEY REFERENCES Usuario(Id)
+    RestauranteId INT NOT NULL ,-- FOREIGN KEY REFERENCES Restaurante(Id)
+    RepartidorId INT ,-- FOREIGN KEY REFERENCES Usuario(Id)
     Estado NVARCHAR(16) NOT NULL DEFAULT 'CREADA' 
         CHECK (Estado IN ('CREADA', 'PENDIENTE', 'ACEPTADA', 'EN_PREPARACION', 
                          'LISTA', 'EN_CAMINO', 'ENTREGADA', 'CANCELADA', 'RECHAZADA')),
@@ -62,8 +62,8 @@ CREATE TABLE Orden (
 
 CREATE TABLE ProductoOrden (
     Id INT PRIMARY KEY IDENTITY(1,1),
-    OrdenId INT NOT NULL FOREIGN KEY REFERENCES Orden(Id),
-    ProductoId INT NOT NULL FOREIGN KEY REFERENCES Producto(Id),
+    OrdenId INT NOT NULL, -- FOREIGN KEY REFERENCES Orden(Id)
+    ProductoId INT NOT NULL, -- FOREIGN KEY REFERENCES Producto(Id)
     Cantidad INT NOT NULL CHECK (Cantidad > 0),
     PrecioUnitario DECIMAL(10,2) NOT NULL, -- Precio al momento de la orden
     Subtotal AS (Cantidad * PrecioUnitario) PERSISTED,
@@ -74,8 +74,8 @@ CREATE TABLE ProductoOrden (
 
 CREATE TABLE OrdenCancelada (
     Id INT PRIMARY KEY IDENTITY(1,1),
-    OrdenId INT NOT NULL FOREIGN KEY REFERENCES Orden(Id),
-    CanceladoPor INT NOT NULL FOREIGN KEY REFERENCES Usuario(Id),
+    OrdenId INT NOT NULL, -- FOREIGN KEY REFERENCES Orden(Id)
+    CanceladoPor INT NOT NULL, -- FOREIGN KEY REFERENCES Usuario(Id)
     Motivo NVARCHAR(500),
     FechaCancelacion DATETIME DEFAULT GETDATE(),
     INDEX IX_OrdenCancelada_Orden (OrdenId)

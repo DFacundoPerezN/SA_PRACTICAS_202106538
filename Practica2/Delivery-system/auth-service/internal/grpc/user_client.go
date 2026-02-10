@@ -30,8 +30,8 @@ func (c *UserClient) GetUserByEmail(ctx context.Context, email string) (*UserDTO
 
 	// OJO: ahora usamos los campos directos
 	return &UserDTO{
-		Id:       res.Id,
-		Email:    res.Email,
-		Password: res.PasswordHash,
+		Id:       res.User.Id,
+		Email:    res.User.Email,
+		Password: res.User.Password,
 	}, nil
 }

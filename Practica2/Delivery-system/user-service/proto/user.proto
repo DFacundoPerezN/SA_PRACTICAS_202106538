@@ -34,7 +34,6 @@ message CreateUserRequest {
   string email = 1;
   string password = 2;
   string nombre_completo = 3;
-  string rol = 4;
 }
 
 message CreateUserResponse {

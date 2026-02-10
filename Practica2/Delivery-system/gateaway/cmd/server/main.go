@@ -10,12 +10,17 @@ import (
 	"time"
 
 	"api-gateway/internal/config"
-	"api-gateway/internal/grpc"
+	gatewaygrpc "api-gateway/internal/grpc"
 	"api-gateway/internal/handlers"
 	"api-gateway/internal/middleware"
 
+	userpb "delivery-proto/userpb"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func CORSMiddleware() gin.HandlerFunc {
@@ -45,12 +50,24 @@ func main() {
 	cfg := config.Load()
 
 	// Connect to auth-service (gRPC)
-	authClient, err := grpc.NewAuthClient(cfg.AuthGRPC)
+	authClient, err := gatewaygrpc.NewAuthClient(cfg.AuthGRPC)
 	if err != nil {
 		log.Fatal("cannot connect to auth-service:", err)
 	}
+	// conectar user-service
+	userConn, err := grpc.Dial(
+		"localhost:50052",
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
 
-	authHandler := handlers.NewAuthHandler(authClient)
+	if err != nil {
+		log.Fatal("cannot connect to user-service:", err)
+	}
+
+	userServiceClient := userpb.NewUserServiceClient(userConn)
+	userClient := gatewaygrpc.NewUserClient(userServiceClient)
+
+	authHandler := handlers.NewAuthHandler(authClient, userClient)
 
 	// Gin
 	router := gin.Default()
@@ -64,8 +81,8 @@ func main() {
 	// PUBLIC ROUTES
 	api := router.Group("/api")
 	{
-		api.POST("/login", authHandler.Login)
-		api.POST("/register", authHandler.Register)
+		api.POST("auth/login", authHandler.Login)
+		api.POST("/users", authHandler.Register)
 	}
 
 	// PROTECTED ROUTES
