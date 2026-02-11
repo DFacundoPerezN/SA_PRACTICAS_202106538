@@ -28,49 +28,49 @@ VALUES
 
 -- Insertar productos para cada restaurante
 -- Pizza Hut
-INSERT INTO Producto (Nombre, Descripcion, Precio, Disponible, RestauranteId, Categoria) 
+INSERT INTO Producto (Nombre, Descripcion, Precio, Disponible, RestauranteId, Categoria, RestauranteNombre) 
 VALUES 
-('Pizza Pepperoni Mediana', 'Pizza mediana con pepperoni y queso mozzarella', 12.99, 1, 8, 'Pizzas'),
-('Pizza Hawaiana Grande', 'Pizza grande con jamón y piña', 15.99, 1, 8, 'Pizzas'),
-('Alitas BBQ (8 pzas)', 'Alitas de pollo con salsa BBQ', 8.99, 1, 8, 'Entradas'),
-('Pasta Alfredo', 'Pasta con salsa alfredo y pollo', 10.99, 1, 8, 'Pastas'),
-('Refresco 1L', 'Refresco de cola, naranja o limón', 2.99, 1, 8, 'Bebidas');
+('Pizza Pepperoni Mediana', 'Pizza mediana con pepperoni y queso mozzarella', 12.99, 1, 8, 'Pizzas', 'Pizza Hut'),
+('Pizza Hawaiana Grande', 'Pizza grande con jamón y piña', 15.99, 1, 8, 'Pizzas', 'Pizza Hut'),
+('Alitas BBQ (8 pzas)', 'Alitas de pollo con salsa BBQ', 8.99, 1, 8, 'Entradas', 'Pizza Hut'),
+('Pasta Alfredo', 'Pasta con salsa alfredo y pollo', 10.99, 1, 8, 'Pastas', 'Pizza Hut'),
+('Refresco 1L', 'Refresco de cola, naranja o limón', 2.99, 1, 8, 'Bebidas', 'Pizza Hut');
 
 -- McDonalds
-INSERT INTO Producto (Nombre, Descripcion, Precio, Disponible, RestauranteId, Categoria) 
+INSERT INTO Producto (Nombre, Descripcion, Precio, Disponible, RestauranteId, Categoria, RestauranteNombre) 
 VALUES 
-('Big Mac', 'Hamburguesa doble con salsa especial', 5.99, 1, 9, 'Hamburguesas'),
-('Cuarto de Libra', 'Hamburguesa con queso', 4.99, 1, 9, 'Hamburguesas'),
-('McNuggets (10 pzas)', 'Nuggets de pollo', 4.49, 1, 9, 'Acompañamientos'),
-('Papas Fritas Grandes', 'Porción grande de papas fritas', 2.99, 1, 9, 'Acompañamientos'),
-('McFlurry Oreo', 'Helado con galletas Oreo', 3.49, 1, 9, 'Postres');
+('Big Mac', 'Hamburguesa doble con salsa especial', 5.99, 1, 9, 'Hamburguesas', 'McDonalds'),
+('Cuarto de Libra', 'Hamburguesa con queso', 4.99, 1, 9, 'Hamburguesas', 'McDonalds'),
+('McNuggets (10 pzas)', 'Nuggets de pollo', 4.49, 1, 9, 'Acompañamientos', 'McDonalds'),
+('Papas Fritas Grandes', 'Porción grande de papas fritas', 2.99, 1, 9, 'Acompañamientos', 'McDonalds'),
+('McFlurry Oreo', 'Helado con galletas Oreo', 3.49, 1, 9, 'Postres', 'McDonalds');
 
 -- Subway
-INSERT INTO Producto (Nombre, Descripcion, Precio, Disponible, RestauranteId, Categoria) 
+INSERT INTO Producto (Nombre, Descripcion, Precio, Disponible, RestauranteId, Categoria, RestauranteNombre) 
 VALUES 
-('Sub de Pollo Teriyaki', 'Pan integral con pollo teriyaki y vegetales', 6.49, 1, 10, 'Sándwiches'),
-('Sub Italiano BMT', 'Variedad de embutidos italianos', 7.49, 1, 10, 'Sándwiches'),
-('Sub Vegetariano', 'Con todos los vegetales disponibles', 5.99, 1, 10, 'Sándwiches'),
-('Galletas (3 pzas)', 'Galletas de chocolate, avena o chispas', 2.49, 1, 10, 'Postres'),
-('Refresco Mediano', 'Refresco con refill gratis', 1.99, 1, 10, 'Bebidas');
+('Sub de Pollo Teriyaki', 'Pan integral con pollo teriyaki y vegetales', 6.49, 1, 10, 'Sándwiches', 'Subway'),
+('Sub Italiano BMT', 'Variedad de embutidos italianos', 7.49, 1, 10, 'Sándwiches', 'Subway'),
+('Sub Vegetariano', 'Con todos los vegetales disponibles', 5.99, 1, 10, 'Sándwiches', 'Subway'),
+('Galletas (3 pzas)', 'Galletas de chocolate, avena o chispas', 2.49, 1, 10, 'Postres', 'Subway'),
+('Refresco Mediano', 'Refresco con refill gratis', 1.99, 1, 10, 'Bebidas', 'Subway');
 
 -- Starbucks
-INSERT INTO Producto (Nombre, Descripcion, Precio, Disponible, RestauranteId, Categoria) 
+INSERT INTO Producto (Nombre, Descripcion, Precio, Disponible, RestauranteId, Categoria, RestauranteNombre) 
 VALUES 
-('Café Latte Grande', 'Café latte 16 oz', 4.25, 1, 11, 'Café Caliente'),
-('Caramel Macchiato Venti', 'Café con caramelo 20 oz', 5.75, 1, 11, 'Café Caliente'),
-('Frappuccino Mocha', 'Bebida fría de café y chocolate', 5.25, 1, 11, 'Café Frío'),
-('Muffin de Arándanos', 'Muffin casero con arándanos', 3.25, 1, 11, 'Panadería'),
-('Sándwich de Pavo', 'Sándwich caliente de pavo y queso', 6.50, 1, 11, 'Comida');
+('Café Latte Grande', 'Café latte 16 oz', 4.25, 1, 11, 'Café Caliente', 'Starbucks'),
+('Caramel Macchiato Venti', 'Café con caramelo 20 oz', 5.75, 1, 11, 'Café Caliente', 'Starbucks'),
+('Frappuccino Mocha', 'Bebida fría de café y chocolate', 5.25, 1, 11, 'Café Frío', 'Starbucks'),
+('Muffin de Arándanos', 'Muffin casero con arándanos', 3.25, 1, 11, 'Panadería', 'Starbucks'),
+('Sándwich de Pavo', 'Sándwich caliente de pavo y queso', 6.50, 1, 11, 'Comida', 'Starbucks');
 
 -- Comida Típica
-INSERT INTO Producto (Nombre, Descripcion, Precio, Disponible, RestauranteId, Categoria) 
+INSERT INTO Producto (Nombre, Descripcion, Precio, Disponible, RestauranteId, Categoria, RestauranteNombre) 
 VALUES 
-('Pupusas Revueltas (3 pzas)', 'Pupusas de queso, chicharrón y frijol', 3.50, 1, 12, 'Platos Típicos'),
-('Pupusas de Queso (3 pzas)', 'Pupusas de queso con curtido', 3.00, 1, 12, 'Platos Típicos'),
-('Sopa de Pata', 'Sopa tradicional salvadoreña', 6.50, 1, 12, 'Sopas'),
-('Tamales de Pollo (2 pzas)', 'Tamales de elote con pollo', 4.00, 1, 12, 'Platos Típicos'),
-('Horchata Jarra', 'Bebida tradicional de arroz', 3.00, 1, 12, 'Bebidas');
+('Pupusas Revueltas (3 pzas)', 'Pupusas de queso, chicharrón y frijol', 3.50, 1, 12, 'Platos Típicos', 'Sabores Típicos'),
+('Pupusas de Queso (3 pzas)', 'Pupusas de queso con curtido', 3.00, 1, 12, 'Platos Típicos', 'Sabores Típicos'),
+('Sopa de Pata', 'Sopa tradicional salvadoreña', 6.50, 1, 12, 'Sopas', 'Sabores Típicos'),
+('Tamales de Pollo (2 pzas)', 'Tamales de elote con pollo', 4.00, 1, 12, 'Platos Típicos', 'Sabores Típicos'),
+('Horchata Jarra', 'Bebida tradicional de arroz', 3.00, 1, 12, 'Bebidas', 'Sabores Típicos');
 
 -- Insertar órdenes de prueba en varios estados
 -- Orden 1: CREADA (sin repartidor aún)
