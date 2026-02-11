@@ -44,7 +44,7 @@ const Login = () => {
       }
     } catch (err) {
       console.error('Error en login:', err)
-      setError(err.response?.data?.error || 'Error al iniciar sesión. Verifica tus credenciales.')
+      setError(err.response?.data?.error || error|| 'Error al iniciar sesión. Verifica tus credenciales.')
     } finally {
       setLoading(false)
     }
