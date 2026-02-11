@@ -14,8 +14,6 @@ import (
 	"auth-service/internal/jwt"
 	"auth-service/internal/service"
 	authpb "auth-service/proto"
-
-	userpb "delivery-proto/userpb"
 )
 
 func main() {
@@ -23,25 +21,37 @@ func main() {
 	godotenv.Load()
 	cfg := config.Load()
 
-	// conectar con user-service
-	conn, err := grpc.Dial("localhost:50052", grpc.WithInsecure())
+	// ---------------------------
+	// CONEXIÓN AL USER-SERVICE
+	// ---------------------------
+
+	// ⚠️ IMPORTANTE:
+	// si usas docker-compose debe ser: "user-service:50052"
+	// si usas local: "localhost:50052"
+	userClient, err := grpcclient.NewUserClient("localhost:50052")
 	if err != nil {
-		log.Fatalf("could not connect to user service: %v", err)
+		log.Fatalf("could not connect to user-service: %v", err)
 	}
 
-	userServiceClient := userpb.NewUserServiceClient(conn)
-	userClient := grpcclient.NewUserClient(userServiceClient)
-
+	// ---------------------------
 	// JWT MANAGER
+	// ---------------------------
+
 	jwtManager := jwt.NewJWTManager(
 		cfg.JWTSecret,
 		time.Hour*time.Duration(cfg.JWTExpirationHours),
 	)
 
-	// AUTH SERVICE (UNA SOLA VEZ)
+	// ---------------------------
+	// AUTH SERVICE
+	// ---------------------------
+
 	authService := service.NewAuthService(userClient, jwtManager)
 
+	// ---------------------------
 	// gRPC SERVER
+	// ---------------------------
+
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		log.Fatal(err)
@@ -55,5 +65,8 @@ func main() {
 	)
 
 	log.Println("Auth Service running on :50051")
-	grpcServer.Serve(lis)
+
+	if err := grpcServer.Serve(lis); err != nil {
+		log.Fatal(err)
+	}
 }

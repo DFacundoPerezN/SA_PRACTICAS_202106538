@@ -36,6 +36,24 @@ func (s *UserGRPCServer) GetUserByEmail(ctx context.Context, req *userpb.GetUser
 	}, nil
 }
 
+func (s *UserGRPCServer) GetUserByID(ctx context.Context, req *userpb.GetUserByIDRequest) (*userpb.UserResponse, error) {
+
+	user, err := s.userService.GetUserByID(int(req.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	return &userpb.UserResponse{
+		User: &userpb.User{
+			Id:             int32(user.ID),
+			Email:          user.Email,
+			Password:       user.PasswordHash,
+			NombreCompleto: user.NombreCompleto,
+			Role:           user.Role,
+		},
+	}, nil
+}
+
 func (s *UserGRPCServer) CreateUser(ctx context.Context, req *userpb.CreateUserRequest) (*userpb.CreateUserResponse, error) {
 
 	user, err := s.userService.CreateUser(domain.CreateUserRequest{
@@ -49,7 +67,7 @@ func (s *UserGRPCServer) CreateUser(ctx context.Context, req *userpb.CreateUserR
 	}
 
 	return &userpb.CreateUserResponse{
-		Id:             int32(user.ID),
+		UserId:         int64(user.ID),
 		Email:          user.Email,
 		NombreCompleto: user.NombreCompleto,
 	}, nil

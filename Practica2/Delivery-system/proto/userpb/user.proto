@@ -38,7 +38,9 @@ message CreateUserRequest {
 }
 
 message CreateUserResponse {
-  int32 id = 1;
+  int64 user_id = 1;
   string email = 2;
-  string nombre_completo = 3;
+  string role = 3;
+  string nombre_completo = 4;
+  string telefono = 5;
 }

@@ -299,9 +299,11 @@ func (x *CreateUserRequest) GetRol() string {
 
 type CreateUserResponse struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
-	Id             int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	UserId         int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	Email          string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
-	NombreCompleto string                 `protobuf:"bytes,3,opt,name=nombre_completo,json=nombreCompleto,proto3" json:"nombre_completo,omitempty"`
+	Role           string                 `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"`
+	NombreCompleto string                 `protobuf:"bytes,4,opt,name=nombre_completo,json=nombreCompleto,proto3" json:"nombre_completo,omitempty"`
+	Telefono       string                 `protobuf:"bytes,5,opt,name=telefono,proto3" json:"telefono,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -336,9 +338,9 @@ func (*CreateUserResponse) Descriptor() ([]byte, []int) {
 	return file_userpb_user_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *CreateUserResponse) GetId() int32 {
+func (x *CreateUserResponse) GetUserId() int64 {
 	if x != nil {
-		return x.Id
+		return x.UserId
 	}
 	return 0
 }
@@ -350,9 +352,23 @@ func (x *CreateUserResponse) GetEmail() string {
 	return ""
 }
 
+func (x *CreateUserResponse) GetRole() string {
+	if x != nil {
+		return x.Role
+	}
+	return ""
+}
+
 func (x *CreateUserResponse) GetNombreCompleto() string {
 	if x != nil {
 		return x.NombreCompleto
+	}
+	return ""
+}
+
+func (x *CreateUserResponse) GetTelefono() string {
+	if x != nil {
+		return x.Telefono
 	}
 	return ""
 }
@@ -378,11 +394,13 @@ const file_userpb_user_proto_rawDesc = "" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\x12'\n" +
 	"\x0fnombre_completo\x18\x03 \x01(\tR\x0enombreCompleto\x12\x10\n" +
-	"\x03rol\x18\x04 \x01(\tR\x03rol\"c\n" +
-	"\x12CreateUserResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x14\n" +
-	"\x05email\x18\x02 \x01(\tR\x05email\x12'\n" +
-	"\x0fnombre_completo\x18\x03 \x01(\tR\x0enombreCompleto2\xda\x01\n" +
+	"\x03rol\x18\x04 \x01(\tR\x03rol\"\x9c\x01\n" +
+	"\x12CreateUserResponse\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\x14\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12\x12\n" +
+	"\x04role\x18\x03 \x01(\tR\x04role\x12'\n" +
+	"\x0fnombre_completo\x18\x04 \x01(\tR\x0enombreCompleto\x12\x1a\n" +
+	"\btelefono\x18\x05 \x01(\tR\btelefono2\xda\x01\n" +
 	"\vUserService\x12E\n" +
 	"\x0eGetUserByEmail\x12\x1d.userpb.GetUserByEmailRequest\x1a\x14.userpb.UserResponse\x12?\n" +
 	"\vGetUserByID\x12\x1a.userpb.GetUserByIDRequest\x1a\x14.userpb.UserResponse\x12C\n" +

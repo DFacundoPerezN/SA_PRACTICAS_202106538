@@ -3,20 +3,31 @@ package grpc
 import (
 	"context"
 	"delivery-proto/userpb"
+	"time"
+
+	"google.golang.org/grpc"
 )
 
 type UserClient struct {
 	client userpb.UserServiceClient
 }
 
-func NewUserClient(client userpb.UserServiceClient) *UserClient {
-	return &UserClient{client: client}
+func NewUserClient(addr string) (*UserClient, error) {
+	conn, err := grpc.Dial(addr, grpc.WithInsecure())
+	if err != nil {
+		return nil, err
+	}
+	client := userpb.NewUserServiceClient(conn)
+	return &UserClient{
+		client: client,
+	}, nil
 }
 
 type UserDTO struct {
 	Id       int32
 	Email    string
 	Password string
+	Role     string
 }
 
 func (c *UserClient) GetUserByEmail(ctx context.Context, email string) (*UserDTO, error) {
@@ -32,6 +43,20 @@ func (c *UserClient) GetUserByEmail(ctx context.Context, email string) (*UserDTO
 	return &UserDTO{
 		Id:       res.User.Id,
 		Email:    res.User.Email,
+		Role:     res.User.Role,
 		Password: res.User.Password,
 	}, nil
+}
+
+func (c *UserClient) GetUserByID(userID int32) (*userpb.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	res, err := c.client.GetUserByID(ctx, &userpb.GetUserByIDRequest{
+		Id: userID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return res.User, nil
 }

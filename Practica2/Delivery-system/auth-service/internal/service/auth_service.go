@@ -10,9 +10,12 @@ import (
 )
 
 type LoginResult struct {
-	UserID int32
-	Email  string
-	Token  string
+	UserID         int32
+	Email          string
+	Token          string
+	Role           string
+	NombreCompleto string
+	Telefono       string
 }
 
 type AuthService struct {
@@ -40,15 +43,23 @@ func (s *AuthService) Login(ctx context.Context, email string, password string) 
 		return nil, errors.New("invalid credentials")
 	}
 
-	token, err := s.jwtManager.GenerateToken(user.Id, user.Email, "USER")
+	userProfile, err := s.userClient.GetUserByID(user.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	token, err := s.jwtManager.GenerateToken(user.Id, user.Email, user.Role)
 	if err != nil {
 		return nil, err
 	}
 
 	return &LoginResult{
-		UserID: user.Id,
-		Email:  user.Email,
-		Token:  token,
+		Token:          token,
+		UserID:         userProfile.Id,
+		Email:          userProfile.Email,
+		Role:           userProfile.Role,
+		NombreCompleto: userProfile.NombreCompleto,
+		//Telefono:       userProfile.Telefono,
 	}, nil
 }
 

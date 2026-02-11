@@ -7,12 +7,12 @@ import (
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 
+	userpb "delivery-proto/userpb"
 	"user-service/internal/config"
 	"user-service/internal/database"
 	userhandler "user-service/internal/handler/grpc"
 	"user-service/internal/repository/sqlserver"
 	"user-service/internal/service"
-	userpb "user-service/proto"
 )
 
 func main() {

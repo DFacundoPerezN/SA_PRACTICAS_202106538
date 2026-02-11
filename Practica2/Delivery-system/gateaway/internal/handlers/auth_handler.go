@@ -68,7 +68,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"id":    resp.Id,
+		"id":    resp.UserId,
 		"email": resp.Email,
 	})
 }
