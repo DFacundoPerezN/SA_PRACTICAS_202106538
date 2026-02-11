@@ -27,9 +27,11 @@ func (s *AuthGRPCServer) Login(ctx context.Context, req *authpb.LoginRequest) (*
 	}
 
 	return &authpb.LoginResponse{
-		UserId: result.UserID,
-		Email:  result.Email,
-		Token:  result.Token,
+		UserId:         result.UserID,
+		Email:          result.Email,
+		Token:          result.Token,
+		Role:           result.Role,
+		NombreCompleto: result.NombreCompleto,
 	}, nil
 }
 

@@ -37,9 +37,11 @@ type LoginResponse struct {
 }
 
 type LoginResult struct {
-	UserID string
-	Email  string
-	Token  string
+	UserID         int32
+	Email          string
+	Token          string
+	Role           string
+	NombreCompleto string
 }
 
 type UserRepository interface {

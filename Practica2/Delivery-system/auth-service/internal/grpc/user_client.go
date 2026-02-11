@@ -24,10 +24,11 @@ func NewUserClient(addr string) (*UserClient, error) {
 }
 
 type UserDTO struct {
-	Id       int32
-	Email    string
-	Password string
-	Role     string
+	Id             int32
+	Email          string
+	Password       string
+	Role           string
+	NombreCompleto string
 }
 
 func (c *UserClient) GetUserByEmail(ctx context.Context, email string) (*UserDTO, error) {

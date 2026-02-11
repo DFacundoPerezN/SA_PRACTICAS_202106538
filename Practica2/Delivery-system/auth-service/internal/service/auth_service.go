@@ -38,7 +38,6 @@ func (s *AuthService) Login(ctx context.Context, email string, password string) 
 	}
 
 	resultPas := passwordlib.CheckPasswordHash(password, user.Password)
-
 	if !resultPas {
 		return nil, errors.New("invalid credentials")
 	}

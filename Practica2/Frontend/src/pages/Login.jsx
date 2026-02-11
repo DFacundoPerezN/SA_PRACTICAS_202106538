@@ -33,12 +33,13 @@ const Login = () => {
       
       // Guardar token y usuario
       localStorage.setItem('token', data.token)
-      localStorage.setItem('user', JSON.stringify(data.user))
+      localStorage.setItem('name', data.name)
+      localStorage.setItem('role', data.role)
       //console.log('Usuario autenticado:', data)
       // Redirigir según el rol
-      if (data.user.role === 'ADMINISTRADOR') {
+      if (data.role === 'ADMINISTRADOR') {
         navigate('/admin/dashboard')
-      } else if (data.user.role === 'CLIENTE') {
+      } else if (data.role === 'CLIENTE') {
         navigate('/cliente/dashboard')
       }
     } catch (err) {
