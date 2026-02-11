@@ -64,11 +64,17 @@ func main() {
 		log.Fatal("cannot connect to user-service:", err)
 	}
 
+	catalogClient, err := gatewaygrpc.NewCatalogClient("localhost:50053")
+	if err != nil {
+		log.Fatalf("could not connect to catalog-service: %v", err)
+	}
+
 	userServiceClient := userpb.NewUserServiceClient(userConn)
 	userClient := gatewaygrpc.NewUserClient(userServiceClient)
 
 	authHandler := handlers.NewAuthHandler(authClient, userClient)
 
+	catalogHandler := handlers.NewCatalogHandler(catalogClient)
 	// Gin
 	router := gin.Default()
 	router.Use(CORSMiddleware())
@@ -83,6 +89,7 @@ func main() {
 	{
 		api.POST("auth/login", authHandler.Login)
 		api.POST("/users", authHandler.Register)
+		api.GET("restaurants/:id/products", catalogHandler.GetProductsByRestaurant)
 	}
 
 	// PROTECTED ROUTES
