@@ -59,7 +59,6 @@ func main() {
 		"localhost:50052",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
-
 	if err != nil {
 		log.Fatal("cannot connect to user-service:", err)
 	}
@@ -68,6 +67,15 @@ func main() {
 	if err != nil {
 		log.Fatalf("could not connect to catalog-service: %v", err)
 	}
+
+	// ---------------- RESTAURANT SERVICE ----------------
+
+	restaurantClient, err := gatewaygrpc.NewRestaurantClient("localhost:50054")
+	if err != nil {
+		log.Fatalf("could not connect to restaurant-service: %v", err)
+	}
+
+	restaurantHandler := handlers.NewRestaurantHandler(restaurantClient)
 
 	userServiceClient := userpb.NewUserServiceClient(userConn)
 	userClient := gatewaygrpc.NewUserClient(userServiceClient)
@@ -90,6 +98,7 @@ func main() {
 		api.POST("auth/login", authHandler.Login)
 		api.POST("/users", authHandler.Register)
 		api.GET("restaurants/:id/products", catalogHandler.GetProductsByRestaurant)
+		api.GET("restaurants", restaurantHandler.ListRestaurants)
 	}
 
 	// PROTECTED ROUTES
