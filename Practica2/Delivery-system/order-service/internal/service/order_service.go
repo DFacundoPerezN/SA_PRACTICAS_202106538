@@ -1,53 +1,41 @@
 package service
 
 import (
-	"errors"
-	"order-service/internal/grpcclient"
+	"context"
+	orderpb "delivery-proto/orderpb"
+	"order-service/internal/domain"
+	catalogclient "order-service/internal/grpc"
+	"order-service/internal/repository"
 )
 
 type OrderService struct {
-	catalogClient *grpcclient.CatalogClient
+	repo          *repository.OrderRepository
+	catalogClient *catalogclient.CatalogClient
 }
 
-func NewOrderService(catalogClient *grpcclient.CatalogClient) *OrderService {
-	return &OrderService{catalogClient: catalogClient}
+func NewOrderService(r *repository.OrderRepository, catalogClient *catalogclient.CatalogClient) *OrderService {
+	return &OrderService{repo: r, catalogClient: catalogClient}
 }
 
-func (s *OrderService) ValidateProducts(items map[int32]int32) (float64, int32, error) {
+func (s *OrderService) CreateOrder(ctx context.Context, req *orderpb.CreateOrderRequest) (int, error) {
 
-	// obtener ids
-	var ids []int32
-	for id := range items {
-		ids = append(ids, id)
+	order := &domain.Order{
+		ClienteId:        int32(req.ClientId),
+		ClienteNombre:    req.ClientName,
+		ClienteTelefono:  req.ClientPhone,
+		DireccionEntrega: req.Address,
+		LatitudEntrega:   req.Lat,
+		LongitudEntrega:  req.Lng,
+		CostoTotal:       0, // luego lo calcularemos con catalog-service
 	}
 
-	products, err := s.catalogClient.GetProductsByIDs(ids)
-	if err != nil {
-		return 0, 0, err
+	for _, item := range req.Items {
+		order.Items = append(order.Items, domain.OrderItem{
+			ProductoId:  int32(item.ProductId),
+			Cantidad:    int32(item.Quantity),
+			Comentarios: item.Comments,
+		})
 	}
 
-	if len(products) != len(ids) {
-		return 0, 0, errors.New("uno o más productos no existen")
-	}
-
-	var restaurantID int32 = -1
-	var total float64
-
-	for _, p := range products {
-
-		if !p.Disponible {
-			return 0, 0, errors.New("producto no disponible")
-		}
-
-		if restaurantID == -1 {
-			restaurantID = p.RestauranteId
-		} else if restaurantID != p.RestauranteId {
-			return 0, 0, errors.New("todos los productos deben ser del mismo restaurante")
-		}
-
-		cantidad := items[p.Id]
-		total += p.Precio * float64(cantidad)
-	}
-
-	return total, restaurantID, nil
+	return s.repo.CreateOrder(ctx, order)
 }
