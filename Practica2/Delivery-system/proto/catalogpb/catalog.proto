@@ -5,7 +5,11 @@ package catalog;
 option go_package = "delivery-proto/catalogpb";
 
 service CatalogService {
-  rpc GetCatalogByRestaurant (GetCatalogRequest) returns (GetCatalogResponse);
+  rpc GetProductsByRestaurant(GetProductsByRestaurantRequest)
+      returns (GetProductsByRestaurantResponse);
+
+  rpc GetProductsByIDs(GetProductsByIDsRequest)
+      returns (GetProductsByIDsResponse);
 }
 
 message GetCatalogRequest {
@@ -23,5 +27,21 @@ message Product {
 }
 
 message GetCatalogResponse {
+  repeated Product products = 1;
+}
+
+message GetProductsByRestaurantRequest {
+  int32 restaurante_id = 1;
+}
+
+message GetProductsByRestaurantResponse {
+  repeated Product products = 1;
+}
+
+message GetProductsByIDsRequest {
+  repeated int32 ids = 1;
+}
+
+message GetProductsByIDsResponse {
   repeated Product products = 1;
 }

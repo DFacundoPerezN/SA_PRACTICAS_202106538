@@ -1,4 +1,4 @@
-package grpc
+package grpcclient
 
 import (
 	"context"
@@ -20,17 +20,22 @@ func NewCatalogClient(address string) (*CatalogClient, error) {
 		return nil, err
 	}
 
-	return &CatalogClient{
-		client: catalogpb.NewCatalogServiceClient(conn),
-	}, nil
+	client := catalogpb.NewCatalogServiceClient(conn)
+
+	return &CatalogClient{client: client}, nil
 }
 
-func (c *CatalogClient) GetCatalog(restaurantID int32) (*catalogpb.GetProductsByRestaurantResponse, error) {
+func (c *CatalogClient) GetProductsByIDs(ids []int32) ([]*catalogpb.Product, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	return c.client.GetProductsByRestaurant(ctx, &catalogpb.GetProductsByRestaurantRequest{
-		RestauranteId: restaurantID,
+	res, err := c.client.GetProductsByIDs(ctx, &catalogpb.GetProductsByIDsRequest{
+		Ids: ids,
 	})
+	if err != nil {
+		return nil, err
+	}
+
+	return res.Products, nil
 }

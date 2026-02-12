@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package orderpb;
+
+option go_package = "delivery-proto/orderpb";
+
+service OrderService {
+  rpc CreateOrder (CreateOrderRequest) returns (CreateOrderResponse);
+}
+
+message OrderItem {
+  int32 producto_id = 1;
+  int32 cantidad = 2;
+}
+
+message CreateOrderRequest {
+  int32 cliente_id = 1;
+  string direccion = 2;
+  repeated OrderItem items = 3;
+}
+
+message CreateOrderResponse {
+  int32 order_id = 1;
+  double total = 2;
+  string estado = 3;
+}

@@ -16,20 +16,20 @@ func NewCatalogGRPCServer(s *service.ProductService) *CatalogGRPCServer {
 	return &CatalogGRPCServer{service: s}
 }
 
-func (s *CatalogGRPCServer) GetCatalogByRestaurant(
+func (s *CatalogGRPCServer) GetProductsByRestaurant(
 	ctx context.Context,
-	req *catalogpb.GetCatalogRequest,
-) (*catalogpb.GetCatalogResponse, error) {
+	req *catalogpb.GetProductsByRestaurantRequest,
+) (*catalogpb.GetProductsByRestaurantResponse, error) {
 
-	products, err := s.service.GetCatalog(int(req.RestaurantId))
+	products, err := s.service.GetCatalog(int(req.RestauranteId))
 	if err != nil {
 		return nil, err
 	}
 
-	var response catalogpb.GetCatalogResponse
+	var protoProducts []*catalogpb.Product
 
 	for _, p := range products {
-		response.Products = append(response.Products, &catalogpb.Product{
+		protoProducts = append(protoProducts, &catalogpb.Product{
 			Id:           int32(p.ID),
 			RestaurantId: int32(p.RestauranteID),
 			Nombre:       p.Nombre,
@@ -40,5 +40,36 @@ func (s *CatalogGRPCServer) GetCatalogByRestaurant(
 		})
 	}
 
-	return &response, nil
+	return &catalogpb.GetProductsByRestaurantResponse{
+		Products: protoProducts,
+	}, nil
+}
+
+func (s *CatalogGRPCServer) GetProductsByIDs(
+	ctx context.Context,
+	req *catalogpb.GetProductsByIDsRequest,
+) (*catalogpb.GetProductsByIDsResponse, error) {
+
+	products, err := s.service.GetProductsByIDs(req.Ids)
+	if err != nil {
+		return nil, err
+	}
+
+	var protoProducts []*catalogpb.Product
+
+	for _, p := range products {
+		protoProducts = append(protoProducts, &catalogpb.Product{
+			Id:           int32(p.ID),
+			Nombre:       p.Nombre,
+			Descripcion:  p.Descripcion,
+			Precio:       p.Precio,
+			Disponible:   p.Disponible,
+			RestaurantId: int32(p.RestauranteID),
+			Categoria:    p.Categoria,
+		})
+	}
+
+	return &catalogpb.GetProductsByIDsResponse{
+		Products: protoProducts,
+	}, nil
 }

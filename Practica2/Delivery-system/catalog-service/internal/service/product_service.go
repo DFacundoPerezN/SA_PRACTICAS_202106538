@@ -16,3 +16,7 @@ func NewProductService(r *repository.ProductRepository) *ProductService {
 func (s *ProductService) GetCatalog(restaurantID int) ([]domain.Product, error) {
 	return s.repo.GetByRestaurant(restaurantID)
 }
+
+func (s *ProductService) GetProductsByIDs(ids []int32) ([]domain.Product, error) {
+	return s.repo.GetByIDs(ids)
+}

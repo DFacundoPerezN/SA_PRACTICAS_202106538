@@ -68,7 +68,7 @@ CREATE TABLE ProductoOrden (
     OrdenId INT NOT NULL, 
 
     ProductoId INT NOT NULL, 
-    ProductoNombre NVARCHAR(64) NOT NULL,
+    NombreProducto NVARCHAR(64) NOT NULL,
     PrecioUnitario DECIMAL(10,2) NOT NULL, -- Precio al momento de la orden
     
     Cantidad INT NOT NULL CHECK (Cantidad > 0),

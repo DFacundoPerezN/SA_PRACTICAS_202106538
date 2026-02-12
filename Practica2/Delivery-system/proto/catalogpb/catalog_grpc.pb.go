@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.1
 // - protoc             v6.33.5
-// source: catalog/catalog.proto
+// source: catalogpb/catalog.proto
 
 package catalogpb
 
@@ -19,14 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CatalogService_GetCatalogByRestaurant_FullMethodName = "/catalog.CatalogService/GetCatalogByRestaurant"
+	CatalogService_GetProductsByRestaurant_FullMethodName = "/catalog.CatalogService/GetProductsByRestaurant"
+	CatalogService_GetProductsByIDs_FullMethodName        = "/catalog.CatalogService/GetProductsByIDs"
 )
 
 // CatalogServiceClient is the client API for CatalogService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CatalogServiceClient interface {
-	GetCatalogByRestaurant(ctx context.Context, in *GetCatalogRequest, opts ...grpc.CallOption) (*GetCatalogResponse, error)
+	GetProductsByRestaurant(ctx context.Context, in *GetProductsByRestaurantRequest, opts ...grpc.CallOption) (*GetProductsByRestaurantResponse, error)
+	GetProductsByIDs(ctx context.Context, in *GetProductsByIDsRequest, opts ...grpc.CallOption) (*GetProductsByIDsResponse, error)
 }
 
 type catalogServiceClient struct {
@@ -37,10 +39,20 @@ func NewCatalogServiceClient(cc grpc.ClientConnInterface) CatalogServiceClient {
 	return &catalogServiceClient{cc}
 }
 
-func (c *catalogServiceClient) GetCatalogByRestaurant(ctx context.Context, in *GetCatalogRequest, opts ...grpc.CallOption) (*GetCatalogResponse, error) {
+func (c *catalogServiceClient) GetProductsByRestaurant(ctx context.Context, in *GetProductsByRestaurantRequest, opts ...grpc.CallOption) (*GetProductsByRestaurantResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetCatalogResponse)
-	err := c.cc.Invoke(ctx, CatalogService_GetCatalogByRestaurant_FullMethodName, in, out, cOpts...)
+	out := new(GetProductsByRestaurantResponse)
+	err := c.cc.Invoke(ctx, CatalogService_GetProductsByRestaurant_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *catalogServiceClient) GetProductsByIDs(ctx context.Context, in *GetProductsByIDsRequest, opts ...grpc.CallOption) (*GetProductsByIDsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetProductsByIDsResponse)
+	err := c.cc.Invoke(ctx, CatalogService_GetProductsByIDs_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +63,8 @@ func (c *catalogServiceClient) GetCatalogByRestaurant(ctx context.Context, in *G
 // All implementations must embed UnimplementedCatalogServiceServer
 // for forward compatibility.
 type CatalogServiceServer interface {
-	GetCatalogByRestaurant(context.Context, *GetCatalogRequest) (*GetCatalogResponse, error)
+	GetProductsByRestaurant(context.Context, *GetProductsByRestaurantRequest) (*GetProductsByRestaurantResponse, error)
+	GetProductsByIDs(context.Context, *GetProductsByIDsRequest) (*GetProductsByIDsResponse, error)
 	mustEmbedUnimplementedCatalogServiceServer()
 }
 
@@ -62,8 +75,11 @@ type CatalogServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedCatalogServiceServer struct{}
 
-func (UnimplementedCatalogServiceServer) GetCatalogByRestaurant(context.Context, *GetCatalogRequest) (*GetCatalogResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method GetCatalogByRestaurant not implemented")
+func (UnimplementedCatalogServiceServer) GetProductsByRestaurant(context.Context, *GetProductsByRestaurantRequest) (*GetProductsByRestaurantResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetProductsByRestaurant not implemented")
+}
+func (UnimplementedCatalogServiceServer) GetProductsByIDs(context.Context, *GetProductsByIDsRequest) (*GetProductsByIDsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetProductsByIDs not implemented")
 }
 func (UnimplementedCatalogServiceServer) mustEmbedUnimplementedCatalogServiceServer() {}
 func (UnimplementedCatalogServiceServer) testEmbeddedByValue()                        {}
@@ -86,20 +102,38 @@ func RegisterCatalogServiceServer(s grpc.ServiceRegistrar, srv CatalogServiceSer
 	s.RegisterService(&CatalogService_ServiceDesc, srv)
 }
 
-func _CatalogService_GetCatalogByRestaurant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCatalogRequest)
+func _CatalogService_GetProductsByRestaurant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProductsByRestaurantRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CatalogServiceServer).GetCatalogByRestaurant(ctx, in)
+		return srv.(CatalogServiceServer).GetProductsByRestaurant(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: CatalogService_GetCatalogByRestaurant_FullMethodName,
+		FullMethod: CatalogService_GetProductsByRestaurant_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CatalogServiceServer).GetCatalogByRestaurant(ctx, req.(*GetCatalogRequest))
+		return srv.(CatalogServiceServer).GetProductsByRestaurant(ctx, req.(*GetProductsByRestaurantRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CatalogService_GetProductsByIDs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProductsByIDsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CatalogServiceServer).GetProductsByIDs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CatalogService_GetProductsByIDs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CatalogServiceServer).GetProductsByIDs(ctx, req.(*GetProductsByIDsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -112,10 +146,14 @@ var CatalogService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*CatalogServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetCatalogByRestaurant",
-			Handler:    _CatalogService_GetCatalogByRestaurant_Handler,
+			MethodName: "GetProductsByRestaurant",
+			Handler:    _CatalogService_GetProductsByRestaurant_Handler,
+		},
+		{
+			MethodName: "GetProductsByIDs",
+			Handler:    _CatalogService_GetProductsByIDs_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "catalog/catalog.proto",
+	Metadata: "catalogpb/catalog.proto",
 }

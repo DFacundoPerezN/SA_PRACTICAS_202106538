@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        v6.33.5
-// source: catalog/catalog.proto
+// source: catalogpb/catalog.proto
 
 package catalogpb
 
@@ -30,7 +30,7 @@ type GetCatalogRequest struct {
 
 func (x *GetCatalogRequest) Reset() {
 	*x = GetCatalogRequest{}
-	mi := &file_catalog_catalog_proto_msgTypes[0]
+	mi := &file_catalogpb_catalog_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -42,7 +42,7 @@ func (x *GetCatalogRequest) String() string {
 func (*GetCatalogRequest) ProtoMessage() {}
 
 func (x *GetCatalogRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_catalog_proto_msgTypes[0]
+	mi := &file_catalogpb_catalog_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -55,7 +55,7 @@ func (x *GetCatalogRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCatalogRequest.ProtoReflect.Descriptor instead.
 func (*GetCatalogRequest) Descriptor() ([]byte, []int) {
-	return file_catalog_catalog_proto_rawDescGZIP(), []int{0}
+	return file_catalogpb_catalog_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *GetCatalogRequest) GetRestaurantId() int32 {
@@ -80,7 +80,7 @@ type Product struct {
 
 func (x *Product) Reset() {
 	*x = Product{}
-	mi := &file_catalog_catalog_proto_msgTypes[1]
+	mi := &file_catalogpb_catalog_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -92,7 +92,7 @@ func (x *Product) String() string {
 func (*Product) ProtoMessage() {}
 
 func (x *Product) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_catalog_proto_msgTypes[1]
+	mi := &file_catalogpb_catalog_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -105,7 +105,7 @@ func (x *Product) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Product.ProtoReflect.Descriptor instead.
 func (*Product) Descriptor() ([]byte, []int) {
-	return file_catalog_catalog_proto_rawDescGZIP(), []int{1}
+	return file_catalogpb_catalog_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Product) GetId() int32 {
@@ -166,7 +166,7 @@ type GetCatalogResponse struct {
 
 func (x *GetCatalogResponse) Reset() {
 	*x = GetCatalogResponse{}
-	mi := &file_catalog_catalog_proto_msgTypes[2]
+	mi := &file_catalogpb_catalog_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -178,7 +178,7 @@ func (x *GetCatalogResponse) String() string {
 func (*GetCatalogResponse) ProtoMessage() {}
 
 func (x *GetCatalogResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_catalog_proto_msgTypes[2]
+	mi := &file_catalogpb_catalog_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -191,7 +191,7 @@ func (x *GetCatalogResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCatalogResponse.ProtoReflect.Descriptor instead.
 func (*GetCatalogResponse) Descriptor() ([]byte, []int) {
-	return file_catalog_catalog_proto_rawDescGZIP(), []int{2}
+	return file_catalogpb_catalog_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *GetCatalogResponse) GetProducts() []*Product {
@@ -201,11 +201,187 @@ func (x *GetCatalogResponse) GetProducts() []*Product {
 	return nil
 }
 
-var File_catalog_catalog_proto protoreflect.FileDescriptor
+type GetProductsByRestaurantRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RestauranteId int32                  `protobuf:"varint,1,opt,name=restaurante_id,json=restauranteId,proto3" json:"restaurante_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
 
-const file_catalog_catalog_proto_rawDesc = "" +
+func (x *GetProductsByRestaurantRequest) Reset() {
+	*x = GetProductsByRestaurantRequest{}
+	mi := &file_catalogpb_catalog_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetProductsByRestaurantRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetProductsByRestaurantRequest) ProtoMessage() {}
+
+func (x *GetProductsByRestaurantRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_catalogpb_catalog_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetProductsByRestaurantRequest.ProtoReflect.Descriptor instead.
+func (*GetProductsByRestaurantRequest) Descriptor() ([]byte, []int) {
+	return file_catalogpb_catalog_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetProductsByRestaurantRequest) GetRestauranteId() int32 {
+	if x != nil {
+		return x.RestauranteId
+	}
+	return 0
+}
+
+type GetProductsByRestaurantResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Products      []*Product             `protobuf:"bytes,1,rep,name=products,proto3" json:"products,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetProductsByRestaurantResponse) Reset() {
+	*x = GetProductsByRestaurantResponse{}
+	mi := &file_catalogpb_catalog_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetProductsByRestaurantResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetProductsByRestaurantResponse) ProtoMessage() {}
+
+func (x *GetProductsByRestaurantResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_catalogpb_catalog_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetProductsByRestaurantResponse.ProtoReflect.Descriptor instead.
+func (*GetProductsByRestaurantResponse) Descriptor() ([]byte, []int) {
+	return file_catalogpb_catalog_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetProductsByRestaurantResponse) GetProducts() []*Product {
+	if x != nil {
+		return x.Products
+	}
+	return nil
+}
+
+type GetProductsByIDsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Ids           []int32                `protobuf:"varint,1,rep,packed,name=ids,proto3" json:"ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetProductsByIDsRequest) Reset() {
+	*x = GetProductsByIDsRequest{}
+	mi := &file_catalogpb_catalog_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetProductsByIDsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetProductsByIDsRequest) ProtoMessage() {}
+
+func (x *GetProductsByIDsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_catalogpb_catalog_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetProductsByIDsRequest.ProtoReflect.Descriptor instead.
+func (*GetProductsByIDsRequest) Descriptor() ([]byte, []int) {
+	return file_catalogpb_catalog_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetProductsByIDsRequest) GetIds() []int32 {
+	if x != nil {
+		return x.Ids
+	}
+	return nil
+}
+
+type GetProductsByIDsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Products      []*Product             `protobuf:"bytes,1,rep,name=products,proto3" json:"products,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetProductsByIDsResponse) Reset() {
+	*x = GetProductsByIDsResponse{}
+	mi := &file_catalogpb_catalog_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetProductsByIDsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetProductsByIDsResponse) ProtoMessage() {}
+
+func (x *GetProductsByIDsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_catalogpb_catalog_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetProductsByIDsResponse.ProtoReflect.Descriptor instead.
+func (*GetProductsByIDsResponse) Descriptor() ([]byte, []int) {
+	return file_catalogpb_catalog_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetProductsByIDsResponse) GetProducts() []*Product {
+	if x != nil {
+		return x.Products
+	}
+	return nil
+}
+
+var File_catalogpb_catalog_proto protoreflect.FileDescriptor
+
+const file_catalogpb_catalog_proto_rawDesc = "" +
 	"\n" +
-	"\x15catalog/catalog.proto\x12\acatalog\"8\n" +
+	"\x17catalogpb/catalog.proto\x12\acatalog\"8\n" +
 	"\x11GetCatalogRequest\x12#\n" +
 	"\rrestaurant_id\x18\x01 \x01(\x05R\frestaurantId\"\xce\x01\n" +
 	"\aProduct\x12\x0e\n" +
@@ -219,59 +395,76 @@ const file_catalog_catalog_proto_rawDesc = "" +
 	"disponible\x12\x1c\n" +
 	"\tcategoria\x18\a \x01(\tR\tcategoria\"B\n" +
 	"\x12GetCatalogResponse\x12,\n" +
-	"\bproducts\x18\x01 \x03(\v2\x10.catalog.ProductR\bproducts2c\n" +
-	"\x0eCatalogService\x12Q\n" +
-	"\x16GetCatalogByRestaurant\x12\x1a.catalog.GetCatalogRequest\x1a\x1b.catalog.GetCatalogResponseB\x1aZ\x18delivery-proto/catalogpbb\x06proto3"
+	"\bproducts\x18\x01 \x03(\v2\x10.catalog.ProductR\bproducts\"G\n" +
+	"\x1eGetProductsByRestaurantRequest\x12%\n" +
+	"\x0erestaurante_id\x18\x01 \x01(\x05R\rrestauranteId\"O\n" +
+	"\x1fGetProductsByRestaurantResponse\x12,\n" +
+	"\bproducts\x18\x01 \x03(\v2\x10.catalog.ProductR\bproducts\"+\n" +
+	"\x17GetProductsByIDsRequest\x12\x10\n" +
+	"\x03ids\x18\x01 \x03(\x05R\x03ids\"H\n" +
+	"\x18GetProductsByIDsResponse\x12,\n" +
+	"\bproducts\x18\x01 \x03(\v2\x10.catalog.ProductR\bproducts2\xd7\x01\n" +
+	"\x0eCatalogService\x12l\n" +
+	"\x17GetProductsByRestaurant\x12'.catalog.GetProductsByRestaurantRequest\x1a(.catalog.GetProductsByRestaurantResponse\x12W\n" +
+	"\x10GetProductsByIDs\x12 .catalog.GetProductsByIDsRequest\x1a!.catalog.GetProductsByIDsResponseB\x1aZ\x18delivery-proto/catalogpbb\x06proto3"
 
 var (
-	file_catalog_catalog_proto_rawDescOnce sync.Once
-	file_catalog_catalog_proto_rawDescData []byte
+	file_catalogpb_catalog_proto_rawDescOnce sync.Once
+	file_catalogpb_catalog_proto_rawDescData []byte
 )
 
-func file_catalog_catalog_proto_rawDescGZIP() []byte {
-	file_catalog_catalog_proto_rawDescOnce.Do(func() {
-		file_catalog_catalog_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_catalog_catalog_proto_rawDesc), len(file_catalog_catalog_proto_rawDesc)))
+func file_catalogpb_catalog_proto_rawDescGZIP() []byte {
+	file_catalogpb_catalog_proto_rawDescOnce.Do(func() {
+		file_catalogpb_catalog_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_catalogpb_catalog_proto_rawDesc), len(file_catalogpb_catalog_proto_rawDesc)))
 	})
-	return file_catalog_catalog_proto_rawDescData
+	return file_catalogpb_catalog_proto_rawDescData
 }
 
-var file_catalog_catalog_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_catalog_catalog_proto_goTypes = []any{
-	(*GetCatalogRequest)(nil),  // 0: catalog.GetCatalogRequest
-	(*Product)(nil),            // 1: catalog.Product
-	(*GetCatalogResponse)(nil), // 2: catalog.GetCatalogResponse
+var file_catalogpb_catalog_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_catalogpb_catalog_proto_goTypes = []any{
+	(*GetCatalogRequest)(nil),               // 0: catalog.GetCatalogRequest
+	(*Product)(nil),                         // 1: catalog.Product
+	(*GetCatalogResponse)(nil),              // 2: catalog.GetCatalogResponse
+	(*GetProductsByRestaurantRequest)(nil),  // 3: catalog.GetProductsByRestaurantRequest
+	(*GetProductsByRestaurantResponse)(nil), // 4: catalog.GetProductsByRestaurantResponse
+	(*GetProductsByIDsRequest)(nil),         // 5: catalog.GetProductsByIDsRequest
+	(*GetProductsByIDsResponse)(nil),        // 6: catalog.GetProductsByIDsResponse
 }
-var file_catalog_catalog_proto_depIdxs = []int32{
+var file_catalogpb_catalog_proto_depIdxs = []int32{
 	1, // 0: catalog.GetCatalogResponse.products:type_name -> catalog.Product
-	0, // 1: catalog.CatalogService.GetCatalogByRestaurant:input_type -> catalog.GetCatalogRequest
-	2, // 2: catalog.CatalogService.GetCatalogByRestaurant:output_type -> catalog.GetCatalogResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	1, // 1: catalog.GetProductsByRestaurantResponse.products:type_name -> catalog.Product
+	1, // 2: catalog.GetProductsByIDsResponse.products:type_name -> catalog.Product
+	3, // 3: catalog.CatalogService.GetProductsByRestaurant:input_type -> catalog.GetProductsByRestaurantRequest
+	5, // 4: catalog.CatalogService.GetProductsByIDs:input_type -> catalog.GetProductsByIDsRequest
+	4, // 5: catalog.CatalogService.GetProductsByRestaurant:output_type -> catalog.GetProductsByRestaurantResponse
+	6, // 6: catalog.CatalogService.GetProductsByIDs:output_type -> catalog.GetProductsByIDsResponse
+	5, // [5:7] is the sub-list for method output_type
+	3, // [3:5] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
-func init() { file_catalog_catalog_proto_init() }
-func file_catalog_catalog_proto_init() {
-	if File_catalog_catalog_proto != nil {
+func init() { file_catalogpb_catalog_proto_init() }
+func file_catalogpb_catalog_proto_init() {
+	if File_catalogpb_catalog_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_catalog_proto_rawDesc), len(file_catalog_catalog_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalogpb_catalog_proto_rawDesc), len(file_catalogpb_catalog_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_catalog_catalog_proto_goTypes,
-		DependencyIndexes: file_catalog_catalog_proto_depIdxs,
-		MessageInfos:      file_catalog_catalog_proto_msgTypes,
+		GoTypes:           file_catalogpb_catalog_proto_goTypes,
+		DependencyIndexes: file_catalogpb_catalog_proto_depIdxs,
+		MessageInfos:      file_catalogpb_catalog_proto_msgTypes,
 	}.Build()
-	File_catalog_catalog_proto = out.File
-	file_catalog_catalog_proto_goTypes = nil
-	file_catalog_catalog_proto_depIdxs = nil
+	File_catalogpb_catalog_proto = out.File
+	file_catalogpb_catalog_proto_goTypes = nil
+	file_catalogpb_catalog_proto_depIdxs = nil
 }
