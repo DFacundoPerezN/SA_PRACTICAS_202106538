@@ -39,7 +39,14 @@ func NewSQLServer(cfg Config) (*sql.DB, error) {
 
 	db, err := sql.Open("sqlserver", connString)
 	if err != nil {
+		log.Println("database open error:", err)
 		return nil, fmt.Errorf("error opening database: %v", err)
+	} else {
+		if err = db.Ping(); err != nil {
+			log.Println("database ping error:", err)
+		} else {
+			log.Println("database connected successfully")
+		}
 	}
 
 	// Configurar pool de conexiones

@@ -48,10 +48,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := db.Ping(); err != nil {
-		log.Fatalf("database unreachable: %v", err)
-	}
-
 	log.Println("Connected to SQL Server")
 
 	// ---------------------------
@@ -60,7 +56,7 @@ func main() {
 
 	catalogClientServer := os.Getenv("CATALOG_SERVICE_ADDR")
 	if catalogClientServer == "" {
-		catalogClientServer = "localhost:50053"
+		catalogClientServer = "127.0.0.1:50053"
 	}
 
 	catalogClient, err := grpcclient.NewCatalogClient(catalogClientServer)

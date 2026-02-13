@@ -68,6 +68,11 @@ func main() {
 		log.Fatalf("could not connect to catalog-service: %v", err)
 	}
 
+	orderClient, err := gatewaygrpc.NewOrderClient("localhost:50055")
+	if err != nil {
+		log.Fatal("cannot connect to order-service:", err)
+	}
+
 	// ---------------- RESTAURANT SERVICE ----------------
 
 	restaurantClient, err := gatewaygrpc.NewRestaurantClient("localhost:50054")
@@ -83,6 +88,9 @@ func main() {
 	authHandler := handlers.NewAuthHandler(authClient, userClient)
 
 	catalogHandler := handlers.NewCatalogHandler(catalogClient)
+
+	orderHandler := handlers.NewOrderHandler(orderClient)
+
 	// Gin
 	router := gin.Default()
 	router.Use(CORSMiddleware())
@@ -114,6 +122,8 @@ func main() {
 				"email":   email,
 			})
 		})
+
+		protected.POST("/orders", orderHandler.CreateOrder)
 	}
 
 	// HTTP server

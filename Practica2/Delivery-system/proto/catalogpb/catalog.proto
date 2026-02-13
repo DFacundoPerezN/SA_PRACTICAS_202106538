@@ -10,6 +10,9 @@ service CatalogService {
 
   rpc GetProductsByIDs(GetProductsByIDsRequest)
       returns (GetProductsByIDsResponse);
+
+  rpc GetProduct (GetProductRequest) returns (GetProductResponse);
+
 }
 
 message GetCatalogRequest {
@@ -44,4 +47,16 @@ message GetProductsByIDsRequest {
 
 message GetProductsByIDsResponse {
   repeated Product products = 1;
+}
+
+message GetProductRequest {
+  int32 product_id = 1;
+}
+
+message GetProductResponse {
+  int32 id = 1;
+  string nombre = 2;
+  double precio = 3;
+  bool disponible = 4;
+  int32 restaurante_id = 5;
 }
