@@ -82,16 +82,18 @@ func (x *OrderItem) GetComments() string {
 }
 
 type CreateOrderRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ClientId      int32                  `protobuf:"varint,1,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
-	ClientName    string                 `protobuf:"bytes,2,opt,name=client_name,json=clientName,proto3" json:"client_name,omitempty"`
-	ClientPhone   string                 `protobuf:"bytes,3,opt,name=client_phone,json=clientPhone,proto3" json:"client_phone,omitempty"`
-	Address       string                 `protobuf:"bytes,4,opt,name=address,proto3" json:"address,omitempty"`
-	Lat           float64                `protobuf:"fixed64,5,opt,name=lat,proto3" json:"lat,omitempty"`
-	Lng           float64                `protobuf:"fixed64,6,opt,name=lng,proto3" json:"lng,omitempty"`
-	Items         []*OrderItem           `protobuf:"bytes,7,rep,name=items,proto3" json:"items,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	ClientId       int32                  `protobuf:"varint,1,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	ClientName     string                 `protobuf:"bytes,2,opt,name=client_name,json=clientName,proto3" json:"client_name,omitempty"`
+	ClientPhone    string                 `protobuf:"bytes,3,opt,name=client_phone,json=clientPhone,proto3" json:"client_phone,omitempty"`
+	Address        string                 `protobuf:"bytes,4,opt,name=address,proto3" json:"address,omitempty"`
+	Lat            float64                `protobuf:"fixed64,5,opt,name=lat,proto3" json:"lat,omitempty"`
+	Lng            float64                `protobuf:"fixed64,6,opt,name=lng,proto3" json:"lng,omitempty"`
+	Items          []*OrderItem           `protobuf:"bytes,7,rep,name=items,proto3" json:"items,omitempty"`
+	RestaurantId   int32                  `protobuf:"varint,8,opt,name=restaurant_id,json=restaurantId,proto3" json:"restaurant_id,omitempty"`
+	RestaurantName string                 `protobuf:"bytes,9,opt,name=restaurant_name,json=restaurantName,proto3" json:"restaurant_name,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *CreateOrderRequest) Reset() {
@@ -173,6 +175,20 @@ func (x *CreateOrderRequest) GetItems() []*OrderItem {
 	return nil
 }
 
+func (x *CreateOrderRequest) GetRestaurantId() int32 {
+	if x != nil {
+		return x.RestaurantId
+	}
+	return 0
+}
+
+func (x *CreateOrderRequest) GetRestaurantName() string {
+	if x != nil {
+		return x.RestaurantName
+	}
+	return ""
+}
+
 type CreateOrderResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	OrderId       int32                  `protobuf:"varint,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
@@ -242,7 +258,7 @@ const file_orderpb_order_proto_rawDesc = "" +
 	"\n" +
 	"product_id\x18\x01 \x01(\x05R\tproductId\x12\x1a\n" +
 	"\bquantity\x18\x02 \x01(\x05R\bquantity\x12\x1a\n" +
-	"\bcomments\x18\x03 \x01(\tR\bcomments\"\xdb\x01\n" +
+	"\bcomments\x18\x03 \x01(\tR\bcomments\"\xa9\x02\n" +
 	"\x12CreateOrderRequest\x12\x1b\n" +
 	"\tclient_id\x18\x01 \x01(\x05R\bclientId\x12\x1f\n" +
 	"\vclient_name\x18\x02 \x01(\tR\n" +
@@ -251,7 +267,9 @@ const file_orderpb_order_proto_rawDesc = "" +
 	"\aaddress\x18\x04 \x01(\tR\aaddress\x12\x10\n" +
 	"\x03lat\x18\x05 \x01(\x01R\x03lat\x12\x10\n" +
 	"\x03lng\x18\x06 \x01(\x01R\x03lng\x12&\n" +
-	"\x05items\x18\a \x03(\v2\x10.order.OrderItemR\x05items\"b\n" +
+	"\x05items\x18\a \x03(\v2\x10.order.OrderItemR\x05items\x12#\n" +
+	"\rrestaurant_id\x18\b \x01(\x05R\frestaurantId\x12'\n" +
+	"\x0frestaurant_name\x18\t \x01(\tR\x0erestaurantName\"b\n" +
 	"\x13CreateOrderResponse\x12\x19\n" +
 	"\border_id\x18\x01 \x01(\x05R\aorderId\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12\x16\n" +

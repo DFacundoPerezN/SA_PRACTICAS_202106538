@@ -24,6 +24,8 @@ message CreateOrderRequest {
   double lng = 6;
 
   repeated OrderItem items = 7;
+  int32 restaurant_id = 8;
+  string restaurant_name = 9;
 }
 
 message CreateOrderResponse {

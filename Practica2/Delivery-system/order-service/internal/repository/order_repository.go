@@ -65,7 +65,7 @@ func (r *OrderRepository) CreateOrder(ctx context.Context, order *domain.Order) 
 		return 0, err
 	}
 
-	// 2️⃣ Insertar productos
+	// 2️. Insertar productos
 	itemQuery := `
 	INSERT INTO ProductoOrden (
 		OrdenId,

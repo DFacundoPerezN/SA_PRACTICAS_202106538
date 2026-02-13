@@ -36,10 +36,9 @@ func AuthMiddleware(authClient *grpc.AuthClient) gin.HandlerFunc {
 		}
 
 		// Guardar usuario en contexto
-		c.Set("user_id", claims.UserId)
+		c.Set("user_id", int(claims.UserId))
 		c.Set("email", claims.Email)
-		c.Set("role", claims.Rol)
-
+		c.Set("role", string(claims.Rol))
 		c.Next()
 	}
 }

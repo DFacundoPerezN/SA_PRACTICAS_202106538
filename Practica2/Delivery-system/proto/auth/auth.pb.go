@@ -299,7 +299,7 @@ func (x *ValidateTokenRequest) GetToken() string {
 
 type ValidateTokenResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	UserId        int32                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
 	Rol           string                 `protobuf:"bytes,3,opt,name=rol,proto3" json:"rol,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -336,11 +336,11 @@ func (*ValidateTokenResponse) Descriptor() ([]byte, []int) {
 	return file_auth_auth_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *ValidateTokenResponse) GetUserId() string {
+func (x *ValidateTokenResponse) GetUserId() int32 {
 	if x != nil {
 		return x.UserId
 	}
-	return ""
+	return 0
 }
 
 func (x *ValidateTokenResponse) GetEmail() string {
@@ -380,7 +380,7 @@ const file_auth_auth_proto_rawDesc = "" +
 	"\x14ValidateTokenRequest\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\"X\n" +
 	"\x15ValidateTokenResponse\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x14\n" +
+	"\auser_id\x18\x01 \x01(\x05R\x06userId\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x10\n" +
 	"\x03rol\x18\x03 \x01(\tR\x03rol2\xc4\x01\n" +
 	"\vAuthService\x120\n" +

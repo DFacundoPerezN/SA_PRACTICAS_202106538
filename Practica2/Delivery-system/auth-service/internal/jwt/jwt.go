@@ -6,13 +6,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type Claims struct {
-	UserID int32  `json:"user_id"`
-	Email  string `json:"email"`
-	Role   string `json:"role"`
-	jwt.RegisteredClaims
-}
-
 type JWTManager struct {
 	secretKey     string
 	tokenDuration time.Duration
@@ -27,7 +20,7 @@ func NewJWTManager(secretKey string, tokenDuration time.Duration) *JWTManager {
 
 func (manager *JWTManager) GenerateToken(userID int32, email, role string) (string, error) {
 	claims := &Claims{
-		UserID: userID,
+		UserID: int32(userID),
 		Email:  email,
 		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{

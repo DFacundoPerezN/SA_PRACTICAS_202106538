@@ -10,6 +10,9 @@ type CreateOrderRequest struct {
 	LongitudEntrega  float64 `json:"longitud"`
 
 	Items []ItemRequest `json:"items"`
+
+	RestauranteId     int32  `json:"restaurante_id"`
+	NombreRestaurante string `json:"nombre_restaurante"`
 }
 
 type ItemRequest struct {
