@@ -28,13 +28,18 @@ func (c *CatalogClient) GetProduct(ctx context.Context, id int32) (*catalogpb.Pr
 	defer cancel()
 
 	resp, err := c.client.GetProduct(ctx, &catalogpb.GetProductRequest{
-		Id: id,
+		ProductId: id,
 	})
 	if err != nil {
 		return nil, err
 	}
-
-	return resp.Product, nil
+	producto := &catalogpb.Product{
+		Id:         resp.Id,
+		Nombre:     resp.Nombre,
+		Disponible: resp.Disponible,
+		Precio:     resp.Precio,
+	}
+	return producto, nil
 }
 
 func (c *CatalogClient) GetProductsByIDs(ctx context.Context, ids []int32) ([]*catalogpb.Product, error) {
