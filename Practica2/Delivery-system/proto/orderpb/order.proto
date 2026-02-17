@@ -2,10 +2,16 @@ syntax = "proto3";
 
 package order;
 
+//import "google/protobuf/timestamp.proto";
+
 option go_package = "delivery-proto/orderpb";
 
 service OrderService {
   rpc CreateOrder (CreateOrderRequest) returns (CreateOrderResponse);
+  
+  rpc UpdateOrderStatus(UpdateOrderStatusRequest)    returns (UpdateOrderStatusResponse);
+
+  rpc CancelOrder(CancelOrderRequest) returns (CancelOrderResponse);
 }
 
 message OrderItem {
@@ -32,4 +38,26 @@ message CreateOrderResponse {
   int32 order_id = 1;
   string message = 2;
   string estado = 3;
+}
+
+message UpdateOrderStatusRequest {
+  int32 order_id = 1;
+  string new_status = 2;
+}
+
+message UpdateOrderStatusResponse {
+  int32 order_id = 1;
+  string status = 2;
+}
+
+message CancelOrderRequest {
+  int32 order_id = 1;
+  string reason = 2; // Motivo de la cancelación
+  int32 user_id = 3; // ID del usuario que cancela (cliente, restaurante o repartidor)
+}
+
+message CancelOrderResponse {
+  int32 order_id = 1;
+  string new_status = 2;
+  //google.protobuf.Timestamp cancelled_at = 4;
 }

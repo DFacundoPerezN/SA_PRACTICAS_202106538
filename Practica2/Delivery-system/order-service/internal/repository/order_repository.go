@@ -14,6 +14,10 @@ func NewOrderRepository(db *sql.DB) *OrderRepository {
 	return &OrderRepository{db: db}
 }
 
+func (r *OrderRepository) DB() *sql.DB {
+	return r.db
+}
+
 func (r *OrderRepository) CreateOrder(ctx context.Context, order *domain.Order) (int, error) {
 
 	tx, err := r.db.BeginTx(ctx, nil)
@@ -65,7 +69,7 @@ func (r *OrderRepository) CreateOrder(ctx context.Context, order *domain.Order) 
 		return 0, err
 	}
 
-	// 2️. Insertar productos
+	// Insertar productos
 	itemQuery := `
 	INSERT INTO ProductoOrden (
 		OrdenId,
@@ -96,7 +100,7 @@ func (r *OrderRepository) CreateOrder(ctx context.Context, order *domain.Order) 
 		}
 	}
 
-	// 3️⃣ Commit
+	// Commit
 	err = tx.Commit()
 	if err != nil {
 		return 0, err

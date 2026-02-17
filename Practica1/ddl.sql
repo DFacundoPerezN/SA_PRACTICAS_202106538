@@ -51,7 +51,16 @@ CREATE TABLE Orden (
     RepartidorId INT,
 
     Estado NVARCHAR(16) NOT NULL DEFAULT 'CREADA'
-        CHECK (Estado IN ('CREADA','ACEPTADA','EN_PREPARACION','EN_CAMINO','ENTREGADA','CANCELADA')),
+        CHECK (Estado IN (
+            'CREADA',
+            'ACEPTADA',
+            'EN_PREPARACION',
+            'TERMINADA',
+            'EN_CAMINO',
+            'ENTREGADA',
+            'CANCELADA',
+            'RECHAZADA'
+        )),
 
     DireccionEntrega NVARCHAR(200) NOT NULL,
     LatitudEntrega DECIMAL(10,8),
