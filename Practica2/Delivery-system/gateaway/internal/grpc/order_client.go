@@ -59,3 +59,42 @@ func (c *OrderClient) CancelOrder(
 		Reason:  motivo,
 	})
 }
+
+func (c *OrderClient) GetOrdersByClient(clientID int) (*orderpb.GetOrdersResponse, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	return c.client.GetOrdersByClient(ctx, &orderpb.GetOrdersByClientRequest{
+		ClientId: int32(clientID),
+	})
+}
+
+func (c *OrderClient) GetOrdersByRestaurant(restaurantID int) (*orderpb.GetOrdersResponse, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	return c.client.GetOrdersByRestaurant(ctx, &orderpb.GetOrdersByRestaurantRequest{
+		RestaurantId: int32(restaurantID),
+	})
+}
+
+func (c *OrderClient) AssignDriver(orderID int, driverID int) (*orderpb.AssignDriverResponse, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	return c.client.AssignDriver(ctx, &orderpb.AssignDriverRequest{
+		OrderId:  int32(orderID),
+		DriverId: int32(driverID),
+	})
+}
+
+func (c *OrderClient) GetFinishedOrders() (*orderpb.GetOrdersResponse, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	return c.client.GetFinishedOrders(ctx, &orderpb.GetFinishedOrdersRequest{})
+}

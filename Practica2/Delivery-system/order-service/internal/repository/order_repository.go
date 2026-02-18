@@ -108,3 +108,155 @@ func (r *OrderRepository) CreateOrder(ctx context.Context, order *domain.Order) 
 
 	return orderID, nil
 }
+
+func (r *OrderRepository) GetOrdersByClient(ctx context.Context, clientID int) ([]domain.Order, error) {
+
+	rows, err := r.db.QueryContext(ctx, `
+	SELECT Id, ClienteId, ClienteNombre, RestauranteId, RestauranteNombre,
+	       Estado, CostoTotal, DireccionEntrega
+	FROM Orden
+	WHERE ClienteId = @p1
+	ORDER BY FechaHoraCreacion DESC
+	`, clientID)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var orders []domain.Order
+
+	for rows.Next() {
+		var o domain.Order
+
+		err := rows.Scan(
+			&o.Id,
+			&o.ClienteId,
+			&o.ClienteNombre,
+			&o.RestauranteId,
+			&o.RestauranteNombre,
+			&o.Estado,
+			&o.CostoTotal,
+			&o.DireccionEntrega,
+			//&o.FechaHoraCreacion,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		orders = append(orders, o)
+	}
+
+	return orders, nil
+}
+
+func (r *OrderRepository) GetOrdersByRestaurant(ctx context.Context, restaurantID int) ([]domain.Order, error) {
+
+	rows, err := r.db.QueryContext(ctx, `
+	SELECT Id, ClienteId, ClienteNombre, RestauranteId, RestauranteNombre,
+	       Estado, CostoTotal, DireccionEntrega--, FechaHoraCreacion
+	FROM Orden
+	WHERE RestauranteId = @p1
+	ORDER BY FechaHoraCreacion DESC
+	`, restaurantID)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var orders []domain.Order
+
+	for rows.Next() {
+		var o domain.Order
+
+		err := rows.Scan(
+			&o.Id,
+			&o.ClienteId,
+			&o.ClienteNombre,
+			&o.RestauranteId,
+			&o.RestauranteNombre,
+			&o.Estado,
+			&o.CostoTotal,
+			&o.DireccionEntrega,
+			//&o.FechaHoraCreacion,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		orders = append(orders, o)
+	}
+
+	return orders, nil
+}
+
+func (r *OrderRepository) AssignDriver(ctx context.Context, orderID int, driverID int) error {
+
+	_, err := r.db.ExecContext(ctx, `
+	UPDATE Orden
+	SET RepartidorId = @p1,
+		Estado = 'EN_CAMINO'
+	WHERE Id = @p2
+	`, driverID, orderID)
+
+	return err
+}
+
+func (r *OrderRepository) GetOrdersByStatus(ctx context.Context, status string) ([]domain.Order, error) {
+
+	query := `
+	SELECT 
+		Id,
+		ClienteId,
+		ClienteNombre,
+		ClienteTelefono,
+		RestauranteId,
+		RestauranteNombre,
+		Estado,
+		DireccionEntrega,
+		LatitudEntrega,
+		LongitudEntrega,
+		CostoTotal
+		--,FechaHoraCreacion
+	FROM Orden
+	WHERE Estado = @p1
+	ORDER BY FechaHoraCreacion ASC
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, status)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var orders []domain.Order
+
+	for rows.Next() {
+		var o domain.Order
+
+		err := rows.Scan(
+			&o.Id,
+			&o.ClienteId,
+			&o.ClienteNombre,
+			&o.ClienteTelefono,
+			&o.RestauranteId,
+			&o.RestauranteNombre,
+			&o.Estado,
+			&o.DireccionEntrega,
+			&o.LatitudEntrega,
+			&o.LongitudEntrega,
+			&o.CostoTotal,
+			//&o.FechaHoraCreacion,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		orders = append(orders, o)
+	}
+
+	return orders, nil
+}

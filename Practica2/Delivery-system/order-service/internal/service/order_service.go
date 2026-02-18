@@ -94,3 +94,19 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *orderpb.CreateOrder
 
 	return s.repo.CreateOrder(ctx, order)
 }
+
+func (s *OrderService) GetOrdersByClient(ctx context.Context, clientID int) ([]domain.Order, error) {
+	return s.repo.GetOrdersByClient(ctx, clientID)
+}
+
+func (s *OrderService) GetOrdersByRestaurant(ctx context.Context, restaurantID int) ([]domain.Order, error) {
+	return s.repo.GetOrdersByRestaurant(ctx, restaurantID)
+}
+
+func (s *OrderService) AssignDriver(ctx context.Context, orderID int, driverID int) error {
+	return s.repo.AssignDriver(ctx, orderID, driverID)
+}
+
+func (s *OrderService) GetFinishedOrders(ctx context.Context) ([]domain.Order, error) {
+	return s.repo.GetOrdersByStatus(ctx, "TERMINADA")
+}
