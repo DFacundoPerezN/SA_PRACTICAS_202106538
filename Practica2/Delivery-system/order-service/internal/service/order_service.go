@@ -110,3 +110,11 @@ func (s *OrderService) AssignDriver(ctx context.Context, orderID int, driverID i
 func (s *OrderService) GetFinishedOrders(ctx context.Context) ([]domain.Order, error) {
 	return s.repo.GetOrdersByStatus(ctx, "TERMINADA")
 }
+
+func (s *OrderService) GetDriverOrders(
+	ctx context.Context,
+	driverID int,
+) ([]domain.Order, error) {
+
+	return s.repo.GetOrdersByDriver(ctx, driverID)
+}

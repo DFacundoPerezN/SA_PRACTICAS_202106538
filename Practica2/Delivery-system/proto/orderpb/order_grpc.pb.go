@@ -26,6 +26,7 @@ const (
 	OrderService_GetOrdersByRestaurant_FullMethodName = "/order.OrderService/GetOrdersByRestaurant"
 	OrderService_AssignDriver_FullMethodName          = "/order.OrderService/AssignDriver"
 	OrderService_GetFinishedOrders_FullMethodName     = "/order.OrderService/GetFinishedOrders"
+	OrderService_GetOrdersByDriver_FullMethodName     = "/order.OrderService/GetOrdersByDriver"
 )
 
 // OrderServiceClient is the client API for OrderService service.
@@ -42,6 +43,7 @@ type OrderServiceClient interface {
 	// Asignar repartidor
 	AssignDriver(ctx context.Context, in *AssignDriverRequest, opts ...grpc.CallOption) (*AssignDriverResponse, error)
 	GetFinishedOrders(ctx context.Context, in *GetFinishedOrdersRequest, opts ...grpc.CallOption) (*GetOrdersResponse, error)
+	GetOrdersByDriver(ctx context.Context, in *GetOrdersByDriverRequest, opts ...grpc.CallOption) (*GetOrdersResponse, error)
 }
 
 type orderServiceClient struct {
@@ -122,6 +124,16 @@ func (c *orderServiceClient) GetFinishedOrders(ctx context.Context, in *GetFinis
 	return out, nil
 }
 
+func (c *orderServiceClient) GetOrdersByDriver(ctx context.Context, in *GetOrdersByDriverRequest, opts ...grpc.CallOption) (*GetOrdersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetOrdersResponse)
+	err := c.cc.Invoke(ctx, OrderService_GetOrdersByDriver_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OrderServiceServer is the server API for OrderService service.
 // All implementations must embed UnimplementedOrderServiceServer
 // for forward compatibility.
@@ -136,6 +148,7 @@ type OrderServiceServer interface {
 	// Asignar repartidor
 	AssignDriver(context.Context, *AssignDriverRequest) (*AssignDriverResponse, error)
 	GetFinishedOrders(context.Context, *GetFinishedOrdersRequest) (*GetOrdersResponse, error)
+	GetOrdersByDriver(context.Context, *GetOrdersByDriverRequest) (*GetOrdersResponse, error)
 	mustEmbedUnimplementedOrderServiceServer()
 }
 
@@ -166,6 +179,9 @@ func (UnimplementedOrderServiceServer) AssignDriver(context.Context, *AssignDriv
 }
 func (UnimplementedOrderServiceServer) GetFinishedOrders(context.Context, *GetFinishedOrdersRequest) (*GetOrdersResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetFinishedOrders not implemented")
+}
+func (UnimplementedOrderServiceServer) GetOrdersByDriver(context.Context, *GetOrdersByDriverRequest) (*GetOrdersResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetOrdersByDriver not implemented")
 }
 func (UnimplementedOrderServiceServer) mustEmbedUnimplementedOrderServiceServer() {}
 func (UnimplementedOrderServiceServer) testEmbeddedByValue()                      {}
@@ -314,6 +330,24 @@ func _OrderService_GetFinishedOrders_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OrderService_GetOrdersByDriver_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOrdersByDriverRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServiceServer).GetOrdersByDriver(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OrderService_GetOrdersByDriver_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServiceServer).GetOrdersByDriver(ctx, req.(*GetOrdersByDriverRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OrderService_ServiceDesc is the grpc.ServiceDesc for OrderService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -348,6 +382,10 @@ var OrderService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetFinishedOrders",
 			Handler:    _OrderService_GetFinishedOrders_Handler,
+		},
+		{
+			MethodName: "GetOrdersByDriver",
+			Handler:    _OrderService_GetOrdersByDriver_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

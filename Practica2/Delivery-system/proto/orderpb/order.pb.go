@@ -476,6 +476,8 @@ type OrderSummary struct {
 	CostoTotal        float64                `protobuf:"fixed64,7,opt,name=costo_total,json=costoTotal,proto3" json:"costo_total,omitempty"`
 	DireccionEntrega  string                 `protobuf:"bytes,8,opt,name=direccion_entrega,json=direccionEntrega,proto3" json:"direccion_entrega,omitempty"`
 	FechaCreacion     string                 `protobuf:"bytes,9,opt,name=fecha_creacion,json=fechaCreacion,proto3" json:"fecha_creacion,omitempty"`
+	RepartidorId      int32                  `protobuf:"varint,10,opt,name=repartidor_id,json=repartidorId,proto3" json:"repartidor_id,omitempty"`
+	ClienteTelefono   string                 `protobuf:"bytes,11,opt,name=cliente_telefono,json=clienteTelefono,proto3" json:"cliente_telefono,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -569,6 +571,20 @@ func (x *OrderSummary) GetDireccionEntrega() string {
 func (x *OrderSummary) GetFechaCreacion() string {
 	if x != nil {
 		return x.FechaCreacion
+	}
+	return ""
+}
+
+func (x *OrderSummary) GetRepartidorId() int32 {
+	if x != nil {
+		return x.RepartidorId
+	}
+	return 0
+}
+
+func (x *OrderSummary) GetClienteTelefono() string {
+	if x != nil {
+		return x.ClienteTelefono
 	}
 	return ""
 }
@@ -853,6 +869,50 @@ func (*GetFinishedOrdersRequest) Descriptor() ([]byte, []int) {
 	return file_orderpb_order_proto_rawDescGZIP(), []int{13}
 }
 
+type GetOrdersByDriverRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	DriverId      int32                  `protobuf:"varint,1,opt,name=driver_id,json=driverId,proto3" json:"driver_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetOrdersByDriverRequest) Reset() {
+	*x = GetOrdersByDriverRequest{}
+	mi := &file_orderpb_order_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetOrdersByDriverRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetOrdersByDriverRequest) ProtoMessage() {}
+
+func (x *GetOrdersByDriverRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_orderpb_order_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetOrdersByDriverRequest.ProtoReflect.Descriptor instead.
+func (*GetOrdersByDriverRequest) Descriptor() ([]byte, []int) {
+	return file_orderpb_order_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *GetOrdersByDriverRequest) GetDriverId() int32 {
+	if x != nil {
+		return x.DriverId
+	}
+	return 0
+}
+
 var File_orderpb_order_proto protoreflect.FileDescriptor
 
 const file_orderpb_order_proto_rawDesc = "" +
@@ -892,7 +952,7 @@ const file_orderpb_order_proto_rawDesc = "" +
 	"\x13CancelOrderResponse\x12\x19\n" +
 	"\border_id\x18\x01 \x01(\x05R\aorderId\x12\x1d\n" +
 	"\n" +
-	"new_status\x18\x02 \x01(\tR\tnewStatus\"\xc7\x02\n" +
+	"new_status\x18\x02 \x01(\tR\tnewStatus\"\x97\x03\n" +
 	"\fOrderSummary\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x1d\n" +
 	"\n" +
@@ -904,7 +964,10 @@ const file_orderpb_order_proto_rawDesc = "" +
 	"\vcosto_total\x18\a \x01(\x01R\n" +
 	"costoTotal\x12+\n" +
 	"\x11direccion_entrega\x18\b \x01(\tR\x10direccionEntrega\x12%\n" +
-	"\x0efecha_creacion\x18\t \x01(\tR\rfechaCreacion\"7\n" +
+	"\x0efecha_creacion\x18\t \x01(\tR\rfechaCreacion\x12#\n" +
+	"\rrepartidor_id\x18\n" +
+	" \x01(\x05R\frepartidorId\x12)\n" +
+	"\x10cliente_telefono\x18\v \x01(\tR\x0fclienteTelefono\"7\n" +
 	"\x18GetOrdersByClientRequest\x12\x1b\n" +
 	"\tclient_id\x18\x01 \x01(\x05R\bclientId\"C\n" +
 	"\x1cGetOrdersByRestaurantRequest\x12#\n" +
@@ -918,7 +981,9 @@ const file_orderpb_order_proto_rawDesc = "" +
 	"\border_id\x18\x01 \x01(\x05R\aorderId\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x18\n" +
 	"\amessage\x18\x03 \x01(\tR\amessage\"\x1a\n" +
-	"\x18GetFinishedOrdersRequest2\xb3\x04\n" +
+	"\x18GetFinishedOrdersRequest\"7\n" +
+	"\x18GetOrdersByDriverRequest\x12\x1b\n" +
+	"\tdriver_id\x18\x01 \x01(\x05R\bdriverId2\x83\x05\n" +
 	"\fOrderService\x12D\n" +
 	"\vCreateOrder\x12\x19.order.CreateOrderRequest\x1a\x1a.order.CreateOrderResponse\x12V\n" +
 	"\x11UpdateOrderStatus\x12\x1f.order.UpdateOrderStatusRequest\x1a .order.UpdateOrderStatusResponse\x12D\n" +
@@ -926,7 +991,8 @@ const file_orderpb_order_proto_rawDesc = "" +
 	"\x11GetOrdersByClient\x12\x1f.order.GetOrdersByClientRequest\x1a\x18.order.GetOrdersResponse\x12V\n" +
 	"\x15GetOrdersByRestaurant\x12#.order.GetOrdersByRestaurantRequest\x1a\x18.order.GetOrdersResponse\x12G\n" +
 	"\fAssignDriver\x12\x1a.order.AssignDriverRequest\x1a\x1b.order.AssignDriverResponse\x12N\n" +
-	"\x11GetFinishedOrders\x12\x1f.order.GetFinishedOrdersRequest\x1a\x18.order.GetOrdersResponseB\x18Z\x16delivery-proto/orderpbb\x06proto3"
+	"\x11GetFinishedOrders\x12\x1f.order.GetFinishedOrdersRequest\x1a\x18.order.GetOrdersResponse\x12N\n" +
+	"\x11GetOrdersByDriver\x12\x1f.order.GetOrdersByDriverRequest\x1a\x18.order.GetOrdersResponseB\x18Z\x16delivery-proto/orderpbb\x06proto3"
 
 var (
 	file_orderpb_order_proto_rawDescOnce sync.Once
@@ -940,7 +1006,7 @@ func file_orderpb_order_proto_rawDescGZIP() []byte {
 	return file_orderpb_order_proto_rawDescData
 }
 
-var file_orderpb_order_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_orderpb_order_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_orderpb_order_proto_goTypes = []any{
 	(*OrderItem)(nil),                    // 0: order.OrderItem
 	(*CreateOrderRequest)(nil),           // 1: order.CreateOrderRequest
@@ -956,6 +1022,7 @@ var file_orderpb_order_proto_goTypes = []any{
 	(*AssignDriverRequest)(nil),          // 11: order.AssignDriverRequest
 	(*AssignDriverResponse)(nil),         // 12: order.AssignDriverResponse
 	(*GetFinishedOrdersRequest)(nil),     // 13: order.GetFinishedOrdersRequest
+	(*GetOrdersByDriverRequest)(nil),     // 14: order.GetOrdersByDriverRequest
 }
 var file_orderpb_order_proto_depIdxs = []int32{
 	0,  // 0: order.CreateOrderRequest.items:type_name -> order.OrderItem
@@ -967,15 +1034,17 @@ var file_orderpb_order_proto_depIdxs = []int32{
 	9,  // 6: order.OrderService.GetOrdersByRestaurant:input_type -> order.GetOrdersByRestaurantRequest
 	11, // 7: order.OrderService.AssignDriver:input_type -> order.AssignDriverRequest
 	13, // 8: order.OrderService.GetFinishedOrders:input_type -> order.GetFinishedOrdersRequest
-	2,  // 9: order.OrderService.CreateOrder:output_type -> order.CreateOrderResponse
-	4,  // 10: order.OrderService.UpdateOrderStatus:output_type -> order.UpdateOrderStatusResponse
-	6,  // 11: order.OrderService.CancelOrder:output_type -> order.CancelOrderResponse
-	10, // 12: order.OrderService.GetOrdersByClient:output_type -> order.GetOrdersResponse
-	10, // 13: order.OrderService.GetOrdersByRestaurant:output_type -> order.GetOrdersResponse
-	12, // 14: order.OrderService.AssignDriver:output_type -> order.AssignDriverResponse
-	10, // 15: order.OrderService.GetFinishedOrders:output_type -> order.GetOrdersResponse
-	9,  // [9:16] is the sub-list for method output_type
-	2,  // [2:9] is the sub-list for method input_type
+	14, // 9: order.OrderService.GetOrdersByDriver:input_type -> order.GetOrdersByDriverRequest
+	2,  // 10: order.OrderService.CreateOrder:output_type -> order.CreateOrderResponse
+	4,  // 11: order.OrderService.UpdateOrderStatus:output_type -> order.UpdateOrderStatusResponse
+	6,  // 12: order.OrderService.CancelOrder:output_type -> order.CancelOrderResponse
+	10, // 13: order.OrderService.GetOrdersByClient:output_type -> order.GetOrdersResponse
+	10, // 14: order.OrderService.GetOrdersByRestaurant:output_type -> order.GetOrdersResponse
+	12, // 15: order.OrderService.AssignDriver:output_type -> order.AssignDriverResponse
+	10, // 16: order.OrderService.GetFinishedOrders:output_type -> order.GetOrdersResponse
+	10, // 17: order.OrderService.GetOrdersByDriver:output_type -> order.GetOrdersResponse
+	10, // [10:18] is the sub-list for method output_type
+	2,  // [2:10] is the sub-list for method input_type
 	2,  // [2:2] is the sub-list for extension type_name
 	2,  // [2:2] is the sub-list for extension extendee
 	0,  // [0:2] is the sub-list for field type_name
@@ -992,7 +1061,7 @@ func file_orderpb_order_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_orderpb_order_proto_rawDesc), len(file_orderpb_order_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   14,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

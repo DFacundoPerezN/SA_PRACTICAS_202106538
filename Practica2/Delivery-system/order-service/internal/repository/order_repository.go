@@ -260,3 +260,63 @@ func (r *OrderRepository) GetOrdersByStatus(ctx context.Context, status string) 
 
 	return orders, nil
 }
+
+func (r *OrderRepository) GetOrdersByDriver(
+	ctx context.Context,
+	driverID int,
+) ([]domain.Order, error) {
+
+	query := `
+	SELECT
+		Id,
+		ClienteId,
+		ClienteNombre,
+		ClienteTelefono,
+		RestauranteId,
+		RestauranteNombre,
+		RepartidorId,
+		Estado,
+		DireccionEntrega,
+		LatitudEntrega,
+		LongitudEntrega,
+		CostoTotal--,		FechaHoraCreacion
+	FROM Orden
+	WHERE RepartidorId = @p1
+	ORDER BY FechaHoraCreacion DESC
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, driverID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var orders []domain.Order
+
+	for rows.Next() {
+		var o domain.Order
+
+		err := rows.Scan(
+			&o.Id,
+			&o.ClienteId,
+			&o.ClienteNombre,
+			&o.ClienteTelefono,
+			&o.RestauranteId,
+			&o.RestauranteNombre,
+			&o.RepartidorId,
+			&o.Estado,
+			&o.DireccionEntrega,
+			&o.LatitudEntrega,
+			&o.LongitudEntrega,
+			&o.CostoTotal,
+			//&o.FechaHoraCreacion,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		orders = append(orders, o)
+	}
+
+	return orders, nil
+}

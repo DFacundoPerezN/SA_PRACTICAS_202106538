@@ -24,6 +24,7 @@ service OrderService {
     
   rpc GetFinishedOrders(GetFinishedOrdersRequest) returns (GetOrdersResponse);
 
+  rpc GetOrdersByDriver(GetOrdersByDriverRequest) returns (GetOrdersResponse);
 }
 
 message OrderItem {
@@ -84,6 +85,8 @@ message OrderSummary {
   double costo_total = 7;
   string direccion_entrega = 8;
   string fecha_creacion = 9;
+  int32 repartidor_id = 10;
+  string cliente_telefono = 11;
 }
 
 message GetOrdersByClientRequest {
@@ -109,5 +112,8 @@ message AssignDriverResponse {
   string message = 3;
 }
 
-
 message GetFinishedOrdersRequest {}
+
+message GetOrdersByDriverRequest {
+  int32 driver_id = 1;
+}
