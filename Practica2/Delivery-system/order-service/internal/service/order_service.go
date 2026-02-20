@@ -7,17 +7,25 @@ import (
 	"errors"
 	"fmt"
 	"order-service/internal/domain"
+	"order-service/internal/email"
 	catalogclient "order-service/internal/grpc"
 	"order-service/internal/repository"
+	"time"
 )
 
 type OrderService struct {
-	repo          *repository.OrderRepository
-	catalogClient *catalogclient.CatalogClient
+	repo               *repository.OrderRepository
+	catalogClient      *catalogclient.CatalogClient
+	userClient         *catalogclient.UserClient
+	notificationClient *catalogclient.NotificationClient
 }
 
-func NewOrderService(r *repository.OrderRepository, catalogClient *catalogclient.CatalogClient) *OrderService {
-	return &OrderService{repo: r, catalogClient: catalogClient}
+func NewOrderService(r *repository.OrderRepository, catalogClient *catalogclient.CatalogClient, userClient *catalogclient.UserClient, notificationClient *catalogclient.NotificationClient) *OrderService {
+	return &OrderService{repo: r,
+		catalogClient:      catalogClient,
+		userClient:         userClient,
+		notificationClient: notificationClient,
+	}
 }
 
 func (s *OrderService) CreateOrder(ctx context.Context, req *orderpb.CreateOrderRequest) (int, error) {
@@ -92,7 +100,13 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *orderpb.CreateOrder
 
 	order.CostoTotal = total
 
-	return s.repo.CreateOrder(ctx, order)
+	orderID, err := s.repo.CreateOrder(ctx, order)
+	if err != nil {
+		return 0, fmt.Errorf("error creando orden: %w", err)
+	}
+
+	go s.sendOrderCreatedEmail(int(orderID))
+	return orderID, nil
 }
 
 func (s *OrderService) GetOrdersByClient(ctx context.Context, clientID int) ([]domain.Order, error) {
@@ -117,4 +131,50 @@ func (s *OrderService) GetDriverOrders(
 ) ([]domain.Order, error) {
 
 	return s.repo.GetOrdersByDriver(ctx, driverID)
+}
+
+func (s *OrderService) sendOrderCreatedEmail(orderID int) {
+
+	// Obtener info completa de la orden
+	order, err := s.repo.GetOrderByID(context.Background(), orderID)
+	if err != nil {
+		fmt.Println("error obteniendo orden:", err)
+		return
+	}
+
+	// obtener cliente
+	userRes, err := s.userClient.GetUser(order.ClienteId)
+	if err != nil {
+		fmt.Println("error obteniendo usuario:", err)
+		return
+	}
+
+	productos := ""
+	for _, p := range order.Items {
+		productos += fmt.Sprintf("- %s x%d\n", p.NombreProducto, p.Cantidad)
+	}
+
+	emailData := email.OrderEmailData{
+		ClienteNombre: userRes.User.NombreCompleto,
+		OrderID:       order.Id,
+		Productos:     productos,
+		MontoTotal:    order.CostoTotal,
+		FechaCreacion: time.Now().Format("02 Jan 2026 15:04"),
+		Estado:        "CREADA",
+	}
+
+	subject, body := email.BuildOrderCreatedEmail(emailData)
+
+	err = email.NewEmailSender().Send(userRes.User.Email, subject, body)
+	if err != nil {
+		fmt.Println("error enviando correo:", err)
+	}
+}
+
+func (s *OrderService) GetOrderByID(
+	ctx context.Context,
+	orderID int,
+) (*domain.Order, error) {
+
+	return s.repo.GetOrderByID(ctx, orderID)
 }

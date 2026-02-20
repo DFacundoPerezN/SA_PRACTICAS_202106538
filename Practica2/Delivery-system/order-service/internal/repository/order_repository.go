@@ -320,3 +320,100 @@ func (r *OrderRepository) GetOrdersByDriver(
 
 	return orders, nil
 }
+
+func (r *OrderRepository) GetOrderByID(
+	ctx context.Context,
+	orderID int,
+) (*domain.Order, error) {
+
+	query := `
+	SELECT
+		Id,
+		ClienteId,
+		ClienteNombre,
+		ClienteTelefono,
+		RestauranteId,
+		RestauranteNombre,
+		--RepartidorId,
+		Estado,
+		DireccionEntrega,
+		LatitudEntrega,
+		LongitudEntrega,
+		CostoTotal--,		FechaHoraCreacion
+	FROM Orden
+	WHERE Id = @p1
+	`
+
+	row := r.db.QueryRowContext(ctx, query, orderID)
+
+	var o domain.Order
+
+	err := row.Scan(
+		&o.Id,
+		&o.ClienteId,
+		&o.ClienteNombre,
+		&o.ClienteTelefono,
+		&o.RestauranteId,
+		&o.RestauranteNombre,
+		//&o.RepartidorId,
+		&o.Estado,
+		&o.DireccionEntrega,
+		&o.LatitudEntrega,
+		&o.LongitudEntrega,
+		&o.CostoTotal,
+		//&o.FechaHoraCreacion,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	items, err := r.GetOrderItems(ctx, orderID)
+	if err != nil {
+		return nil, err
+	}
+
+	o.Items = items
+
+	return &o, nil
+}
+
+func (r *OrderRepository) GetOrderItems(
+	ctx context.Context,
+	orderID int,
+) ([]domain.OrderItem, error) {
+
+	query := `
+	SELECT
+		NombreProducto,
+		Cantidad,
+		PrecioUnitario
+	FROM ProductoOrden
+	WHERE OrdenId = @p1
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, orderID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var items []domain.OrderItem
+
+	for rows.Next() {
+		var item domain.OrderItem
+
+		err := rows.Scan(
+			&item.NombreProducto,
+			&item.Cantidad,
+			&item.PrecioUnitario,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		items = append(items, item)
+	}
+
+	return items, nil
+}
