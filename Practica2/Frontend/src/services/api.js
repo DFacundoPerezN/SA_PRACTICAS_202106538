@@ -72,4 +72,24 @@ export const authService = {
   },
 }
 
+export const restaurantService = {
+  // Obtener todos los restaurantes
+  getAll: async () => {
+    const response = await api.get('/api/restaurants')
+    return response.data
+  },
+
+  // Crear restaurante
+  create: async (restaurantData) => {
+    const response = await api.post('/api/restaurants', restaurantData)
+    return response.data
+  },
+
+  // Obtener restaurante por ID
+  getById: async (id) => {
+    const response = await api.get(`/api/restaurants/${id}`)
+    return response.data
+  }
+}
+
 export default api

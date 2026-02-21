@@ -33,8 +33,8 @@ func (s *RestaurantService) CreateRestaurant(ctx context.Context, req *restauran
 	}
 
 	// 2️ validar rol
-	if userResp.User.Role != "RESTAURANTE" {
-		return 0, status.Error(codes.PermissionDenied, "user is not a restaurant")
+	if userResp.User.Role != "RESTAURANTE" && userResp.User.Role != "ADMINISTRADOR" {
+		return 0, status.Error(codes.PermissionDenied, "user is not a restaurant; role is: "+userResp.User.Role)
 	}
 
 	// 3️ evitar duplicados
