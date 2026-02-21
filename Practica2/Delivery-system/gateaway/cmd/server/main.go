@@ -124,6 +124,8 @@ func main() {
 			})
 		})
 
+		protected.POST("/restaurants", restaurantHandler.CreateRestaurant)
+
 		protected.POST("/orders", orderHandler.CreateOrder)
 		protected.PATCH("/orders/:id/status", orderHandler.UpdateStatus)
 		protected.POST("/orders/:id/cancel", orderHandler.CancelOrder)

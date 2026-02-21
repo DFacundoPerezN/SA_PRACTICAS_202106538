@@ -49,6 +49,7 @@ type RegisterRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Name     string `json:"name"`
+	Role     string `json:"role"`
 }
 
 func (h *AuthHandler) Register(c *gin.Context) {
@@ -63,6 +64,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		req.Email,
 		req.Password,
 		req.Name,
+		req.Role,
 	)
 
 	if err != nil {
