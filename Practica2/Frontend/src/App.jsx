@@ -5,6 +5,7 @@ import AdminDashboard from './pages/AdminDashboard'
 import ClienteDashboard from './pages/ClienteDashboard'
 import RestaurantMenu from './pages/RestaurantMenu'
 import ProtectedRoute from './components/ProtectedRoute'
+import RestaurantDashboard from './pages/RestaurantDashboard'
 
 function App() {
   return (
@@ -36,6 +37,15 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={['CLIENTE']}>
               <RestaurantMenu />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/restaurante/dashboard" 
+          element={
+            <ProtectedRoute allowedRoles={['RESTAURANTE']}>
+              <RestaurantDashboard />
             </ProtectedRoute>
           } 
         />

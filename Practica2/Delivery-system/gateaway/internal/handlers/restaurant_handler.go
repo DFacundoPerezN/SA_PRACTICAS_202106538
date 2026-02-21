@@ -58,6 +58,7 @@ func (h *RestaurantHandler) CreateRestaurant(c *gin.Context) {
 		Telefono        string  `json:"telefono"`
 		HorarioApertura string  `json:"horario_apertura"`
 		HorarioCierre   string  `json:"horario_cierre"`
+		UserID          int32   `json:"user_id"`
 	}
 
 	if err := c.ShouldBindJSON(&body); err != nil {
@@ -65,10 +66,10 @@ func (h *RestaurantHandler) CreateRestaurant(c *gin.Context) {
 		return
 	}
 
-	userID := c.GetInt("user_id")
+	//userID := c.GetInt("user_id")
 
 	resp, err := h.restaurantClient.CreateRestaurant(c, &restaurantpb.CreateRestaurantRequest{
-		UserId:          int32(userID),
+		UserId:          body.UserID,
 		Nombre:          body.Nombre,
 		Direccion:       body.Direccion,
 		Latitud:         body.Latitud,

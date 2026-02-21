@@ -5,6 +5,8 @@ import api from '../services/api'
 import '../styles/Dashboard.css'
 
 const AdminDashboard = () => {
+const navigate = useNavigate()
+const user = authService.getCurrentUser()
 const [activeTab, setActiveTab] = useState('restaurants')
 const [restaurants, setRestaurants] = useState([])
 const [users, setUsers] = useState([])
@@ -120,7 +122,7 @@ const handleCreateRestaurant = async (e) => {
 
   try {
     const data = {
-      user_id: createdUserId,
+      user_id: createdUserId,  // ← Debe ser createdUserId, NO user.id
       nombre: restaurantForm.nombre,
       direccion: restaurantForm.direccion,
       telefono: restaurantForm.telefono,
@@ -129,6 +131,8 @@ const handleCreateRestaurant = async (e) => {
       horario_apertura: restaurantForm.horario_apertura,
       horario_cierre: restaurantForm.horario_cierre
     }
+
+    console.log('Creando restaurante con data:', data) // Para debug
 
     await restaurantService.create(data)
     
@@ -383,8 +387,8 @@ const handleCloseModal = () => {
                 value={userForm.password}
                 onChange={(e) => setUserForm({...userForm, password: e.target.value})}
                 className="form-input"
-                placeholder="Mínimo 7 caracteres"
-                minLength={7}
+                placeholder="Mínimo 6 caracteres"
+                minLength={6}
                 required
               />
             </div>
@@ -393,10 +397,10 @@ const handleCloseModal = () => {
               <label>Nombre del Dueño *</label>
               <input
                 type="text"
-                value={userForm.nombre_completo}
-                onChange={(e) => setUserForm({...userForm, nombre_completo: e.target.value})}
+                value={userForm.name}
+                onChange={(e) => setUserForm({...userForm, name: e.target.value})}
                 className="form-input"
-                placeholder="Juan Pérez"
+                placeholder="Nombre completo del dueño"
                 required
               />
             </div>

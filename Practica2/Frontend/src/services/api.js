@@ -61,9 +61,16 @@ export const authService = {
 
   // Obtener usuario actual
   getCurrentUser: () => {
-    const name = localStorage.getItem('name')
-    const role = localStorage.getItem('role')
-    return name ? { name, role } : null
+    const userStr = localStorage.getItem('user')
+    if (userStr) {
+      try {
+        return JSON.parse(userStr)
+      } catch (e) {
+        console.error('Error parsing user data:', e)
+        return null
+      }
+    }
+    return null
   },
 
   // Verificar si está autenticado
