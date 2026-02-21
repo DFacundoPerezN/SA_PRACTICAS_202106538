@@ -108,6 +108,7 @@ func main() {
 		api.GET("restaurants/:id/products", catalogHandler.GetProductsByRestaurant)
 		api.GET("restaurants", restaurantHandler.ListRestaurants)
 		api.GET("orders/available", orderHandler.GetAvailableOrders)
+		api.POST("products", catalogHandler.CreateProduct)
 	}
 
 	// PROTECTED ROUTES
