@@ -22,6 +22,8 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
       return <Navigate to="/restaurante/dashboard" replace />
     } else if (user?.role === 'CLIENTE') {
       return <Navigate to="/cliente/dashboard" replace />
+    } else if (user?.role === 'REPARTIDOR') {
+      return <Navigate to="/repartidor/dashboard" replace />
     }
     
     return <Navigate to="/login" replace />

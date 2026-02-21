@@ -47,6 +47,8 @@ const Login = () => {
         navigate('/restaurante/dashboard')
       } else if (data.role === 'CLIENTE') {
         navigate('/cliente/dashboard')
+      } else if (data.role === 'REPARTIDOR') {
+        navigate('/repartidor/dashboard')
       } else {
         console.error('Rol desconocido:', data.role)
         setError('Rol de usuario no reconocido')

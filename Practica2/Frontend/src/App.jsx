@@ -6,6 +6,7 @@ import ClienteDashboard from './pages/ClienteDashboard'
 import RestaurantMenu from './pages/RestaurantMenu'
 import ProtectedRoute from './components/ProtectedRoute'
 import RestaurantDashboard from './pages/RestaurantDashboard'
+import DriverDashboard from './pages/DriverDashborad'
 
 function App() {
   return (
@@ -46,6 +47,15 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={['RESTAURANTE']}>
               <RestaurantDashboard />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/repartidor/dashboard" 
+          element={
+            <ProtectedRoute allowedRoles={['REPARTIDOR']}>
+              <DriverDashboard />
             </ProtectedRoute>
           } 
         />
