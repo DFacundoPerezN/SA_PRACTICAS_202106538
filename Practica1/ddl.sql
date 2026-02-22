@@ -1,3 +1,8 @@
+CREATE DATABASE Delivereats_SA_Usuarios;
+GO 
+USE Delivereats_SA_Usuarios;
+GO
+
 CREATE TABLE Usuario (
     Id INT PRIMARY KEY IDENTITY(1,1),
     Email NVARCHAR(64) UNIQUE NOT NULL,
@@ -9,6 +14,11 @@ CREATE TABLE Usuario (
 );
 
 -- RESTURATNES DATABASE
+CREEATE DATABASE Delivereats_SA_Restaurantes;
+GO 
+USE Delivereats_SA_Restaurantes;
+GO
+
 CREATE TABLE Restaurante (
     Id INT PRIMARY KEY, -- Id del usuario que es el restaurante
     Nombre NVARCHAR(64) NOT NULL,
