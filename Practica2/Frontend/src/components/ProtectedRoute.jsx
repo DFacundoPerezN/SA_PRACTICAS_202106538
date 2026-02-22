@@ -5,7 +5,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   const isAuthenticated = authService.isAuthenticated()
   const user = authService.getCurrentUser()
 
-  console.log('ProtectedRoute - User:', user)
+  //console.log('ProtectedRoute - User:', user)
   //console.log('ProtectedRoute - Allowed roles:', allowedRoles)
 
   if (!isAuthenticated) {
