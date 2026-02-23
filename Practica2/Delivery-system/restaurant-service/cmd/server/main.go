@@ -37,7 +37,7 @@ func main() {
 
 	catalogUserServer := os.Getenv("USER_SERVICE_ADDR")
 	if catalogUserServer == "" {
-		catalogUserServer = "localhost:50052"
+		catalogUserServer = "user-service:50052"
 	}
 
 	userClient, err := grpcclient.NewUserClient(catalogUserServer)

@@ -14,7 +14,7 @@ CREATE TABLE Usuario (
 );
 
 -- RESTURATNES DATABASE
-CREEATE DATABASE Delivereats_SA_Restaurantes;
+CREATE DATABASE Delivereats_SA_Restaurantes;
 GO 
 USE Delivereats_SA_Restaurantes;
 GO
