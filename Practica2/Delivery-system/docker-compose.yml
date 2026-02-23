@@ -8,9 +8,7 @@ services:
 
   # ---------------- API GATEWAY ----------------
   api-gateway:
-    build: 
-      context: .
-      dockerfile: /gateaway/Dockerfile
+    image: diegofacundopereznicolau/api-gateway:latest
     container_name: api-gateway
     ports:
       - "8080:8080"
@@ -25,9 +23,7 @@ services:
 
   # ---------------- AUTH ----------------
   auth-service:
-    build: 
-      context: .
-      dockerfile: auth-service/Dockerfile
+    image: diegofacundopereznicolau/auth-service:latest
     container_name: auth-service
     ports:
       - "50051:50051"
@@ -36,9 +32,7 @@ services:
 
   # ---------------- USERS ----------------
   user-service:
-    build: 
-      context: .
-      dockerfile: user-service/Dockerfile
+    image: diegofacundopereznicolau/user-service:latest
     container_name: user-service
     ports:
       - "50052:50052"
@@ -47,9 +41,7 @@ services:
 
   # ---------------- CATALOG ----------------
   catalog-service:
-    build: 
-      context: .
-      dockerfile: /catalog-service/Dockerfile
+    image: diegofacundopereznicolau/catalog-service:latest
     container_name: catalog-service
     ports:
       - "50053:50053"
@@ -58,9 +50,7 @@ services:
 
   # ---------------- RESTAURANT ----------------
   restaurant-service:
-    build: 
-      context: .
-      dockerfile: restaurant-service/Dockerfile
+    image: diegofacundopereznicolau/restaurant-service:latest
     container_name: restaurant-service
     ports:
       - "50054:50054"
@@ -69,9 +59,7 @@ services:
 
   # ---------------- ORDER ----------------
   order-service:
-    build: 
-      context: .
-      dockerfile: order-service/Dockerfile
+    image: diegofacundopereznicolau/order-service:latest
     container_name: order-service
     env_file:
       - ./order-service/.env
@@ -84,9 +72,7 @@ services:
 
   # ---------------- NOTIFICATION ----------------
   notification-service:
-    build: 
-      context: .
-      dockerfile: notification-service/Dockerfile
+    image: diegofacundopereznicolau/notification-service:latest
     container_name: notification-service
     env_file:
       - ./notification-service/.env
