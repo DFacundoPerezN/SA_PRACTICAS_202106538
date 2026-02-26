@@ -33,7 +33,7 @@ func PublicarOrden(event *domain.Order) error {
 	if err != nil {
 		return err
 	}
-
+	log.Printf("Intentando publicar orden en la cola")
 	body, _ := json.Marshal(event)
 
 	err = ch.Publish(

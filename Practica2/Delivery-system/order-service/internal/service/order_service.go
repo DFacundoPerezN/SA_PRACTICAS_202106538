@@ -106,7 +106,7 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *orderpb.CreateOrder
 	if err != nil {
 		return 0, fmt.Errorf("error creando orden: %w", err)
 	}
-
+	fmt.Print("orden creada intentando publicar")
 	//publish Rabbit
 	err = messaging.PublicarOrden(order)
 	if err != nil {
