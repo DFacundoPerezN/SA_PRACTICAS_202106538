@@ -544,4 +544,177 @@ El pipeline se ejecuta automáticamente cuando:
 
 - Se hace push a las ramas `master`, `main` o `develop`
 - Se crea un Pull Request hacia `master` o `main`
-- Se crea un tag de versión (ej: `v1.0.0`)
+- Se crea un tag de versión  
+
+---
+
+## Estrategias de Rollout y Rollback
+
+### Tipos de Estrategias de Rollout
+
+Kubernetes soporta diferentes estrategias para actualizar deployments de manera controlada y segura.
+
+#### 1. **Rolling Update (Actualización Progresiva)**
+
+Es la estrategia por defecto en Kubernetes. Actualiza los pods gradualmente, manteniendo la disponibilidad del servicio.
+
+**Configuración en Deployment:**
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: deliver-eats
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # Número máximo de pods adicionales durante la actualización
+      maxUnavailable: 1  # Número máximo de pods que pueden estar no disponibles
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+      - name: gateway
+        image: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/gateway:latest
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20
+```
+
+**Ventajas:**
+- Sin downtime
+- Actualización gradual
+- Fácil de revertir
+
+**Desventajas:**
+- Puede tener versiones mixtas temporalmente
+- Más lento que Recreate
+
+**Cuándo usar:**
+- Aplicaciones stateless
+- Cuando se requiere alta disponibilidad
+- Actualizaciones compatibles hacia atrás
+
+---
+
+#### 2. **Recreate**
+
+Elimina todos los pods existentes antes de crear los nuevos.
+
+**Configuración en Deployment:**
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: deliver-eats
+spec:
+  replicas: 3
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+      - name: auth-service
+        image: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/auth-service:latest
+```
+
+**Ventajas:**
+-Rápido y simple
+-Solo una versión corriendo a la vez
+-Útil para cambios de esquema de BD
+
+**Desventajas:**
+-Downtime durante la actualización
+-No apto para producción de alta disponibilidad
+
+**Cuándo usar:**
+- Entornos de desarrollo/staging
+- Actualizaciones que requieren que solo una versión esté activa
+- Cambios incompatibles de base de datos
+
+---
+
+
+### Estrategias de Rollback
+
+#### 1. **Rollback Automático con Kubernetes**
+
+Kubernetes mantiene un historial de revisiones que permite hacer rollback fácilmente.
+
+**Ver historial de revisiones:**
+
+```bash
+# Ver historial de un deployment
+kubectl rollout history deployment/gateway -n deliver-eats
+
+# Ver detalles de una revisión específica
+kubectl rollout history deployment/gateway --revision=2 -n deliver-eats
+```
+
+**Hacer rollback:**
+
+```bash
+# Rollback a la revisión anterior  
+kubectl rollout undo deployment/gateway -n deliver-eats
+
+# Rollback a una revisión específica
+kubectl rollout undo deployment/gateway --to-revision=3 -n deliver-eats
+
+# Verificar el estado del rollback
+kubectl rollout status deployment/gateway -n deliver-eats
+```
+
+**Configurar límite de revisiones en el Deployment:**
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: deliver-eats
+spec:
+  revisionHistoryLimit: 10   
+  replicas: 3
+   
+```
+
+---
+
+#### 2. **Rollback Manual con Tags de Imágenes**
+
+Cambiar manualmente la versión de la imagen a una versión anterior conocida.
+
+```bash
+# Cambiar a una versión específica anterior
+kubectl set image deployment/gateway \
+  gateway=us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/gateway:v1.2.3 \
+  -n deliver-eats
+
+# Verificar la actualización
+kubectl rollout status deployment/gateway -n deliver-eats
+
+# Ver la imagen actual de los pods
+kubectl get pods -n deliver-eats -o jsonpath='{.items[*].spec.containers[*].image}'
+```
+  
