@@ -50,7 +50,10 @@ services:
 
   # ---------------- RESTAURANT ----------------
   restaurant-service:
-    image: diegofacundopereznicolau/restaurant-service:latest
+    #image: diegofacundopereznicolau/restaurant-service:latest
+    build:
+      context: .
+      dockerfile: restaurant-service/Dockerfile
     container_name: restaurant-service
     ports:
       - "50054:50054"
