@@ -8,7 +8,7 @@ El sistema Delivereats implementa autenticación basada en JSON Web Tokens para 
 
 ## Arquitectura de Autenticación
 
-![Diagrama de Arquitectura JWT](./image-1.png)
+![Diagrama de Arquitectura JWT](./imgs/image-1.png)
  
 
 ---
