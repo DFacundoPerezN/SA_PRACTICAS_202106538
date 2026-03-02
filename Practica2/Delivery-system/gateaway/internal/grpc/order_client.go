@@ -118,3 +118,12 @@ func (c *OrderClient) AddOrderImage(orderID int32, imageURL string) (*orderpb.Ad
 		ImageUrl: imageURL,
 	})
 }
+
+func (c *OrderClient) GetOrderImage(orderID int32) (*orderpb.GetOrderImageResponse, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	return c.client.GetOrderImage(ctx, &orderpb.GetOrderImageRequest{
+		OrderId: orderID,
+	})
+}

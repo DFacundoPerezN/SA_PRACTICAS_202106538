@@ -113,6 +113,7 @@ func main() {
 		api.GET("orders/available", orderHandler.GetAvailableOrders)
 		api.POST("products", catalogHandler.CreateProduct)
 		api.POST("orders/:id/image", orderHandler.AddOrderImage)
+		api.GET("orders/:id/image", orderHandler.GetOrderImage)
 	}
 
 	// PROTECTED ROUTES

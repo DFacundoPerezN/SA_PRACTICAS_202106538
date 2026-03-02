@@ -9,3 +9,11 @@ response:
 {
   "message": "Imagen agregada correctamente"
 }
+
+GET /api/orders/:id/image
+
+response:
+{
+  "order_id": 8,
+  "link": "url"
+}

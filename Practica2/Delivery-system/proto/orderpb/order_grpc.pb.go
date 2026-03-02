@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.1
 // - protoc             v6.33.5
-// source: order.proto
+// source: orderpb/order.proto
 
 package orderpb
 
@@ -28,6 +28,7 @@ const (
 	OrderService_GetFinishedOrders_FullMethodName     = "/order.OrderService/GetFinishedOrders"
 	OrderService_GetOrdersByDriver_FullMethodName     = "/order.OrderService/GetOrdersByDriver"
 	OrderService_AddOrderImage_FullMethodName         = "/order.OrderService/AddOrderImage"
+	OrderService_GetOrderImage_FullMethodName         = "/order.OrderService/GetOrderImage"
 )
 
 // OrderServiceClient is the client API for OrderService service.
@@ -45,7 +46,9 @@ type OrderServiceClient interface {
 	AssignDriver(ctx context.Context, in *AssignDriverRequest, opts ...grpc.CallOption) (*AssignDriverResponse, error)
 	GetFinishedOrders(ctx context.Context, in *GetFinishedOrdersRequest, opts ...grpc.CallOption) (*GetOrdersResponse, error)
 	GetOrdersByDriver(ctx context.Context, in *GetOrdersByDriverRequest, opts ...grpc.CallOption) (*GetOrdersResponse, error)
+	// Agregar imagen a la orden
 	AddOrderImage(ctx context.Context, in *AddOrderImageRequest, opts ...grpc.CallOption) (*AddOrderImageResponse, error)
+	GetOrderImage(ctx context.Context, in *GetOrderImageRequest, opts ...grpc.CallOption) (*GetOrderImageResponse, error)
 }
 
 type orderServiceClient struct {
@@ -146,6 +149,16 @@ func (c *orderServiceClient) AddOrderImage(ctx context.Context, in *AddOrderImag
 	return out, nil
 }
 
+func (c *orderServiceClient) GetOrderImage(ctx context.Context, in *GetOrderImageRequest, opts ...grpc.CallOption) (*GetOrderImageResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetOrderImageResponse)
+	err := c.cc.Invoke(ctx, OrderService_GetOrderImage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OrderServiceServer is the server API for OrderService service.
 // All implementations must embed UnimplementedOrderServiceServer
 // for forward compatibility.
@@ -161,7 +174,9 @@ type OrderServiceServer interface {
 	AssignDriver(context.Context, *AssignDriverRequest) (*AssignDriverResponse, error)
 	GetFinishedOrders(context.Context, *GetFinishedOrdersRequest) (*GetOrdersResponse, error)
 	GetOrdersByDriver(context.Context, *GetOrdersByDriverRequest) (*GetOrdersResponse, error)
+	// Agregar imagen a la orden
 	AddOrderImage(context.Context, *AddOrderImageRequest) (*AddOrderImageResponse, error)
+	GetOrderImage(context.Context, *GetOrderImageRequest) (*GetOrderImageResponse, error)
 	mustEmbedUnimplementedOrderServiceServer()
 }
 
@@ -198,6 +213,9 @@ func (UnimplementedOrderServiceServer) GetOrdersByDriver(context.Context, *GetOr
 }
 func (UnimplementedOrderServiceServer) AddOrderImage(context.Context, *AddOrderImageRequest) (*AddOrderImageResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method AddOrderImage not implemented")
+}
+func (UnimplementedOrderServiceServer) GetOrderImage(context.Context, *GetOrderImageRequest) (*GetOrderImageResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetOrderImage not implemented")
 }
 func (UnimplementedOrderServiceServer) mustEmbedUnimplementedOrderServiceServer() {}
 func (UnimplementedOrderServiceServer) testEmbeddedByValue()                      {}
@@ -382,6 +400,24 @@ func _OrderService_AddOrderImage_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OrderService_GetOrderImage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOrderImageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServiceServer).GetOrderImage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OrderService_GetOrderImage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServiceServer).GetOrderImage(ctx, req.(*GetOrderImageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OrderService_ServiceDesc is the grpc.ServiceDesc for OrderService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -425,7 +461,11 @@ var OrderService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "AddOrderImage",
 			Handler:    _OrderService_AddOrderImage_Handler,
 		},
+		{
+			MethodName: "GetOrderImage",
+			Handler:    _OrderService_GetOrderImage_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "order.proto",
+	Metadata: "orderpb/order.proto",
 }

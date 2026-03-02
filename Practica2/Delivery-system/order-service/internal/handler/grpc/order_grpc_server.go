@@ -225,3 +225,19 @@ func (h *OrderGRPCServer) AddOrderImage(
 		Message: "Imagen agregada correctamente",
 	}, nil
 }
+
+func (h *OrderGRPCServer) GetOrderImage(
+	ctx context.Context,
+	req *orderpb.GetOrderImageRequest,
+) (*orderpb.GetOrderImageResponse, error) {
+
+	img, err := h.service.GetOrderImage(req.OrderId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &orderpb.GetOrderImageResponse{
+		OrderId: img.OrdenId,
+		Link:    img.Link,
+	}, nil
+}

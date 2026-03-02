@@ -168,3 +168,5 @@ CREATE TABLE ImagenOrden (
     Link NVARCHAR(512),
 );
 
+ALTER TABLE ImagenOrden
+ADD CONSTRAINT UQ_ImagenOrden_OrdenId UNIQUE (OrdenId);

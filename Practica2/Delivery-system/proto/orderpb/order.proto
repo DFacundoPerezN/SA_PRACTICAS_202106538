@@ -26,7 +26,10 @@ service OrderService {
 
   rpc GetOrdersByDriver(GetOrdersByDriverRequest) returns (GetOrdersResponse);
   
+  // Agregar imagen a la orden
   rpc AddOrderImage(AddOrderImageRequest) returns (AddOrderImageResponse);
+
+  rpc GetOrderImage(GetOrderImageRequest) returns (GetOrderImageResponse);
 }
 
 message OrderItem {
@@ -127,4 +130,13 @@ message AddOrderImageRequest {
 
 message AddOrderImageResponse {
   string message = 1;
+}
+
+message GetOrderImageRequest {
+  int32 order_id = 1;
+}
+
+message GetOrderImageResponse {
+  int32 order_id = 1;
+  string link = 2;
 }
