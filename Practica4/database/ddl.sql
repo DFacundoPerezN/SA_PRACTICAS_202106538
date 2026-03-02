@@ -166,6 +166,5 @@ CREATE TABLE OrdenCancelada (
 CREATE TABLE ImagenOrden (
     OrdenId INT NOT NULL,    
     Link NVARCHAR(512),
-
 );
 
