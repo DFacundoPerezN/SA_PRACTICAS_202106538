@@ -259,3 +259,13 @@ func (h *OrderHandler) GetOrderImage(context *gin.Context) {
 	}
 	context.JSON(200, resp)
 }
+
+func (h *OrderHandler) GetCancelledOrRejectedOrders(c *gin.Context) {
+
+	resp, err := h.orderClient.GetCancelledOrRejectedOrders()
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(200, resp.Orders)
+}
