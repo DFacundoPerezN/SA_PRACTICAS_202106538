@@ -38,3 +38,20 @@ response:
     "motivo": "Orden rechazada por el restaurante"
   }
 ]
+
+POST /api/payments
+
+request:
+{
+  "order_id": 3,
+  "payment_method": "TARJETA",
+  "use_cupon": false,
+  "amount": 120.50
+}
+
+response:
+{
+  "payment_id": 8,
+  "status": "PAGADO",
+  "message": "Pago procesado exitosamente"
+}
