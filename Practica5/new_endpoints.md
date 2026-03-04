@@ -55,3 +55,10 @@ response:
   "status": "PAGADO",
   "message": "Pago procesado exitosamente"
 }
+
+PATCH  /api/payments/:id/refund
+
+{
+  "success": true,
+  "message": "Pago reembolsado correctamente"
+}
