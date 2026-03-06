@@ -56,7 +56,7 @@ response:
   "message": "Pago procesado exitosamente"
 }
 
-PATCH  /api/payments/:id/refund
+PATCH  /api/payments/:id_orden/refund
 
 {
   "success": true,
