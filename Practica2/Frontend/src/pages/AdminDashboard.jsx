@@ -13,6 +13,21 @@ const [users, setUsers] = useState([])
 const [loading, setLoading] = useState(false)
 const [error, setError] = useState('')
 
+// Estados para reembolsos
+const [cancelledOrders, setCancelledOrders] = useState([])
+const [loadingRefunds, setLoadingRefunds] = useState(false)
+
+// Modal para ver órdenes del usuario
+const [showUserOrdersModal, setShowUserOrdersModal] = useState(false)
+const [selectedUser, setSelectedUser] = useState(null)
+const [userOrders, setUserOrders] = useState([])
+const [loadingOrders, setLoadingOrders] = useState(false)
+
+// Modal para ver imagen de orden
+const [showImageModal, setShowImageModal] = useState(false)
+const [orderImageUrl, setOrderImageUrl] = useState('')
+const [loadingImage, setLoadingImage] = useState(false)
+
 // Modal de crear restaurante
 const [showCreateModal, setShowCreateModal] = useState(false)
 const [creationStep, setCreationStep] = useState(1) // Paso 1: Usuario, Paso 2: Restaurante
@@ -40,6 +55,8 @@ const [restaurantForm, setRestaurantForm] = useState({
   useEffect(() => {
     if (activeTab === 'restaurants') {
       fetchRestaurants()
+    } else if (activeTab === 'refunds') {
+    fetchCancelledOrders()
     } else {
       fetchUsers()
     }
@@ -72,6 +89,44 @@ const [restaurantForm, setRestaurantForm] = useState({
       setLoading(false)
     }
   }
+
+  const fetchCancelledOrders = async () => {
+    try {
+      setLoadingRefunds(true)
+      const response = await api.get('/api/orders/cancelled')
+      setCancelledOrders(response.data || [])
+      setError('')
+    } catch (err) {
+      console.error('Error fetching cancelled orders:', err)
+      setError('Error al cargar órdenes canceladas')
+    } finally {
+      setLoadingRefunds(false)
+    }
+  }
+
+  // Funcion autorizar reembolso
+  const handleAuthorizeRefund = async (orderId) => {
+  if (!window.confirm(`¿Autorizar reembolso para la orden #${orderId}?`)) {
+    return
+  }
+
+  try {
+    setLoading(true)
+    const response = await api.patch(`/api/payments/${orderId}/refund`)
+    
+    alert(response.data.message || 'Reembolso autorizado exitosamente')
+    
+    // Recargar la lista
+    fetchCancelledOrders()
+    
+  } catch (err) {
+    console.error('Error authorizing refund:', err)
+    const errorMessage = err.response?.data?.error || 'Error al autorizar el reembolso'
+    alert('Error: ' + errorMessage)
+  } finally {
+    setLoading(false)
+  }
+}
 
   const handleLogout = () => {
     authService.logout()
@@ -172,6 +227,60 @@ const resetForm = () => {
   setError('')
 }
 
+// Función para ver órdenes de un usuario
+const handleViewUserOrders = async (user) => {
+  setSelectedUser(user)
+  setShowUserOrdersModal(true)
+  setLoadingOrders(true)
+  
+  try {
+    // Buscar órdenes ENTREGADAS usando el nuevo endpoint
+    const response = await api.get('/api/orders/delivered')
+    if (response.data) {
+      const userOrdersFiltered = response.data.filter(order => 
+        order.cliente_id === user.id || order.client_id === user.id
+      )
+      setUserOrders(userOrdersFiltered)
+    } else {
+      setUserOrders([])
+    }
+  } catch (err) {
+    console.error('Error fetching user orders:', err)
+    setUserOrders([])
+  } finally {
+    setLoadingOrders(false)
+  }
+}
+
+// Función para ver imagen de una orden (se activa al hacer clic en una orden)
+const handleOrderClick = async (orderId) => {
+  setLoadingImage(true)
+  setShowImageModal(true)
+  
+  try {
+    const response = await api.get(`/api/orders/${orderId}/image`)
+    // El endpoint devuelve { link: "url" }
+    setOrderImageUrl(response.data.link || response.data.url || '')
+  } catch (err) {
+    console.error('Error fetching order image:', err)
+    setOrderImageUrl('')
+    alert('No se pudo cargar la imagen de la orden')
+  } finally {
+    setLoadingImage(false)
+  }
+}
+
+const handleCloseUserOrdersModal = () => {
+  setShowUserOrdersModal(false)
+  setSelectedUser(null)
+  setUserOrders([])
+}
+
+const handleCloseImageModal = () => {
+  setShowImageModal(false)
+  setOrderImageUrl('')
+}
+
 const handleCloseModal = () => {
   setShowCreateModal(false)
   resetForm()
@@ -217,6 +326,12 @@ const handleCloseModal = () => {
             onClick={() => setActiveTab('users')}
           >
             👥 Usuarios
+          </button>
+          <button 
+            className={`tab ${activeTab === 'refunds' ? 'active' : ''}`}
+            onClick={() => setActiveTab('refunds')}
+          >
+            💰 Reembolsos
           </button>
         </div>
 
@@ -314,7 +429,12 @@ const handleCloseModal = () => {
                   </thead>
                   <tbody>
                     {users.map(user => (
-                      <tr key={user.id}>
+                      <tr 
+                        key={user.id}
+                        onClick={() => handleViewUserOrders(user)}
+                        style={{ cursor: 'pointer' }}
+                        title="Click para ver órdenes del usuario"
+                      >
                         <td>{user.id}</td>
                         <td>{user.email}</td>
                         <td>
@@ -332,6 +452,102 @@ const handleCloseModal = () => {
             )}
           </div>
         )}
+        {/* Tab: Reembolsos */}
+        {activeTab === 'refunds' && (
+          <div className="tab-content">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <div>
+                <h2>Órdenes Canceladas y Rechazadas</h2>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '0.5rem' }}>
+                  Gestiona los reembolsos pendientes
+                </p>
+              </div>
+              <button 
+                className="btn-primary"
+                onClick={fetchCancelledOrders}
+                disabled={loadingRefunds}
+              >
+                🔄 Actualizar
+              </button>
+            </div>
+
+            {loadingRefunds ? (
+              <div className="loading-state">
+                <div className="spinner-large"></div>
+                <p>Cargando órdenes...</p>
+              </div>
+            ) : cancelledOrders.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-icon">✅</div>
+                <p>No hay órdenes canceladas o rechazadas</p>
+                <small>Las órdenes que requieran reembolso aparecerán aquí</small>
+              </div>
+            ) : (
+              <div className="table-container">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID Orden</th>
+                      <th>Cliente</th>
+                      <th>Estado</th>
+                      <th>Monto</th>
+                      <th>Motivo</th>
+                      <th>Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cancelledOrders.map(order => (
+                      <tr key={order.id}>
+                        <td>
+                          <strong>#{order.id}</strong>
+                        </td>
+                        <td>{order.cliente_nombre}</td>
+                        <td>
+                          <span className={`role-badge ${order.estado === 'CANCELADA' ? 'cancelada' : 'rechazada'}`}>
+                            {order.estado}
+                          </span>
+                        </td>
+                        <td>
+                          <strong style={{ color: 'var(--error)' }}>
+                            ${order.costo_total.toFixed(2)}
+                          </strong>
+                        </td>
+                        <td>
+                          <div style={{ 
+                            maxWidth: '300px', 
+                            whiteSpace: 'nowrap', 
+                            overflow: 'hidden', 
+                            textOverflow: 'ellipsis',
+                            color: 'var(--text-secondary)',
+                            fontSize: '0.9rem'
+                          }}>
+                            {order.motivo || 'Sin motivo especificado'}
+                          </div>
+                        </td>
+                        <td>
+                          <button
+                            className="btn-primary"
+                            onClick={() => handleAuthorizeRefund(order.id)}
+                            disabled={loading}
+                            style={{
+                              padding: '8px 16px',
+                              fontSize: '0.875rem',
+                              background: 'linear-gradient(135deg, #4caf50, #45a049)',
+                              whiteSpace: 'nowrap'
+                            }}
+                          >
+                            💰 Autorizar Reembolso
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
       </div>
 
       {/* Modal Crear Restaurante */}
@@ -547,6 +763,126 @@ const handleCloseModal = () => {
     </div>
   </div>
 )}
+
+      {/* Modal Ver Órdenes del Usuario */}
+      {showUserOrdersModal && (
+        <div className="modal-overlay" onClick={handleCloseUserOrdersModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '800px' }}>
+            <div className="modal-header">
+              <h2>Órdenes de {selectedUser?.email}</h2>
+              <button className="btn-close" onClick={handleCloseUserOrdersModal}>✕</button>
+            </div>
+
+            <div style={{ padding: '24px' }}>
+              {loadingOrders ? (
+                <div className="loading-state">
+                  <div className="spinner-large"></div>
+                  <p>Cargando órdenes...</p>
+                </div>
+              ) : userOrders.length === 0 ? (
+                <div className="empty-state">
+                  <div className="empty-icon">📦</div>
+                  <p>Este usuario no tiene órdenes registradas</p>
+                </div>
+              ) : (
+                <div className="table-container">
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>ID Orden</th>
+                        <th>Restaurante</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {userOrders.map(order => (
+                        <tr 
+                          key={order.id}
+                          onClick={() => handleOrderClick(order.id)}
+                          style={{ cursor: 'pointer' }}
+                          className="hoverable-row"
+                          title="Click para ver la imagen de esta orden"
+                        >
+                          <td><strong>#{order.id}</strong></td>
+                          <td>{order.restaurante_nombre || 'N/A'}</td>
+                          <td>${order.total?.toFixed(2) || '0.00'}</td>
+                          <td>
+                            <span className={`status-badge ${order.estado?.toLowerCase()}`}>
+                              {order.estado}
+                            </span>
+                          </td>
+                          <td>{new Date(order.fecha_pedido).toLocaleDateString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
+            <div className="modal-footer">
+              <button className="btn-secondary" onClick={handleCloseUserOrdersModal}>
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Ver Imagen de Orden */}
+      {showImageModal && (
+        <div className="modal-overlay" onClick={handleCloseImageModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+            <div className="modal-header">
+              <h2>Imagen de la Orden</h2>
+              <button className="btn-close" onClick={handleCloseImageModal}>✕</button>
+            </div>
+
+            <div style={{ padding: '24px', textAlign: 'center' }}>
+              {loadingImage ? (
+                <div className="loading-state">
+                  <div className="spinner-large"></div>
+                  <p>Cargando imagen...</p>
+                </div>
+              ) : orderImageUrl ? (
+                <div>
+                  <img 
+                    src={orderImageUrl} 
+                    alt="Imagen de la orden" 
+                    style={{ 
+                      maxWidth: '100%', 
+                      maxHeight: '500px', 
+                      borderRadius: '8px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                    }}
+                    onError={(e) => {
+                      e.target.src = 'https://via.placeholder.com/400x300?text=Imagen+no+disponible'
+                    }}
+                  />
+                  <p style={{ marginTop: '16px', fontSize: '12px', color: '#666' }}>
+                    <a href={orderImageUrl} target="_blank" rel="noopener noreferrer">
+                      Abrir imagen en nueva pestaña ↗
+                    </a>
+                  </p>
+                </div>
+              ) : (
+                <div className="empty-state">
+                  <div className="empty-icon">🖼️</div>
+                  <p>No hay imagen disponible para esta orden</p>
+                </div>
+              )}
+            </div>
+
+            <div className="modal-footer">
+              <button className="btn-secondary" onClick={handleCloseImageModal}>
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
