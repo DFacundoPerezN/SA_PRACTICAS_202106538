@@ -165,6 +165,7 @@ func main() {
 		protected.GET("/orders/driver/me", orderHandler.GetMyDriverOrders)
 		protected.POST("/payments", paymentHandler.ProcessPayment)
 		protected.PATCH("/payments/:id/refund", paymentHandler.RefundPayment)
+		protected.GET("/payments", paymentHandler.GetPayments)
 	}
 
 	// HTTP server
