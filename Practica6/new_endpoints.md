@@ -1,7 +1,7 @@
 # Nuevos endpoints
 
 ## Calificacion repartidor
-POST /ratings
+POST /api/drivers/ratings
 
 request
 {
@@ -16,7 +16,32 @@ response
   "message": "Calificación registrada"
 }
 
-GET /ratings/driver/12/average
+GET /api/ratings/driver/12/average
+
+response
+{
+  "promedio": 5,
+  "total_calificaciones": 1
+}
+
+## Calificacion restaurante
+
+POST /api/restaurants/ratings
+
+request
+{
+  "stars": 5,
+  "comment": "Prueba Rest",
+  "restaurant_id": 13
+}
+
+response
+{
+  "rating_id": 2,
+  "message": "Calificación registrada"
+}
+
+GET /api/ratings/restaurant/:id/average
 
 response
 {
