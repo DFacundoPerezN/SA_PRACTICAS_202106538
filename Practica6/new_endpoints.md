@@ -142,3 +142,14 @@ response:
     "total_ordenes": 5
   }
 ]
+
+## Obtener restaurantes segun categoria que tiene
+
+GET    /api/restaurants/category/:category
+
+[
+  {
+    "restaurante_id": 13,
+    "restaurante_nombre": "Restaurante"
+  }
+]
