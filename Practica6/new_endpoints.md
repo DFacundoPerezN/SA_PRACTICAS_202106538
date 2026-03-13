@@ -96,6 +96,8 @@ response
     "calificacion": 5
   }
 ]
+
+
 ## Obtener restaurantes mejor calificados 
 
 GET /restaurants/top?n=6
@@ -115,5 +117,28 @@ GET /restaurants/top?n=6
     "nombre": "Restaurante ",
     "direccion": "Zona 12",
     "calificacion": 5
+  }
+]
+
+## Obtener restaurantes con más ordenes
+
+GET /restaurants/top-orders?n=3
+
+response:
+[
+  {
+    "restaurante_id": 13,
+    "restaurante_nombre": "Restaurante ",
+    "total_ordenes": 18
+  },
+  {
+    "restaurante_id": 24,
+    "restaurante_nombre": "Prueba Restaurante",
+    "total_ordenes": 7
+  },
+  {
+    "restaurante_id": 17,
+    "restaurante_nombre": "Calificacion Res",
+    "total_ordenes": 5
   }
 ]
