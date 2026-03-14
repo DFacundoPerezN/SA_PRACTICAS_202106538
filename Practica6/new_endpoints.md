@@ -153,3 +153,16 @@ GET    /api/restaurants/category/:category
     "restaurante_nombre": "Restaurante"
   }
 ]
+
+## Obtener restaurantes con promociones o cupones
+
+GET /restaurants/deals?n=2
+
+
+[
+  {
+    "restaurante_id": 13,
+    "restaurante_nombre": "Restaurante",
+    "calificacion": 0.0
+  }
+]
