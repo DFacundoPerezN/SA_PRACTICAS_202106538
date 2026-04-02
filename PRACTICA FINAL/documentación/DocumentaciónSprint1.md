@@ -53,3 +53,15 @@
 ![](img/kb1.jpg)
 
 ---
+
+## 📝 Daily Standup 1
+
+**Fecha:** 01/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** |  |  |  |
+| **201504070** | Investigación sobre arquitecturas de microservicios y tecnologías disponibles | Iniciar diseño de arquitectura de alto nivel | Ninguno |
+| **201908327** |  |  |  |
+
+---
