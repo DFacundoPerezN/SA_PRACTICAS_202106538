@@ -65,3 +65,15 @@
 | **201908327** |  |  |  |
 
 ---
+
+## 📝 Daily Standup 2
+
+**Fecha:** 02/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** |  |  |  |
+| **201504070** | Se avanzó parcialmente en la arquitectura de alto nivel | Finalizar arquitectura de alto nivel y comenzar diagrama de despliegue | Consultar ejemplo de topología en K3s |
+| **201908327** |  |  |  |
+
+---

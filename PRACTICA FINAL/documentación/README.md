@@ -10,3 +10,12 @@
 </div>
 
 ---
+
+## Diagrama de despliegue
+
+<div align="center">
+  <img src="img/diagrama-de-despliegue.png" alt="" width="80%">
+  <p><i>Figura 2: Diagrama de despliegue.</i></p>
+</div>
+
+---
