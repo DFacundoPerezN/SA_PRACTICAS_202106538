@@ -77,3 +77,15 @@
 | **201908327** |  |  |  |
 
 ---
+
+## 📝 Daily Standup 3
+
+**Fecha:** 03/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** |  |  |  |
+| **201504070** | Se finalizó el diagrama de arquitectura de alto nivel y se avanzó en despliegue | Terminar diagrama de despliegue y completar justificación técnica del stack | Ninguno |
+| **201908327** |  |  |  |
+
+---
