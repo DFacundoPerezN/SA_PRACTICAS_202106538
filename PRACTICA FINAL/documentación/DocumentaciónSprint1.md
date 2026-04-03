@@ -89,3 +89,13 @@
 | **201908327** |  |  |  |
 
 ---
+
+## 🔄 Sprint Retrospective
+
+| Integrante | ¿Qué se hizo bien durante el Sprint?                                                     | ¿Qué se hizo mal?                                                   | ¿Qué mejoras se deben implementar para el próximo sprint?      |
+| ---------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------- |
+| 202106538  |  |  |  |
+| 201504070  | Se completó correctamente la arquitectura y despliegue del sistema | El avance inicial fue lento debido a organización del equipo | Definir prioridades claras desde el primer día |
+| 201908327  |  |  |  |
+
+---
