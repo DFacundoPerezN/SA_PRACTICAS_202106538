@@ -101,3 +101,15 @@
 | **201908327** | Se completaron los requerimientos no funcionales y el diagrama ER | Finalizar diagrama de actividades (flujo completo ticket) y actualizar bitácora del sprint | Ninguno |
 
 ---
+
+## 🔄 Sprint Retrospective
+
+| Integrante | ¿Qué se hizo bien durante el Sprint?                                                     | ¿Qué se hizo mal?                                                   | ¿Qué mejoras se deben implementar para el próximo sprint?      |
+| ---------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------- |
+| 202106538  |  |  |  |
+| 201504070  |  |  |  |
+| 201908327  | Se completaron todos los requerimientos y diagramas de apoyo | No se logró completar en menos días por falta de tiempo | Distribuir mejor las tareas y comenzar antes las actividades |
+
+
+---
+
