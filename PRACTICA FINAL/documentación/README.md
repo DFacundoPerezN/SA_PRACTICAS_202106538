@@ -657,14 +657,4 @@ Cada microservicio tiene su propia base de datos, evitando acoplamiento directo 
 
 ## 9. GitHub Actions — CI/CD y coherencia general del stack
 
-### Selección de GitHub Actions
-
-| Criterio | Justificación |
-|----------|----------------|
-| **Integración nativa** | El repositorio ya está alojado en GitHub. |
-| **Gratuito para repositorios privados** | 2000 minutos/mes gratis. |
-| **Marketplace de acciones** | Acciones predefinidas para Docker, GCR, K3s, etc. |
-| **Matriz de pruebas** | Soporta pruebas paralelas en múltiples versiones de Node.js. |
-| **Secretos integrados** | Almacenamiento seguro de credenciales (GCP keys, RabbitMQ, MySQL). |
-
 ---
