@@ -61,3 +61,58 @@ Antes de definir los requerimientos, se identifican los actores que interactúan
 
 ---
 
+## Requerimientos No Funcionales (RNF)
+
+### Arquitectura y Despliegue
+
+| ID | Requerimiento | Descripción |
+|----|---------------|-------------|
+| **RNF-01** | Arquitectura de microservicios | El sistema debe estar compuesto por al menos 3 microservicios independientes: Usuarios, Tickets, Asignaciones. |
+| **RNF-02** | Comunicación asíncrona | La comunicación entre microservicios para eventos de negocio debe ser asíncrona mediante un bus de mensajería (RabbitMQ). |
+| **RNF-03** | Comunicación síncrona | Las operaciones CRUD inmediatas pueden realizarse vía REST síncrono. |
+| **RNF-04** | Contenerización | Cada microservicio debe ejecutarse dentro de un contenedor Docker con imágenes optimizadas mediante multi-stage builds. |
+| **RNF-05** | Orquestación local | Debe existir un archivo `docker-compose.yml` que levante todos los servicios con un solo comando. |
+| **RNF-06** | Despliegue en la nube | El sistema debe ser desplegable en un clúster K3s/Kubernetes en la nube (futura práctica). |
+
+### Rendimiento y Escalabilidad
+
+| ID | Requerimiento | Descripción |
+|----|---------------|-------------|
+| **RNF-07** | Tiempo de respuesta | Las APIs REST deben responder en menos de 500ms para el 95% de las peticiones en condiciones normales. |
+| **RNF-08** | Escalabilidad horizontal | Los microservicios deben poder escalarse horizontalmente (múltiples instancias) sin afectar la consistencia. |
+| **RNF-09** | Tolerancia a fallos | El fallo de un microservicio no debe detener por completo al sistema; debe haber degradación controlada. |
+
+### Seguridad
+
+| ID | Requerimiento | Descripción |
+|----|---------------|-------------|
+| **RNF-10** | Autenticación | Todos los endpoints (excepto registro/login) deben requerir autenticación mediante token JWT. |
+| **RNF-11** | Autorización | El sistema debe implementar control de acceso basado en roles (RBAC): cliente, técnico, administrador. |
+| **RNF-12** | Protección de datos sensibles | Las contraseñas deben almacenarse hasheadas (bcrypt). |
+| **RNF-13** | Variables de entorno | Credenciales de bases de datos, secretos y configuraciones sensibles deben inyectarse vía variables de entorno, no hardcodeadas. |
+| **RNF-14** | Rate Limiting | El API Gateway debe implementar límite de tasa por IP para proteger los endpoints contra abuso y ataques de fuerza bruta. |
+
+### Disponibilidad y Resiliencia
+
+| ID | Requerimiento | Descripción |
+|----|---------------|-------------|
+| **RNF-15** | Health checks | Cada microservicio debe exponer un endpoint `/health` para verificar su estado. |
+| **RNF-16** | Reintentos de conexión | Los servicios deben implementar lógica de reintentos al conectarse a RabbitMQ o bases de datos. |
+| **RNF-17** | Persistencia de eventos | Los mensajes en RabbitMQ deben ser persistentes para no perderse ante reinicios. |
+
+### Observabilidad
+
+| ID | Requerimiento | Descripción |
+|----|---------------|-------------|
+| **RNF-18** | Logging estructurado | Cada microservicio debe generar logs en formato JSON (estructurado) que incluyan el nivel de severidad, timestamp, servicio de origen e ID de correlación, para facilitar la trazabilidad entre servicios.
+
+---
+
+## Diagrama de entidad-relación
+
+<div align="center">
+  <img src="img/diagrama-entidad-relacion.png" alt="" width="100%">
+  <p><i>Figura 5: Diagrama de entida relación.</i></p>
+</div>
+
+---

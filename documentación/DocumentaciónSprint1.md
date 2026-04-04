@@ -66,3 +66,27 @@
 
 ---
 
+## 📝 Daily Standup 1
+
+**Fecha:** 01/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** | Inicio del análisis de casos de uso y definición de actores principales | Completar diagrama de casos de uso de alto nivel | Tiempo limitado por otras tareas académicas |
+| **201504070** | Investigación sobre arquitecturas de microservicios y tecnologías disponibles | Iniciar diseño de arquitectura de alto nivel | Ninguno |
+| **201908327** | Inicio de análisis de requerimientos funcionales del sistema | Finalizar requerimientos funcionales | Falta claridad en algunos requerimientos no funcionales |
+
+---
+
+## 📝 Daily Standup 2
+
+**Fecha:** 02/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** |  |  |  |
+| **201504070** |  |  |  |
+| **201908327** | Se completaron los requerimientos funcionales | Finalizar requerimientos no funcionales y diseñar diagrama Entidad-Relación | Ninguno |
+
+---
+
