@@ -53,3 +53,15 @@
 ![](img/kb1.jpg)
 
 ---
+
+## 📝 Daily Standup 1
+
+**Fecha:** 01/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** | Inicio del análisis de casos de uso y definición de actores principales | Completar diagrama de casos de uso de alto nivel | Tiempo limitado por otras tareas académicas |
+| **201504070** |  |  |  |
+| **201908327** |  |  |  |
+
+---
