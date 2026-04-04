@@ -90,3 +90,14 @@
 
 ---
 
+## 📝 Daily Standup 3
+
+**Fecha:** 03/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** |  |  |  |
+| **201504070** |  |  |  |
+| **201908327** | Se completaron los requerimientos no funcionales y el diagrama ER | Finalizar diagrama de actividades (flujo completo ticket) y actualizar bitácora del sprint | Ninguno |
+
+---

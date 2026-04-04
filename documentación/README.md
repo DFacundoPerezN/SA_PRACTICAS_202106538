@@ -116,3 +116,12 @@ Antes de definir los requerimientos, se identifican los actores que interactúan
 </div>
 
 ---
+
+## Diagrama de actividades
+
+<div align="center">
+  <img src="img/diagrama-de-actividades.png" alt="" width="80%">
+  <p><i>Figura 3: Diagrama de actividades.</i></p>
+</div>
+
+---
