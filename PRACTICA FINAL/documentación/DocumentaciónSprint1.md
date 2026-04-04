@@ -65,3 +65,15 @@
 | **201908327** |  |  |  |
 
 ---
+
+## 📝 Daily Standup 2
+
+**Fecha:** 02/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** | Se completó el diagrama de casos de uso de alto nivel | Desarrollar casos de uso expandidos (Creación y Asignación de Ticket) + iniciar diagrama de secuencias | Ninguno |
+| **201504070** |  |  |  |
+| **201908327** |  |  |  |
+
+---
