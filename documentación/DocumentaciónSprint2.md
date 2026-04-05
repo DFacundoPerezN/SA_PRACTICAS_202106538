@@ -57,3 +57,13 @@
 | **201908327** | Estudio de docker-compose y RabbitMQ para eventos asíncronos | Crear CRUD de assignments-svc y crear Dockerfiles iniciales | Falta de claridad en la comunicación entre contenedores |
 
 ---
+
+## 📝 Daily Standup 2
+
+**Fecha:** 05/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** |  |  |  |
+| **201504070** |  |  |  |
+| **201908327** | Assignments-svc configurado, Dockerfiles creados para 4 servicios | Crear docker-compose.yml y configurar RabbitMQ | Ninguno |
