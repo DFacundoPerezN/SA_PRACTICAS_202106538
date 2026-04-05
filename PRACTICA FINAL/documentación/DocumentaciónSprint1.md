@@ -89,13 +89,3 @@
 | **201908327** |  |  |  |
 
 ---
-
-## 🔄 Sprint Retrospective
-
-| Integrante | ¿Qué se hizo bien durante el Sprint?                                                     | ¿Qué se hizo mal?                                                   | ¿Qué mejoras se deben implementar para el próximo sprint?      |
-| ---------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------- |
-| 202106538  | Se lograron completar todos los diagramas asignados y hubo buena comunicación del equipo | Algunas tareas se retrasaron inicialmente por carga académica       | Mejorar la planificación del tiempo desde el inicio del sprint |
-| 201504070  |   |   |   |
-| 201908327  |   |   |   |
-
----

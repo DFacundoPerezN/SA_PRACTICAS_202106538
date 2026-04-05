@@ -296,4 +296,3 @@
 | RN-12 | Si un ticket es reasignado, debe conservarse el historial de asignaciones previas. |
 
 ---
-
