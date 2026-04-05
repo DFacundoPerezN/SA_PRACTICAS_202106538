@@ -77,3 +77,25 @@
 | **201908327** |  |  |  |
 
 ---
+
+## 📝 Daily Standup 3
+
+**Fecha:** 03/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** | Se completaron los casos de uso expandidos (Creación y Asignación) | Finalizar diagrama de secuencias (mostrando eventos asíncronos) | Asegurar que el diagrama refleje correctamente RabbitMQ |
+| **201504070** |  |  |  |
+| **201908327** |  |  |  |
+
+---
+
+## 🔄 Sprint Retrospective
+
+| Integrante | ¿Qué se hizo bien durante el Sprint?                                                     | ¿Qué se hizo mal?                                                   | ¿Qué mejoras se deben implementar para el próximo sprint?      |
+| ---------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------- |
+| 202106538  | Se lograron completar todos los diagramas asignados y hubo buena comunicación del equipo | Algunas tareas se retrasaron inicialmente por carga académica       | Mejorar la planificación del tiempo desde el inicio del sprint |
+| 201504070  |   |   |   |
+| 201908327  |   |   |   |
+
+---
