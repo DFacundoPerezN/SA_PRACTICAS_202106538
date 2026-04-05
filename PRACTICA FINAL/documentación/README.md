@@ -2,6 +2,405 @@
 
 ---
 
+## Actores del Sistema
+
+Antes de definir los requerimientos, se identifican los actores que interactúan con el sistema:
+
+| Actor | Tipo | Descripción |
+|-------|------|-------------|
+| **Cliente** | Externo | Usuario que reporta incidentes. Puede crear tickets, ver sus propios tickets, agregar comentarios públicos y recibir notificaciones sobre el avance. |
+| **Técnico de Soporte** | Externo | Usuario que atiende y resuelve tickets. Puede ver los tickets asignados, cambiar estados, agregar comentarios internos y públicos. |
+| **Administrador** | Externo | Tiene control total del sistema. Puede gestionar usuarios, reasignar tickets, configurar categorías y visualizar reportes y métricas. |
+| **Sistema** | Interno | Representa el comportamiento automatizado: publicación y consumo de eventos en RabbitMQ, asignación automática de tickets, cierre automático por inactividad y generación de notificaciones. |
+
+---
+
+## Requerimientos Funcionales (RF)
+
+### Módulo de Gestión de Usuarios
+
+| ID | Requerimiento | Descripción |
+|----|---------------|-------------|
+| **RF-01** | Registro de usuarios | El sistema debe permitir el registro de nuevos usuarios (clientes y técnicos de soporte) con nombre, email, contraseña y rol. |
+| **RF-02** | Autenticación de usuarios | El sistema debe autenticar usuarios mediante email y contraseña, generando un token de sesión (JWT). |
+| **RF-03** | Listado de usuarios | El sistema debe permitir listar todos los usuarios registrados, con filtros opcionales por rol. |
+| **RF-04** | Actualización de perfil | El sistema debe permitir a un usuario actualizar su propia información (nombre, email, contraseña). |
+| **RF-05** | Eliminación de usuarios | El sistema debe permitir la eliminación (soft-delete) de usuarios por parte de administradores, conservando la integridad histórica de los tickets asociados. |
+
+### Módulo de Gestión de Tickets
+
+| ID | Requerimiento | Descripción |
+|----|---------------|-------------|
+| **RF-06** | Creación de ticket | El sistema debe permitir a un usuario autenticado crear un ticket de soporte con título, descripción, categoría y prioridad. El sistema debe registrar automáticamente la fecha/hora de creación y el usuario creador. |
+| **RF-07** | Listado de tickets | El sistema debe permitir listar tickets con filtros por estado, prioridad, categoría, fechas y usuario asignado. |
+| **RF-08** | Visualización de ticket | El sistema debe permitir ver el detalle completo de un ticket específico, incluyendo su historial de cambios. |
+| **RF-09** | Actualización de ticket | El sistema debe permitir actualizar el estado, prioridad, categoría o descripción de un ticket (solo roles autorizados). |
+| **RF-10** | Cambio de estado | El sistema debe gestionar la máquina de estados del ticket: `abierto` → `en_progreso` → `resuelto` → `cerrado`. También debe permitir `reabierto` desde resuelto/cerrado. |
+| **RF-11** | Asignación de ticket | El sistema debe permitir asignar un ticket a un técnico de soporte específico. |
+| **RF-12** | Comentarios en ticket | El sistema debe permitir añadir comentarios a un ticket. Los comentarios pueden ser **públicos** (visibles para el cliente y el técnico) o **internos** (visibles únicamente para técnicos y administradores). |
+| **RF-13** | Búsqueda de tickets | El sistema debe permitir realizar búsquedas por texto libre sobre el título y la descripción de los tickets, combinable con los filtros existentes. |
+| **RF-14** | Cierre automático por inactividad | El sistema debe cerrar automáticamente los tickets en estado `resuelto` que no hayan recibido actividad en un período configurable (por defecto, 7 días). |
+
+### Módulo de Comunicación Asíncrona (Eventos)
+
+| ID | Requerimiento | Descripción |
+|----|---------------|-------------|
+| **RF-15** | Publicación de evento al crear ticket | Al crear un ticket, el sistema debe publicar un evento `ticket.created` en el bus de mensajería. |
+| **RF-16** | Publicación de evento al asignar ticket | Al asignar un ticket, el sistema debe publicar un evento `ticket.assigned` en el bus de mensajería. |
+| **RF-17** | Publicación de evento al cambiar estado | Al cambiar el estado de un ticket, el sistema debe publicar un evento `ticket.status.updated`. |
+| **RF-18** | Consumo de evento para asignación automática | El servicio de asignaciones debe consumir eventos `ticket.created` para intentar asignar automáticamente un técnico disponible. |
+| **RF-19** | Consumo de evento para notificaciones | El sistema debe consumir eventos de tickets para generar notificaciones (email/sistema) a los involucrados. |
+
+### Módulo de Reportes y Métricas
+
+| ID | Requerimiento | Descripción |
+|----|---------------|-------------|
+| **RF-20** | Tiempo promedio de resolución | El sistema debe calcular el tiempo promedio entre creación y resolución de tickets por categoría/técnico. |
+| **RF-21** | Tickets por estado | El sistema debe reportar la cantidad de tickets agrupados por estado actual. |
+| **RF-22** | Carga de trabajo por técnico | El sistema debe mostrar cuántos tickets activos tiene asignado cada técnico. |
+
+---
+
+## Requerimientos No Funcionales (RNF)
+
+### Arquitectura y Despliegue
+
+| ID | Requerimiento | Descripción |
+|----|---------------|-------------|
+| **RNF-01** | Arquitectura de microservicios | El sistema debe estar compuesto por al menos 3 microservicios independientes: Usuarios, Tickets, Asignaciones. |
+| **RNF-02** | Comunicación asíncrona | La comunicación entre microservicios para eventos de negocio debe ser asíncrona mediante un bus de mensajería (RabbitMQ). |
+| **RNF-03** | Comunicación síncrona | Las operaciones CRUD inmediatas pueden realizarse vía REST síncrono. |
+| **RNF-04** | Contenerización | Cada microservicio debe ejecutarse dentro de un contenedor Docker con imágenes optimizadas mediante multi-stage builds. |
+| **RNF-05** | Orquestación local | Debe existir un archivo `docker-compose.yml` que levante todos los servicios con un solo comando. |
+| **RNF-06** | Despliegue en la nube | El sistema debe ser desplegable en un clúster K3s/Kubernetes en la nube (futura práctica). |
+
+### Rendimiento y Escalabilidad
+
+| ID | Requerimiento | Descripción |
+|----|---------------|-------------|
+| **RNF-07** | Tiempo de respuesta | Las APIs REST deben responder en menos de 500ms para el 95% de las peticiones en condiciones normales. |
+| **RNF-08** | Escalabilidad horizontal | Los microservicios deben poder escalarse horizontalmente (múltiples instancias) sin afectar la consistencia. |
+| **RNF-09** | Tolerancia a fallos | El fallo de un microservicio no debe detener por completo al sistema; debe haber degradación controlada. |
+
+### Seguridad
+
+| ID | Requerimiento | Descripción |
+|----|---------------|-------------|
+| **RNF-10** | Autenticación | Todos los endpoints (excepto registro/login) deben requerir autenticación mediante token JWT. |
+| **RNF-11** | Autorización | El sistema debe implementar control de acceso basado en roles (RBAC): cliente, técnico, administrador. |
+| **RNF-12** | Protección de datos sensibles | Las contraseñas deben almacenarse hasheadas (bcrypt). |
+| **RNF-13** | Variables de entorno | Credenciales de bases de datos, secretos y configuraciones sensibles deben inyectarse vía variables de entorno, no hardcodeadas. |
+| **RNF-14** | Rate Limiting | El API Gateway debe implementar límite de tasa por IP para proteger los endpoints contra abuso y ataques de fuerza bruta. |
+
+### Disponibilidad y Resiliencia
+
+| ID | Requerimiento | Descripción |
+|----|---------------|-------------|
+| **RNF-15** | Health checks | Cada microservicio debe exponer un endpoint `/health` para verificar su estado. |
+| **RNF-16** | Reintentos de conexión | Los servicios deben implementar lógica de reintentos al conectarse a RabbitMQ o bases de datos. |
+| **RNF-17** | Persistencia de eventos | Los mensajes en RabbitMQ deben ser persistentes para no perderse ante reinicios. |
+
+### Observabilidad
+
+| ID | Requerimiento | Descripción |
+|----|---------------|-------------|
+| **RNF-18** | Logging estructurado | Cada microservicio debe generar logs en formato JSON (estructurado) que incluyan el nivel de severidad, timestamp, servicio de origen e ID de correlación, para facilitar la trazabilidad entre servicios.
+
+---
+
+## Diagrama general de Casos de Uso de alto nivel
+
+<div align="center">
+  <img src="img/casos_de_uso_alto_nivel.png" alt="" width="50%">
+  <p><i>Figura 1: Diagrama general de casos de Uso de alto nivel.</i></p>
+</div>
+
+## Casos de Uso Expandidos
+
+### Flujo Crítico 1: Creación de Ticket
+
+---
+
+## Caso de Uso: Creación de Ticket
+
+| Campo | Descripción |
+|-------|-------------|
+| **Nombre** | Creación de Ticket |
+| **ID** | UC-07 |
+| **Actor(es)** | Cliente (principal), Sistema (secundario) |
+| **Descripción** | Permite a un usuario autenticado reportar un incidente o solicitud de soporte mediante la creación de un nuevo ticket en el sistema. |
+| **Tipo** | Primario / Esencial |
+
+---
+
+### Precondiciones
+
+| ID | Precondición |
+|----|--------------|
+| PC-01 | El usuario debe haber iniciado sesión en el sistema (estar autenticado). |
+| PC-02 | El usuario debe tener el rol de **Cliente** o **Administrador** (los técnicos también pueden crear tickets en nombre de clientes). |
+| PC-03 | El token JWT de autenticación debe ser válido y no haber expirado. |
+| PC-04 | El usuario debe tener una conexión activa al sistema. |
+
+---
+
+### Flujo Normal (Básico)
+
+| Paso | Acción del Actor | Respuesta del Sistema |
+|------|------------------|----------------------|
+| 1 | El cliente accede a la sección "Nuevo Ticket" en la interfaz. | El sistema presenta un formulario con los campos requeridos: título, descripción, categoría y prioridad. |
+| 2 | El cliente completa el formulario con la información del incidente. | El sistema valida en tiempo real que los campos obligatorios no estén vacíos. |
+| 3 | El cliente hace clic en el botón "Crear Ticket". | El sistema recibe la solicitud POST al endpoint `/tickets`. |
+| 4 | - | El sistema valida que el cliente exista y esté activo en la base de datos. |
+| 5 | - | El sistema genera un ID único para el ticket. |
+| 6 | - | El sistema asigna automáticamente la fecha y hora de creación (timestamp). |
+| 7 | - | El sistema establece el estado inicial del ticket como `abierto`. |
+| 8 | - | El sistema almacena el ticket en la base de datos MySQL (`tickets_db`). |
+| 9 | - | El sistema publica un evento `ticket.created` en el bus RabbitMQ para notificar a otros microservicios. |
+| 10 | - | El sistema retorna una respuesta exitosa (HTTP 201 Created) con los datos del ticket creado. |
+| 11 | El sistema muestra al cliente un mensaje de confirmación con el número de ticket generado. | - |
+
+---
+
+### Flujos Alternativos
+
+#### Flujo Alternativo 1: Campos obligatorios incompletos
+
+| Paso | Acción del Actor | Respuesta del Sistema |
+|------|------------------|----------------------|
+| 2a | El cliente intenta enviar el formulario sin completar todos los campos obligatorios. | El sistema detecta la falta de datos y rechaza la solicitud. |
+| 3a | - | El sistema retorna un error HTTP 400 Bad Request indicando qué campos son obligatorios. |
+| 4a | El sistema muestra mensajes de error específicos junto a cada campo incompleto. | - |
+
+#### Flujo Alternativo 2: Usuario no autenticado
+
+| Paso | Acción del Actor | Respuesta del Sistema |
+|------|------------------|----------------------|
+| 1a | Un usuario no autenticado intenta acceder al formulario de creación de ticket. | El sistema detecta la ausencia o invalidez del token JWT. |
+| 2a | - | El sistema retorna un error HTTP 401 Unauthorized. |
+| 3a | El sistema redirige al usuario a la página de inicio de sesión. | - |
+
+#### Flujo Alternativo 3: Usuario con rol no autorizado
+
+| Paso | Acción del Actor | Respuesta del Sistema |
+|------|------------------|----------------------|
+| 1b | Un usuario con rol no autorizado (ej. solo lectura) intenta crear un ticket. | El sistema verifica los permisos del rol mediante RBAC. |
+| 2b | - | El sistema retorna un error HTTP 403 Forbidden. |
+| 3b | El sistema muestra un mensaje "No tienes permisos para realizar esta acción". | - |
+
+#### Flujo Alternativo 4: Error en la base de datos
+
+| Paso | Acción del Actor | Respuesta del Sistema |
+|------|------------------|----------------------|
+| 7a | - | La base de datos no responde o ocurre un error de conexión. |
+| 8a | - | El sistema intenta reconectar (máximo 3 reintentos). |
+| 9a | - | Si persiste el error, el sistema retorna un error HTTP 503 Service Unavailable. |
+| 10a | El sistema muestra un mensaje "Error temporal, intente más tarde". | - |
+
+#### Flujo Alternativo 5: Error en la publicación del evento
+
+| Paso | Acción del Actor | Respuesta del Sistema |
+|------|------------------|----------------------|
+| 9a | - | El ticket se creó correctamente, pero RabbitMQ no está disponible. |
+| 10a | - | El sistema registra el evento en una cola de fallos o log de errores. |
+| 11a | - | El sistema programa un reintento para publicar el evento más tarde (retry con backoff exponencial). |
+| 12a | El ticket se crea exitosamente, pero las notificaciones automáticas podrían retrasarse. | El sistema continúa funcionando normalmente para el cliente. |
+
+#### Flujo Alternativo 6: Título o descripción demasiado largos
+
+| Paso | Acción del Actor | Respuesta del Sistema |
+|------|------------------|----------------------|
+| 2c | El cliente ingresa un título superior a 200 caracteres o una descripción superior a 5000 caracteres. | El sistema valida las longitudes máximas permitidas. |
+| 3c | - | El sistema retorna un error HTTP 400 Bad Request indicando la longitud máxima permitida. |
+| 4c | El sistema muestra mensajes de error específicos. | - |
+
+---
+
+### Postcondiciones
+
+| ID | Postcondición | Estado |
+|----|---------------|--------|
+| PC-01 | Se ha creado un nuevo ticket en la base de datos con estado `abierto`. | ✅ Siempre (si el flujo se completa) |
+| PC-02 | Se ha generado un ID único para el ticket. | ✅ Siempre |
+| PC-03 | Se ha registrado la fecha y hora de creación. | ✅ Siempre |
+| PC-04 | Se ha asociado el ticket al usuario creador mediante su ID. | ✅ Siempre |
+| PC-05 | Se ha publicado un evento `ticket.created` en RabbitMQ (o se ha intentado). | ✅ Siempre (con reintentos si falla) |
+| PC-06 | El ticket es visible inmediatamente en los listados del cliente y del administrador. | ✅ Siempre |
+| PC-07 | El ticket es elegible para asignación automática por el servicio de asignaciones. | ✅ Siempre |
+| PC-08 | Se ha registrado un log de la acción de creación. | ✅ Siempre |
+
+---
+
+### Reglas de Negocio Asociadas
+
+| ID | Regla de Negocio |
+|----|------------------|
+| RN-01 | Un ticket recién creado siempre comienza en estado `abierto`. |
+| RN-02 | El sistema no permite que un ticket sea creado sin un usuario asociado. |
+| RN-03 | La prioridad por defecto de un nuevo ticket es `media` si el cliente no la especifica. |
+| RN-04 | La categoría por defecto es `general` si el cliente no la especifica. |
+| RN-05 | El cliente puede ver únicamente sus propios tickets (no los de otros clientes). |
+
+---
+
+### Requerimientos Funcionales Cubiertos
+
+| RF | Descripción |
+|----|-------------|
+| RF-06 | Creación de ticket |
+| RF-15 | Publicación de evento al crear ticket |
+
+---
+
+## Caso de Uso: Asignación de Ticket
+
+| Campo | Descripción |
+|-------|-------------|
+| **Nombre** | Asignación de Ticket |
+| **ID** | UC-12 |
+| **Actor(es)** | Administrador, Técnico de Soporte (principal), Sistema (secundario) |
+| **Descripción** | Permite asignar un ticket existente a un técnico de soporte específico para que sea atendido. La asignación puede ser manual (por un administrador o técnico con permisos) o automática (disparada por el sistema al crear un ticket). |
+| **Tipo** | Primario / Esencial |
+
+---
+
+### Precondiciones
+
+| ID | Precondición |
+|----|--------------|
+| PC-01 | El ticket debe existir en el sistema (estar registrado en la base de datos). |
+| PC-02 | El ticket debe estar en estado `abierto` o `en_progreso` (no puede estar `resuelto` o `cerrado`). |
+| PC-03 | El usuario que realiza la asignación debe tener el rol de **Administrador** o **Técnico de Soporte**. |
+| PC-04 | El técnico a asignar debe existir en el sistema y tener el rol de **Técnico de Soporte**. |
+| PC-05 | El técnico a asignar debe estar activo (no eliminado/deshabilitado). |
+
+---
+
+### Flujo Normal (Básico) - Asignación Manual
+
+| Paso | Acción del Actor | Respuesta del Sistema |
+|------|------------------|----------------------|
+| 1 | El administrador accede al detalle de un ticket en estado `abierto` o `en_progreso`. | El sistema muestra la información completa del ticket. |
+| 2 | El administrador selecciona la opción "Asignar Ticket". | El sistema presenta una lista desplegable con todos los técnicos de soporte activos. |
+| 3 | El administrador selecciona un técnico de la lista. | El sistema valida que el técnico seleccionado sea válido y esté activo. |
+| 4 | El administrador confirma la asignación haciendo clic en "Asignar". | El sistema recibe la solicitud PUT/PATCH al endpoint `/tickets/{id}/assign`. |
+| 5 | - | El sistema verifica que el ticket no esté ya asignado al mismo técnico (evita duplicados). |
+| 6 | - | El sistema actualiza el campo `tecnico_asignado_id` del ticket con el ID del técnico seleccionado. |
+| 7 | - | El sistema registra la fecha y hora de asignación. |
+| 8 | - | El sistema cambia automáticamente el estado del ticket de `abierto` a `en_progreso` (si estaba en abierto). |
+| 9 | - | El sistema almacena un registro histórico de la asignación en la tabla de asignaciones. |
+| 10 | - | El sistema publica un evento `ticket.assigned` en el bus RabbitMQ. |
+| 11 | - | El sistema retorna una respuesta exitosa (HTTP 200 OK) con los datos actualizados del ticket. |
+| 12 | El sistema muestra un mensaje de confirmación "Ticket asignado exitosamente a [Técnico]". | - |
+
+---
+
+### Flujo Normal (Alternativo) - Asignación Automática
+
+| Paso | Acción del Actor | Respuesta del Sistema |
+|------|------------------|----------------------|
+| 1 | - | El servicio de asignaciones consume el evento `ticket.created` desde RabbitMQ. |
+| 2 | - | El sistema extrae el ID del ticket y la categoría/prioridad del evento. |
+| 3 | - | El sistema consulta la lista de técnicos disponibles (menos tickets activos asignados). |
+| 4 | - | El sistema aplica el algoritmo de asignación (round-robin o por carga mínima). |
+| 5 | - | El sistema selecciona al técnico más adecuado. |
+| 6 | - | El sistema realiza la asignación automática (mismos pasos 5-11 del flujo manual). |
+| 7 | - | El sistema publica un evento `ticket.assigned` (ya cubierto en paso 10 del flujo manual). |
+| 8 | - | El sistema genera una notificación para el técnico asignado. |
+
+---
+
+### Flujos Alternativos
+
+#### Flujo Alternativo 1: Ticket no encontrado
+
+| Paso | Acción del Actor | Respuesta del Sistema |
+|------|------------------|----------------------|
+| 1a | El administrador intenta asignar un ticket con ID inexistente. | El sistema busca el ticket en la base de datos. |
+| 2a | - | El sistema no encuentra el ticket. |
+| 3a | - | El sistema retorna un error HTTP 404 Not Found con mensaje "Ticket no encontrado". |
+
+#### Flujo Alternativo 2: Ticket en estado no asignable
+
+| Paso | Acción del Actor | Respuesta del Sistema |
+|------|------------------|----------------------|
+| 1b | El administrador intenta asignar un ticket en estado `resuelto` o `cerrado`. | El sistema verifica el estado actual del ticket. |
+| 2b | - | El sistema retorna un error HTTP 409 Conflict con mensaje "No se puede asignar un ticket en estado [estado_actual]". |
+| 3b | El sistema sugiere que primero se reabra el ticket si es necesario. | - |
+
+#### Flujo Alternativo 3: Técnico no encontrado o inactivo
+
+| Paso | Acción del Actor | Respuesta del Sistema |
+|------|------------------|----------------------|
+| 3a | El administrador selecciona un técnico que no existe o está inactivo. | El sistema valida la existencia y estado del técnico. |
+| 4a | - | El sistema retorna un error HTTP 404 Not Found o 400 Bad Request. |
+| 5a | El sistema muestra mensaje "El técnico seleccionado no está disponible". | - |
+
+#### Flujo Alternativo 4: Ticket ya asignado al mismo técnico
+
+| Paso | Acción del Actor | Respuesta del Sistema |
+|------|------------------|----------------------|
+| 4b | El administrador intenta asignar un ticket al técnico que ya lo tiene asignado. | El sistema detecta que `tecnico_asignado_id` ya coincide con el ID seleccionado. |
+| 5b | - | El sistema retorna un error HTTP 409 Conflict con mensaje "El ticket ya está asignado a este técnico". |
+
+#### Flujo Alternativo 5: Usuario no autorizado
+
+| Paso | Acción del Actor | Respuesta del Sistema |
+|------|------------------|----------------------|
+| 1c | Un cliente intenta asignar un ticket (sin permisos). | El sistema verifica el rol mediante RBAC. |
+| 2c | - | El sistema retorna un error HTTP 403 Forbidden. |
+| 3c | El sistema muestra mensaje "No tienes permisos para asignar tickets". | - |
+
+#### Flujo Alternativo 6: Asignación automática sin técnicos disponibles
+
+| Paso | Acción del Actor | Respuesta del Sistema |
+|------|------------------|----------------------|
+| 4d | - | El sistema consulta técnicos disponibles y no encuentra ninguno. |
+| 5d | - | El sistema no realiza la asignación automática. |
+| 6d | - | El sistema registra un log de advertencia "No hay técnicos disponibles para asignación automática". |
+| 7d | - | El ticket permanece en estado `abierto` sin asignar. |
+| 8d | - | El sistema publica un evento `ticket.unassigned` (opcional) para alertar a administradores. |
+
+#### Flujo Alternativo 7: Error en la publicación del evento
+
+| Paso | Acción del Actor | Respuesta del Sistema |
+|------|------------------|----------------------|
+| 10a | - | La asignación se realizó correctamente, pero RabbitMQ no está disponible. |
+| 11a | - | El sistema registra el evento en una cola de fallos o log de errores. |
+| 12a | - | El sistema programa un reintento para publicar el evento más tarde. |
+| 13a | La asignación es exitosa, pero las notificaciones podrían retrasarse. | - |
+
+---
+
+### Postcondiciones
+
+| ID | Postcondición | Estado |
+|----|---------------|--------|
+| PC-01 | El ticket tiene un técnico asignado (campo `tecnico_asignado_id` actualizado). | ✅ Siempre (si el flujo se completa) |
+| PC-02 | El estado del ticket cambia a `en_progreso` si estaba en `abierto`. | ✅ Siempre (si aplica) |
+| PC-03 | Se ha registrado la fecha y hora de asignación. | ✅ Siempre |
+| PC-04 | Se ha creado un registro histórico en la tabla de asignaciones. | ✅ Siempre |
+| PC-05 | Se ha publicado un evento `ticket.assigned` en RabbitMQ (o se ha intentado). | ✅ Siempre |
+| PC-06 | El técnico asignado puede ver el ticket en su lista "Mis Tickets". | ✅ Siempre |
+| PC-07 | Se ha generado una notificación al técnico asignado. | ✅ Siempre (si el sistema de notificaciones está operativo) |
+| PC-08 | Se ha registrado un log de la acción de asignación. | ✅ Siempre |
+
+---
+
+### Reglas de Negocio Asociadas
+
+| ID | Regla de Negocio |
+|----|------------------|
+| RN-06 | Un ticket solo puede estar asignado a un técnico a la vez. |
+| RN-07 | Un técnico puede tener múltiples tickets asignados simultáneamente. |
+| RN-08 | Al asignar un ticket en estado `abierto`, el sistema debe cambiarlo automáticamente a `en_progreso`. |
+| RN-09 | Un ticket en estado `resuelto` o `cerrado` no puede ser asignado. |
+| RN-10 | La reasignación de un ticket solo puede ser realizada por un Administrador. |
+| RN-11 | La asignación automática debe priorizar al técnico con menor carga de trabajo activa. |
+| RN-12 | Si un ticket es reasignado, debe conservarse el historial de asignaciones previas. |
+
+---
+
 ## Diagrama de arquitectura de alto nivel
 
 <div align="center">
@@ -16,6 +415,33 @@
 <div align="center">
   <img src="img/diagrama-de-despliegue.png" alt="" width="80%">
   <p><i>Figura 2: Diagrama de despliegue.</i></p>
+</div>
+
+---
+
+## Diagrama de actividades
+
+<div align="center">
+  <img src="img/diagrama-de-actividades.png" alt="" width="80%">
+  <p><i>Figura 3: Diagrama de actividades.</i></p>
+</div>
+
+---
+
+## Diagrama de secuencias
+
+<div align="center">
+  <img src="img/diagrama-de-secuencia.png" alt="" width="80%">
+  <p><i>Figura 4: Diagrama de secuencias.</i></p>
+</div>
+
+---
+
+## Diagrama de entidad-relación
+
+<div align="center">
+  <img src="img/diagrama-entidad-relacion.png" alt="" width="100%">
+  <p><i>Figura 5: Diagrama de entida relación.</i></p>
 </div>
 
 ---
@@ -137,6 +563,7 @@ Para este proyecto se ha seleccionado **RabbitMQ** como bus de mensajería asín
 | **Rendimiento en lecturas/escrituras** | Excelente para cargas de trabajo mixtas (OLTP). |
 | **Facilidad de operación** | Amplia documentación y comunidad. |
 | **Soporte en Docker** | Imagen oficial optimizada y fácil de configurar. |
+
 
 
 ### Modelo de datos por microservicio (Database per Service)

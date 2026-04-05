@@ -60,9 +60,9 @@
 
 | Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
 |-------------|----------------------------|---------------------------|--------------|
-| **202106538** |  |  |  |
+| **202106538** | Inicio del análisis de casos de uso y definición de actores principales | Completar diagrama de casos de uso de alto nivel | Tiempo limitado por otras tareas académicas |
 | **201504070** | Investigación sobre arquitecturas de microservicios y tecnologías disponibles | Iniciar diseño de arquitectura de alto nivel | Ninguno |
-| **201908327** |  |  |  |
+| **201908327** | Inicio de análisis de requerimientos funcionales del sistema | Finalizar requerimientos funcionales | Falta claridad en algunos requerimientos no funcionales |
 
 ---
 
@@ -72,9 +72,9 @@
 
 | Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
 |-------------|----------------------------|---------------------------|--------------|
-| **202106538** |  |  |  |
+| **202106538** | Se completó el diagrama de casos de uso de alto nivel | Desarrollar casos de uso expandidos (Creación y Asignación de Ticket) + iniciar diagrama de secuencias | Ninguno |
 | **201504070** | Se avanzó parcialmente en la arquitectura de alto nivel | Finalizar arquitectura de alto nivel y comenzar diagrama de despliegue | Consultar ejemplo de topología en K3s |
-| **201908327** |  |  |  |
+| **201908327** | Se completaron los requerimientos funcionales | Finalizar requerimientos no funcionales y diseñar diagrama Entidad-Relación | Ninguno |
 
 ---
 
@@ -84,9 +84,9 @@
 
 | Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
 |-------------|----------------------------|---------------------------|--------------|
-| **202106538** |  |  |  |
+| **202106538** | Se completaron los casos de uso expandidos (Creación y Asignación) | Finalizar diagrama de secuencias (mostrando eventos asíncronos) | Asegurar que el diagrama refleje correctamente RabbitMQ |
 | **201504070** | Se finalizó el diagrama de arquitectura de alto nivel y se avanzó en despliegue | Terminar diagrama de despliegue y completar justificación técnica del stack | Ninguno |
-| **201908327** |  |  |  |
+| **201908327** | Se completaron los requerimientos no funcionales y el diagrama ER | Finalizar diagrama de actividades (flujo completo ticket) y actualizar bitácora del sprint | Ninguno |
 
 ---
 
@@ -94,8 +94,41 @@
 
 | Integrante | ¿Qué se hizo bien durante el Sprint?                                                     | ¿Qué se hizo mal?                                                   | ¿Qué mejoras se deben implementar para el próximo sprint?      |
 | ---------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------- |
-| 202106538  |  |  |  |
-| 201504070  | Se completó correctamente la arquitectura y despliegue del sistema | El avance inicial fue lento debido a organización del equipo | Definir prioridades claras desde el primer día |
-| 201908327  |  |  |  |
+| 202106538  | Se lograron completar todos los diagramas asignados y hubo buena comunicación del equipo | Algunas tareas se retrasaron inicialmente por carga académica       | Mejorar la planificación del tiempo desde el inicio del sprint |
+| 201504070  | Se completó correctamente la arquitectura y despliegue del sistema                       | El avance inicial fue lento debido a organización del equipo        | Definir prioridades claras desde el primer día                 |
+| 201908327  | Se completaron todos los requerimientos y diagramas de apoyo                             | No se logró completar en menos días por falta de tiempo | Distribuir mejor las tareas y comenzar antes las actividades   |
 
 ---
+
+### Imagen del tablero al finalizar el Sprint
+
+![](img/kb2.jpg)
+
+[Link del tablero](https://trello.com/b/4MYI0zwc/sistema-de-soporte-tecnico)
+
+---
+
+## 📌 Resultado del Sprint Backlog
+
+<table>
+<tr>
+<th>#</th>
+<th>Tarea</th>
+<th> Estado</th>
+<th>Justificación </th>
+</tr>
+
+<tr><td>1</td><td>Definir y documentar requerimientos funcionales</td><td style="color: green;">Completado</td><td>Se completó en el segundo sprint tras ajustes iniciales</td></tr>
+<tr><td>2</td><td>Definir y documentar requerimientos no funcionales</td><td style="color: green;">Completado</td><td>Finalizado en el tercer sprint</td></tr>
+<tr><td>3</td><td>Crear diagrama de Casos de Uso de Alto Nivel</td><td style="color: green;">Completado</td><td>Completado en el segundo sprint</td></tr>
+<tr><td>4</td><td>Crear Caso de Uso Expandido: Creación de Ticket</td><td style="color: green;">Completado</td><td>Finalizado en el tercer sprint</td></tr>
+<tr><td>5</td><td>Crear Caso de Uso Expandido: Asignación de Ticket</td><td style="color: green;">Completado</td><td>Finalizado en el tercer sprint</td></tr>
+<tr><td>6</td><td>Crear diagrama de Arquitectura de Alto Nivel</td><td style="color: green;">Completado</td><td>Completado en el segundo sprint</td></tr>
+<tr><td>7</td><td>Crear diagrama de Despliegue</td><td style="color: green;">Completado</td><td>Finalizado en el tercer sprint</td></tr>
+<tr><td>8</td><td>Crear diagrama de Actividades</td><td style="color: green;">Completado</td><td>Finalizado en el tercer sprint</td></tr>
+<tr><td>9</td><td>Crear diagrama de Secuencias</td><td style="color: green;">Completado</td><td>Finalizado en el tercer sprint</td></tr>
+<tr><td>10</td><td>Crear Diagrama Entidad-Relación</td><td style="color: green;">Completado</td><td>Completado en el tercer sprint</td></tr>
+<tr><td>11</td><td>Justificación técnica del stack tecnológico</td><td style="color: green;">Completado</td><td>Finalizado en el tercer sprint</td></tr>
+<tr><td>13</td><td>Actualizar bitácora de actividades Sprint 1</td><td style="color: green;">Completado</td><td>Se mantuvo actualizada durante todo el desarrollo</td></tr>
+
+</table>
