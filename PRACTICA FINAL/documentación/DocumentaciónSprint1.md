@@ -53,3 +53,49 @@
 ![](img/kb1.jpg)
 
 ---
+
+## 📝 Daily Standup 1
+
+**Fecha:** 01/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** |  |  |  |
+| **201504070** | Investigación sobre arquitecturas de microservicios y tecnologías disponibles | Iniciar diseño de arquitectura de alto nivel | Ninguno |
+| **201908327** |  |  |  |
+
+---
+
+## 📝 Daily Standup 2
+
+**Fecha:** 02/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** |  |  |  |
+| **201504070** | Se avanzó parcialmente en la arquitectura de alto nivel | Finalizar arquitectura de alto nivel y comenzar diagrama de despliegue | Consultar ejemplo de topología en K3s |
+| **201908327** |  |  |  |
+
+---
+
+## 📝 Daily Standup 3
+
+**Fecha:** 03/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** |  |  |  |
+| **201504070** | Se finalizó el diagrama de arquitectura de alto nivel y se avanzó en despliegue | Terminar diagrama de despliegue y completar justificación técnica del stack | Ninguno |
+| **201908327** |  |  |  |
+
+---
+
+## 🔄 Sprint Retrospective
+
+| Integrante | ¿Qué se hizo bien durante el Sprint?                                                     | ¿Qué se hizo mal?                                                   | ¿Qué mejoras se deben implementar para el próximo sprint?      |
+| ---------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------- |
+| 202106538  |  |  |  |
+| 201504070  | Se completó correctamente la arquitectura y despliegue del sistema | El avance inicial fue lento debido a organización del equipo | Definir prioridades claras desde el primer día |
+| 201908327  |  |  |  |
+
+---
