@@ -57,3 +57,15 @@
 | **201908327** |  |  |  |
 
 ---
+
+## 📝 Daily Standup 2
+
+**Fecha:** 05/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** |  |  |  |
+| **201504070** | Api-gateway y tickets-svc configurados, JWT en progreso | Finalizar JWT + implementar CRUD de tickets, Configurar MySQL tickets | Conflictos de rutas entre api-gateway y auth-svc |
+| **201908327** |  |  |  |
+
+---
