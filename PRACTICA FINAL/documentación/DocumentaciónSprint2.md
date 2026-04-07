@@ -70,3 +70,16 @@
 
 
 ---
+
+
+## 📝 Daily Standup 3
+
+**Fecha:** 06/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** | CRUD de usuarios completado, MySQL funcionando para auth, users y assignments | Documentar principios SOLID + actualizar bitácora | Algunos principios SOLID no se reflejan claramente en el código |
+| **201504070** |  |  |  |
+| **201908327** |  |  |  |
+
+---
