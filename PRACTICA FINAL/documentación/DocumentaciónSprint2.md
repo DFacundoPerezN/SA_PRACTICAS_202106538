@@ -81,3 +81,15 @@
 | **201908327** |  |  |  |
 
 ---
+
+## 📝 Daily Standup 4
+
+**Fecha:** 07/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** |  |  |  |
+| **201504070** | Evento ticket.created publicado y consumido exitosamente | Validar integración completa y ayudar con documentación final | Ninguno |
+| **201908327** |  |  |  |
+
+---
