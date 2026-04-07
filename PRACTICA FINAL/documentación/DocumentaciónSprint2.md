@@ -82,4 +82,18 @@
 | **201504070** |  |  |  |
 | **201908327** |  |  |  |
 
+
+---
+
+## 📝 Daily Standup 4
+
+**Fecha:** 07/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** | Documentación SOLID completada, bitácora actualizada | Preparar documentación final junto al equipo | Ninguno |
+| **201504070** |  |  |  |
+| **201908327** |  |  |  |
+
+
 ---
