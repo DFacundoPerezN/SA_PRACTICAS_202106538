@@ -52,8 +52,21 @@
 
 | Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
 |-------------|----------------------------|---------------------------|--------------|
-| **202106538** | Revisión de la documentación del Sprint 1 y preparación del entorno de desarrollo | Configurar proyectos auth-svc y users-svc + iniciar CRUD de auth | Problemas con la versión de Node.js en el entorno local |
+| **202106538** | Se completó auth-svc, CRUD de users funcionando parcialmente | Terminar CRUD de usuarios + configurar MySQL para auth, users y assignments | Endpoint de registro no encripta contraseñas correctamente |
 | **201504070** |  |  |  |
 | **201908327** |  |  |  |
+
+---
+
+## 📝 Daily Standup 2
+
+**Fecha:** 05/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** | Se completaron auth-svc y users-svc, CRUD de auth funcionando parcialmente | Terminar CRUD de usuarios + configurar MySQL para auth, users y assignments | Endpoint de registro no encripta contraseñas correctamente |
+| **201504070** |  |  |  |
+| **201908327** |  |  |  |
+
 
 ---
