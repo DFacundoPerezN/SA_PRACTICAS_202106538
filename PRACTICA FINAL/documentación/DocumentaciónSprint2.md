@@ -69,3 +69,15 @@
 | **201908327** |  |  |  |
 
 ---
+
+## 📝 Daily Standup 3
+
+**Fecha:** 06/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** |  |  |  |
+| **201504070** | JWT implementado y validado, CRUD de tickets listo, MySQL tickets terminado | Implementar evento ticket.created y su consumo en assignments-svc | RabbitMQ no reconoce la cola automáticamente |
+| **201908327** |  |  |  |
+
+---
