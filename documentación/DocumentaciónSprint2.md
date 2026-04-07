@@ -67,3 +67,15 @@
 | **202106538** |  |  |  |
 | **201504070** |  |  |  |
 | **201908327** | Assignments-svc configurado, Dockerfiles creados para 4 servicios | Crear docker-compose.yml y configurar RabbitMQ | Ninguno |
+
+## 📝 Daily Standup 3
+
+**Fecha:** 06/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** |  |  |  |
+| **201504070** |  |  |  |
+| **201908327** | docker-compose.yml funcional, RabbitMQ corriendo | Probar levantamiento completo con docker-compose up + ajustes finales | El servicio assignments-svc no conecta con RabbitMQ |
+
+---
