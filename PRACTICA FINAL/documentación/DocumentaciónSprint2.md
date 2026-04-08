@@ -93,3 +93,12 @@
 | **201908327** |  |  |  |
 
 ---
+
+
+## 🔄 Sprint Retrospective
+
+| Integrante | ¿Qué se hizo bien durante el Sprint? | ¿Qué se hizo mal? | ¿Qué mejoras se deben implementar para el próximo sprint? |
+| ---------- | ------------------------------------ | ----------------- | --------------------------------------------------------- |
+| 202106538 |  | |  |
+| 201504070 | La integración de JWT y eventos asíncronos con RabbitMQ funcionó correctamente | Hubo conflictos de rutas entre servicios que retrasaron tareas | Definir un estándar de rutas antes de comenzar a codificar |
+| 201908327 |  |  |  |
