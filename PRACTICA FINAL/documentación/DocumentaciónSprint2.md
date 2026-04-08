@@ -97,3 +97,16 @@
 
 
 ---
+
+---
+
+## 🔄 Sprint Retrospective
+
+| Integrante | ¿Qué se hizo bien durante el Sprint? | ¿Qué se hizo mal? | ¿Qué mejoras se deben implementar para el próximo sprint? |
+| ---------- | ------------------------------------ | ----------------- | --------------------------------------------------------- |
+| 202106538 | Se logró configurar todos los servicios y CRUDs a tiempo | La documentación SOLID se dejó para el final, causando presión adicional | Documentar principios de diseño desde el inicio del desarrollo |
+| 201504070 |  |  |  |
+| 201908327 |  |  |  |
+
+---
+
