@@ -79,3 +79,15 @@
 | **201908327** | docker-compose.yml funcional, RabbitMQ corriendo | Probar levantamiento completo con docker-compose up + ajustes finales | El servicio assignments-svc no conecta con RabbitMQ |
 
 ---
+
+## 📝 Daily Standup 4
+
+**Fecha:** 07/04/2026
+
+| Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
+|-------------|----------------------------|---------------------------|--------------|
+| **202106538** |  |  |  |
+| **201504070** |  |  |  |
+| **201908327** | Se solucionó la conexión a RabbitMQ, levante completo exitoso | Ejecutar pruebas finales y preparar entrega | Ninguno |
+
+---

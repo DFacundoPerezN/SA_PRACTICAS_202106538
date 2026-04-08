@@ -657,4 +657,362 @@ Cada microservicio tiene su propia base de datos, evitando acoplamiento directo 
 
 ## 9. GitHub Actions — CI/CD y coherencia general del stack
 
+# Reporte de Principios SOLID Aplicados
+
+## 1. S — Single Responsibility Principle (SRP) {#srp}
+
+> **"Cada clase debe tener una única razón para cambiar."**
+
+Este es el principio más ampliamente aplicado en el proyecto. Se manifiesta en la separación en capas (domain / application / infrastructure) y en el patrón de **un use-case por operación de negocio**.
+
+---
+
+### `auth-service`
+
+| Archivo | Responsabilidad única |
+|---|---|
+| `auth/domain/user-auth.entity.ts` | Representa el estado persistido de credenciales. Sin lógica de negocio. |
+| `auth/domain/refresh-token.entity.ts` | Representa únicamente un refresh-token almacenado. |
+| `auth/application/use-cases/register.use-case.ts` | Solo registra un usuario nuevo (validar email duplicado → hashear password → crear). |
+| `auth/application/use-cases/login.use-case.ts` | Solo autentica credenciales y genera tokens. |
+| `auth/application/use-cases/logout.use-case.ts` | Solo revoca un refresh-token. |
+| `auth/application/use-cases/refresh-token.use-case.ts` | Solo rota el par de tokens dado un refresh-token válido. |
+| `auth/application/use-cases/validate-token.use-case.ts` | Solo verifica la firma y vigencia de un access-token. |
+| `auth/application/use-cases/admin-register.use-case.ts` | Solo crea usuarios con rol explícito (flujo de administrador). |
+| `auth/infrastructure/services/bcrypt.service.ts` | Solo hashea/compara passwords con bcrypt. |
+| `auth/infrastructure/services/jwt.service.ts` | Solo firma/verifica JWTs de acceso y refresco. |
+| `auth/infrastructure/services/token-hash.service.ts` | Solo aplica SHA-256 determinístico a tokens (necesario para lookup en BD). |
+| `auth/infrastructure/repositories/auth.repository.ts` | Solo accede a las tablas `users_auth` y `refresh_tokens`. |
+| `auth/auth.controller.ts` | Solo traduce mensajes gRPC a llamadas del servicio de aplicación y viceversa. |
+| `auth/application/auth.service.ts` | Solo actúa como orquestador/fachada de los use-cases; delega toda la lógica. |
+
+**¿Por qué?** Separar cada operación de autenticación en su propio use-case garantiza que un cambio en la política de login (p. ej. agregar 2FA) no afecte el código de registro, logout, etc. Cada archivo tiene **una sola razón para cambiar**.
+
+---
+
+### `users-service`
+
+| Archivo | Responsabilidad única |
+|---|---|
+| `users/domain/user.entity.ts` | Estado de un usuario (columnas de BD, relaciones). Sin lógica de negocio. |
+| `users/domain/role.entity.ts` | Catalogo de roles. Sin lógica de negocio. |
+| `users/application/use-cases/create-user.use-case.ts` | Solo crea un usuario (valida email duplicado, resuelve rol, persiste). |
+| `users/application/use-cases/find-user.use-case.ts` | Solo consulta usuarios (por ID, por email, listado paginado). |
+| `users/application/use-cases/update-user.use-case.ts` | Solo actualiza campos de un usuario existente. |
+| `users/application/use-cases/delete-user.use-case.ts` | Solo realiza soft-delete de un usuario. |
+| `users/infrastructure/repositories/user.repository.ts` | Solo accede a la BD para usuarios y roles. |
+| `users/users.mapper.ts` | Solo convierte `UserEntity` → DTO de respuesta gRPC. |
+| `users/users.controller.ts` | Solo recibe métodos gRPC y delega al servicio. |
+
+---
+
+### `tickets-service`
+
+| Archivo | Responsabilidad única |
+|---|---|
+| `tickets/domain/ticket.entity.ts` | Estado persistido de un ticket. |
+| `tickets/domain/comment.entity.ts` | Representa un comentario en un ticket. |
+| `tickets/domain/ticket-history.entity.ts` | Representa una entrada de historial de cambios. |
+| `tickets/domain/category.entity.ts` | Catálogo de categorías. |
+| `tickets/domain/priority.entity.ts` | Catálogo de prioridades. |
+| `tickets/domain/ticket-status.entity.ts` | Catálogo de estados posibles. |
+| `tickets/application/use-cases/create-ticket.use-case.ts` | Solo crea un ticket y publica el evento `ticket.created`. |
+| `tickets/application/use-cases/find-ticket.use-case.ts` | Solo consulta tickets (por ID, listados, búsqueda full-text). |
+| `tickets/application/use-cases/update-ticket.use-case.ts` | Solo edita descripción/prioridad/categoría y escribe historial. |
+| `tickets/application/use-cases/change-status.use-case.ts` | Solo valida y aplica transiciones de estado (máquina de estados). |
+| `tickets/application/use-cases/assign-ticket.use-case.ts` | Solo asigna un ticket a un técnico y escribe historial. |
+| `tickets/application/use-cases/add-comment.use-case.ts` | Solo agrega un comentario a un ticket. |
+| `tickets/application/use-cases/auto-close-tickets.use-case.ts` | Solo cierra tickets resueltos con más de N días de inactividad. |
+| `tickets/infrastructure/messaging/rabbitmq-publisher.service.ts` | Solo publica eventos en RabbitMQ. |
+| `tickets/infrastructure/scheduler/auto-close.scheduler.ts` | Solo dispara el cron de auto-cierre (sin lógica de negocio propia). |
+| `tickets/tickets.mapper.ts` | Solo convierte entidades de dominio → DTOs de respuesta gRPC. |
+
+**Nota destacada — `AutoCloseScheduler` vs `AutoCloseTicketsUseCase`**: el scheduler sabe *cuándo* ejecutar la tarea; el use-case sabe *cómo*. Son dos razones de cambio distintas, por eso están en archivos separados. Si el horario cambia, solo toca el scheduler. Si la lógica de cierre cambia, solo toca el use-case.
+
+---
+
+### `assignments-service`
+
+| Archivo | Responsabilidad única |
+|---|---|
+| `assignments/domain/assignment.entity.ts` | Estado de una asignación. |
+| `assignments/domain/assignment-status.entity.ts` | Catálogo de estados de asignación. |
+| `assignments/domain/technician-workload.entity.ts` | Contador de carga de trabajo por técnico. |
+| `assignments/application/use-cases/manual-assign.use-case.ts` | Solo realiza asignación manual con validación de conflictos. |
+| `assignments/application/use-cases/auto-assign.use-case.ts` | Solo selecciona el técnico con menor carga y crea la asignación automáticamente. |
+| `assignments/application/use-cases/update-assignment.use-case.ts` | Solo reasigna o cierra una asignación existente. |
+| `assignments/application/use-cases/find-assignment.use-case.ts` | Solo consulta asignaciones (por ID, por ticket, por técnico, listado). |
+| `assignments/infrastructure/repositories/assignment.repository.ts` | Solo accede a las tablas de asignaciones y carga de trabajo. |
+| `assignments/infrastructure/messaging/rabbitmq-publisher.service.ts` | Solo publica eventos de asignación en RabbitMQ. |
+| `assignments/infrastructure/messaging/rabbitmq-consumer.controller.ts` | Solo consume el evento `ticket.created` y dispara el auto-assign. |
+| `assignments/infrastructure/messaging/tickets-grpc-client.service.ts` | Solo realiza la llamada gRPC `AssignTicket` al tickets-service. |
+| `assignments/assignments.mapper.ts` | Solo convierte entidades → DTOs de respuesta gRPC. |
+
+---
+
+### `api-gateway`
+
+| Archivo | Responsabilidad única |
+|---|---|
+| `common/filters/all-exceptions.filter.ts` | Solo captura excepciones y las convierte a respuestas HTTP consistentes. |
+| `common/interceptors/logging.interceptor.ts` | Solo registra método, URL y tiempo de respuesta de cada petición. |
+| `common/guards/jwt-auth.guard.ts` | Solo valida el token JWT y verifica roles. |
+| `common/decorators/roles.decorator.ts` | Solo adjunta metadatos de roles a rutas. |
+| `grpc/grpc.options.ts` | Solo define opciones de conexión gRPC por servicio. |
+| `grpc/grpc-clients.module.ts` | Solo registra y exporta los clientes gRPC. |
+| `auth/auth.controller.ts` | Solo traduce peticiones HTTP de autenticación a llamadas gRPC. |
+| `tickets/tickets.controller.ts` | Solo traduce peticiones HTTP de tickets a llamadas gRPC. |
+| `users/users.controller.ts` | Solo traduce peticiones HTTP de usuarios a llamadas gRPC. |
+| `assignments/assignments.controller.ts` | Solo traduce peticiones HTTP de asignaciones a llamadas gRPC. |
+
+---
+
+## 2. O — Open/Closed Principle (OCP) {#ocp}
+
+> **"Las entidades deben estar abiertas a extensión, cerradas a modificación."**
+
+### `tickets-service/src/tickets/application/use-cases/change-status.use-case.ts`
+
+```typescript
+const VALID_TRANSITIONS: Record<string, string[]> = {
+  abierto:     ['en_progreso'],
+  en_progreso: ['resuelto'],
+  resuelto:    ['cerrado', 'reabierto'],
+  cerrado:     ['reabierto'],
+  reabierto:   ['en_progreso'],
+};
+```
+
+La máquina de estados de tickets está declarada como un mapa de datos. Para agregar un nuevo estado o una nueva transición **no se modifica la lógica del use-case**, solo se extiende el mapa. El algoritmo de validación permanece intacto.
+
+### Interfaces de repositorio e interfaces de publisher
+
+Las interfaces `ITicketRepository`, `IAssignmentRepository`, `IAuthRepository`, `IUserRepository`, `IEventPublisher` e `IAssignmentEventPublisher` están **cerradas para modificación** desde el punto de vista de los use-cases. Si se necesita un nuevo proveedor de base de datos o de mensajería, se crea una nueva clase que implemente la interfaz sin tocar nada de la capa de aplicación.
+
+---
+
+## 3. L — Liskov Substitution Principle (LSP) {#lsp}
+
+> **"Los subtipos deben poder sustituir a sus tipos base sin alterar el comportamiento correcto del programa."**
+
+### `tickets-service` — `RabbitMqPublisherService implements IEventPublisher`
+
+```typescript
+// tickets/infrastructure/messaging/rabbitmq-publisher.service.ts
+@Injectable()
+export class RabbitMqPublisherService implements IEventPublisher { ... }
+```
+
+El use-case `CreateTicketUseCase` recibe un `IEventPublisher`. Puede recibir `RabbitMqPublisherService` en producción o un mock `{ publishTicketCreated: jest.fn() }` en tests; en ambos casos el contrato se cumple completamente (misma firma, mismo tipo de retorno `Promise<void>`).
+
+### `auth-service` — `BcryptService implements IHashService` / `JwtTokenService implements ITokenService`
+
+Ambas implementaciones satisfacen completamente el contrato de su interfaz. Un test puede sustituir `JwtTokenService` por cualquier implementación que firme y verifique tokens del mismo modo, sin cambiar los use-cases que la consumen.
+
+### `assignments-service` — `TicketsGrpcClientService implements ITicketsGrpcClient`
+
+El use-case solo llama a `assignTicket(data): Promise<void>`. La implementación concreta usa gRPC; en tests se puede sustituir por un stub que retorne `Promise.resolve()`. La sustitución no altera el comportamiento de los use-cases.
+
+---
+
+## 4. I — Interface Segregation Principle (ISP) {#isp}
+
+> **"Los clientes no deben depender de interfaces que no usan."**
+
+### `auth-service/src/auth/application/interfaces/token-service.interface.ts`
+
+En lugar de una única interfaz `IAuthServices` monolítica, el proyecto define tres interfaces pequeñas y específicas:
+
+```typescript
+export interface ITokenService {    // Firma y verifica JWTs
+  signAccessToken(payload: TokenPayload): string;
+  verifyAccessToken(token: string): TokenPayload | null;
+  signRefreshToken(payload: TokenPayload): string;
+  verifyRefreshToken(token: string): TokenPayload | null;
+}
+
+export interface IHashService {     // Hashea y compara passwords
+  hash(plain: string): Promise<string>;
+  compare(plain: string, hashed: string): Promise<boolean>;
+}
+
+export interface ITokenHashService { // Hash determinístico de tokens
+  hash(token: string): string;
+}
+```
+
+- `ValidateTokenUseCase` solo inyecta `ITokenService` — no sabe nada de hashing de passwords.
+- `RegisterUseCase` solo inyecta `IHashService` — no sabe nada de tokens JWT.
+- `LogoutUseCase` inyecta `ITokenService` y `ITokenHashService` — solo lo que necesita para revocar.
+
+Cada use-case depende únicamente de los métodos que realmente usa.
+
+### `assignments-service/src/assignments/application/interfaces/`
+
+Se definen tres interfaces separadas:
+
+- `IAssignmentRepository` — operaciones de persistencia.
+- `IAssignmentEventPublisher` — solo `publishAssignmentCreated`.
+- `ITicketsGrpcClient` — solo `assignTicket`.
+
+`FindAssignmentUseCase` solo inyecta `IAssignmentRepository` (no necesita publicar eventos ni llamar a gRPC). `UpdateAssignmentUseCase` inyecta `IAssignmentRepository` y `ITicketsGrpcClient` (no necesita publicar eventos). Esta granularidad evita que un use-case dependa de métodos que nunca llamará.
+
+---
+
+## 5. D — Dependency Inversion Principle (DIP) {#dip}
+
+> **"Los módulos de alto nivel no deben depender de módulos de bajo nivel. Ambos deben depender de abstracciones."**
+
+Este es el principio más enfatizado estructuralmente en el proyecto. Se aplica de forma **sistemática y consistente** en todos los servicios mediante el patrón de inyección de dependencias de NestJS con tokens de símbolo (`Symbol`).
+
+---
+
+### Patrón general aplicado
+
+#### 1. Se define una interfaz (abstracción) en la capa de aplicación
+
+```typescript
+// application/interfaces/assignment-repository.interface.ts
+export interface IAssignmentRepository { ... }
+export const ASSIGNMENT_REPOSITORY = Symbol('IAssignmentRepository');
+```
+
+#### 2. Los use-cases dependen de la abstracción, nunca de la implementación concreta
+
+```typescript
+// application/use-cases/auto-assign.use-case.ts
+@Injectable()
+export class AutoAssignUseCase {
+  constructor(
+    @Inject(ASSIGNMENT_REPOSITORY)      private readonly assignRepo:    IAssignmentRepository,
+    @Inject(ASSIGNMENT_EVENT_PUBLISHER) private readonly publisher:     IAssignmentEventPublisher,
+    @Inject(TICKETS_GRPC_CLIENT_TOKEN)  private readonly ticketsClient: ITicketsGrpcClient,
+  ) {}
+```
+
+Los tipos de las dependencias son **interfaces**, no clases concretas.
+
+#### 3. El módulo conecta la abstracción con la implementación concreta
+
+```typescript
+// assignments.module.ts
+providers: [
+  AssignmentRepository,
+  { provide: ASSIGNMENT_REPOSITORY, useExisting: AssignmentRepository },
+
+  RabbitMqPublisherService,
+  { provide: ASSIGNMENT_EVENT_PUBLISHER, useExisting: RabbitMqPublisherService },
+
+  TicketsGrpcClientService,
+  { provide: TICKETS_GRPC_CLIENT_TOKEN, useExisting: TicketsGrpcClientService },
+]
+```
+
+El módulo es el único lugar donde se "conoce" la implementación concreta. El resto del código de aplicación no lo sabe.
+
+---
+
+### Mapa completo de aplicaciones DIP por servicio
+
+#### `auth-service`
+
+| Abstracción (interfaz + símbolo) | Implementación concreta | Archivo del vínculo |
+|---|---|---|
+| `IAuthRepository` / `AUTH_REPOSITORY` | `AuthRepository` | `auth.module.ts` |
+| `ITokenService` / `TOKEN_SERVICE` | `JwtTokenService` | `auth.module.ts` |
+| `IHashService` / `HASH_SERVICE` | `BcryptService` | `auth.module.ts` |
+| `ITokenHashService` / `TOKEN_HASH_SERVICE` | `TokenHashService` | `auth.module.ts` |
+
+Use-cases dependientes:
+
+- `LoginUseCase` → inyecta `IAuthRepository`, `IHashService`, `ITokenService`, `ITokenHashService`
+- `RefreshTokenUseCase` → inyecta `IAuthRepository`, `ITokenService`, `ITokenHashService`
+- `ValidateTokenUseCase` → inyecta solo `ITokenService`
+- `RegisterUseCase` → inyecta `IAuthRepository`, `IHashService`
+
+**¿Por qué importa?** Si mañana se reemplaza bcrypt por Argon2, solo se crea `Argon2Service implements IHashService` y se actualiza el binding en `auth.module.ts`. Los use-cases (`RegisterUseCase`, `LoginUseCase`) **no se tocan**.
+
+---
+
+#### `users-service`
+
+| Abstracción | Implementación concreta | Archivo del vínculo |
+|---|---|---|
+| `IUserRepository` / `USER_REPOSITORY` | `UserRepository` | `users.module.ts` |
+
+Todos los use-cases (`CreateUserUseCase`, `FindUserUseCase`, `UpdateUserUseCase`, `DeleteUserUseCase`) inyectan `IUserRepository`. Ninguno importa ni referencia `UserRepository` directamente.
+
+---
+
+#### `tickets-service`
+
+| Abstracción | Implementación concreta | Archivo del vínculo |
+|---|---|---|
+| `ITicketRepository` / `TICKET_REPOSITORY` | `TicketRepository` | `tickets.module.ts` |
+| `IEventPublisher` / `EVENT_PUBLISHER` | `RabbitMqPublisherService` | `tickets.module.ts` |
+
+```typescript
+// tickets.module.ts
+{ provide: TICKET_REPOSITORY, useExisting: TicketRepository },
+{ provide: EVENT_PUBLISHER,   useExisting: RabbitMqPublisherService },
+```
+
+Los use-cases `CreateTicketUseCase`, `ChangeStatusUseCase` y `AssignTicketUseCase` publican eventos llamando a `IEventPublisher` — nunca a `ClientProxy` de RabbitMQ directamente. Si se migra a Kafka, solo se implementa `KafkaPublisherService implements IEventPublisher` y se cambia el binding.
+
+El comentario en el código de la interfaz lo declara explícitamente:
+
+```typescript
+// event-publisher.interface.ts
+// Abstracción sobre RabbitMQ (o cualquier broker futuro).
+// Los use-cases dependen solo de esta interfaz — nunca de RabbitMQ directamente (DIP).
+```
+
+---
+
+#### `assignments-service`
+
+Es el servicio donde el DIP se aplica con mayor profundidad, dado que tiene **tres dependencias de infraestructura** diferentes:
+
+| Abstracción | Implementación concreta | Uso |
+|---|---|---|
+| `IAssignmentRepository` / `ASSIGNMENT_REPOSITORY` | `AssignmentRepository` (TypeORM/MySQL) | Todos los use-cases |
+| `IAssignmentEventPublisher` / `ASSIGNMENT_EVENT_PUBLISHER` | `RabbitMqPublisherService` | `ManualAssignUseCase`, `AutoAssignUseCase` |
+| `ITicketsGrpcClient` / `TICKETS_GRPC_CLIENT_TOKEN` | `TicketsGrpcClientService` | `ManualAssignUseCase`, `AutoAssignUseCase`, `UpdateAssignmentUseCase` |
+
+El comentario en `tickets-grpc-client.interface.ts` lo expresa claramente:
+
+```typescript
+// Abstracción que permite a assignments-service actualizar el campo assigned_to
+// en un ticket sin depender de un cliente gRPC concreto (DIP).
+// La implementación inyecta el cliente gRPC real; los tests inyectan un mock.
+```
+
+**Caso de prueba de testabilidad:** `AutoAssignUseCase` puede probarse en aislamiento completo inyectando:
+- Un `IAssignmentRepository` en memoria (sin BD real).
+- Un `IAssignmentEventPublisher` mock (sin RabbitMQ real).
+- Un `ITicketsGrpcClient` stub (sin servidor gRPC real).
+
+Esto es la consecuencia directa y práctica del DIP aplicado correctamente.
+
+---
+
+### Diagrama de dependencias (DIP aplicado)
+
+```
+Use-Cases (aplicación)
+    │
+    ├── @Inject(TICKET_REPOSITORY)         →  ITicketRepository  ←── TicketRepository (TypeORM)
+    ├── @Inject(EVENT_PUBLISHER)           →  IEventPublisher    ←── RabbitMqPublisherService
+    ├── @Inject(AUTH_REPOSITORY)           →  IAuthRepository    ←── AuthRepository (TypeORM)
+    ├── @Inject(TOKEN_SERVICE)             →  ITokenService      ←── JwtTokenService
+    ├── @Inject(HASH_SERVICE)              →  IHashService       ←── BcryptService
+    ├── @Inject(TOKEN_HASH_SERVICE)        →  ITokenHashService  ←── TokenHashService
+    ├── @Inject(USER_REPOSITORY)           →  IUserRepository    ←── UserRepository (TypeORM)
+    ├── @Inject(ASSIGNMENT_REPOSITORY)     →  IAssignmentRepository ←── AssignmentRepository
+    ├── @Inject(ASSIGNMENT_EVENT_PUBLISHER)→  IAssignmentEventPublisher ←── RabbitMqPublisherService
+    └── @Inject(TICKETS_GRPC_CLIENT_TOKEN) →  ITicketsGrpcClient ←── TicketsGrpcClientService
+
+Módulos (*.module.ts)  ←── único lugar donde se conocen las implementaciones concretas
+```
+
 ---
