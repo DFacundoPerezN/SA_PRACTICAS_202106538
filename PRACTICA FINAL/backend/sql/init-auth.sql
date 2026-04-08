@@ -28,3 +28,12 @@ CREATE TABLE refresh_tokens (
   INDEX idx_rt_user_id (user_id),
   INDEX idx_rt_expires (expires_at)
 ) ENGINE=InnoDB;
+
+-- Insertar usuario administrador por defecto
+INSERT INTO users_auth (id, email, password_hash, is_active) 
+VALUES (
+    '16df9e7f-3150-11f1-9cc0-002b6738278b',
+    'admin@admin.com', 
+    '$2b$10$L9pWAdTnvrT5kJGJJGzug.gpzP8cHl6/llxW6sig2opN7DdZYb8/6', 
+    1
+);
