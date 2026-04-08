@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+<<<<<<< HEAD
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { AppModule } from './app.module';
@@ -27,4 +28,12 @@ async function bootstrap() {
   console.log(`Tickets Service running on ${host}:${grpcPort}`);
 }
 
+=======
+import { TicketsServiceModule } from './tickets-service.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(TicketsServiceModule);
+  await app.listen(process.env.TICKETS_GRPC_PORT ?? 5003);
+}
+>>>>>>> feature/202106538
 bootstrap();
