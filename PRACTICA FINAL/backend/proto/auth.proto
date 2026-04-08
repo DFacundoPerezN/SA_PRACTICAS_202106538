@@ -3,16 +3,23 @@ syntax = "proto3";
 package auth;
 
 service AuthService {
-  rpc Register (RegisterRequest)       returns (RegisterResponse);
-  rpc Login    (LoginRequest)          returns (LoginResponse);
-  rpc Refresh  (RefreshRequest)        returns (RefreshResponse);
-  rpc Validate (ValidateRequest)       returns (ValidateResponse);
-  rpc Logout   (LogoutRequest)         returns (LogoutResponse);
+  rpc Register      (RegisterRequest)      returns (RegisterResponse);
+  rpc AdminRegister (AdminRegisterRequest) returns (RegisterResponse);
+  rpc Login         (LoginRequest)         returns (LoginResponse);
+  rpc Refresh       (RefreshRequest)       returns (RefreshResponse);
+  rpc Validate      (ValidateRequest)      returns (ValidateResponse);
+  rpc Logout        (LogoutRequest)        returns (LogoutResponse);
 }
 
 message RegisterRequest {
   string email    = 1;
   string password = 2;
+}
+
+message AdminRegisterRequest {
+  string email    = 1;
+  string password = 2;
+  int32  role_id  = 3;
 }
 
 message RegisterResponse {
@@ -23,12 +30,14 @@ message RegisterResponse {
 message LoginRequest {
   string email    = 1;
   string password = 2;
+  string role     = 3;
 }
 
 message LoginResponse {
   string access_token  = 1;
   string refresh_token = 2;
   string user_id       = 3;
+  string role          = 4;
 }
 
 message RefreshRequest {
@@ -47,6 +56,7 @@ message ValidateRequest {
 message ValidateResponse {
   bool   valid   = 1;
   string user_id = 2;
+  string role    = 3;
 }
 
 message LogoutRequest {

@@ -2,8 +2,8 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { AUTH_REPOSITORY } from '../interfaces/auth-repository.interface';
 import type { IAuthRepository } from '../interfaces/auth-repository.interface';
-import { HASH_SERVICE, TOKEN_SERVICE } from '../interfaces/token-service.interface';
-import type { IHashService, ITokenService } from '../interfaces/token-service.interface';
+import { TOKEN_SERVICE, TOKEN_HASH_SERVICE } from '../interfaces/token-service.interface';
+import type { ITokenService, ITokenHashService } from '../interfaces/token-service.interface';
 
 export interface RefreshInput {
   refreshToken: string;
@@ -17,9 +17,9 @@ export interface RefreshOutput {
 @Injectable()
 export class RefreshTokenUseCase {
   constructor(
-    @Inject(AUTH_REPOSITORY) private readonly authRepo: IAuthRepository,
-    @Inject(HASH_SERVICE)    private readonly hashSvc: IHashService,
-    @Inject(TOKEN_SERVICE)   private readonly tokenSvc: ITokenService,
+    @Inject(AUTH_REPOSITORY)    private readonly authRepo: IAuthRepository,
+    @Inject(TOKEN_SERVICE)      private readonly tokenSvc: ITokenService,
+    @Inject(TOKEN_HASH_SERVICE) private readonly tokenHashSvc: ITokenHashService,
   ) {}
 
   async execute(input: RefreshInput): Promise<RefreshOutput> {
@@ -28,7 +28,8 @@ export class RefreshTokenUseCase {
       throw new UnauthorizedException('Invalid refresh token');
     }
 
-    const tokenHash   = await this.hashSvc.hash(input.refreshToken);
+    // SHA-256: same token → same hash → can find it in DB
+    const tokenHash   = this.tokenHashSvc.hash(input.refreshToken);
     const storedToken = await this.authRepo.findRefreshToken(tokenHash);
 
     if (!storedToken || storedToken.revoked || storedToken.expiresAt < new Date()) {
@@ -42,11 +43,11 @@ export class RefreshTokenUseCase {
       throw new UnauthorizedException('User not found or inactive');
     }
 
-    const newPayload      = { sub: user.id, email: user.email };
+    const newPayload      = { sub: user.id, email: user.email, role: payload.role };
     const newAccessToken  = this.tokenSvc.signAccessToken(newPayload);
     const newRefreshToken = this.tokenSvc.signRefreshToken(newPayload);
 
-    const newTokenHash = await this.hashSvc.hash(newRefreshToken);
+    const newTokenHash = this.tokenHashSvc.hash(newRefreshToken);
     const expiresAt    = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     await this.authRepo.saveRefreshToken(randomUUID(), user.id, newTokenHash, expiresAt);
 
