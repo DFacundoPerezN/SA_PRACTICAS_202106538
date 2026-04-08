@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+<<<<<<< HEAD:PRACTICA FINAL/backend/apps/tickets-service/src/main.ts
 <<<<<<< HEAD
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
@@ -29,11 +30,16 @@ async function bootstrap() {
 }
 
 =======
+=======
+>>>>>>> origin/feature/201908327:backend/apps/tickets-service/src/main.ts
 import { TicketsServiceModule } from './tickets-service.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(TicketsServiceModule);
   await app.listen(process.env.TICKETS_GRPC_PORT ?? 5003);
 }
+<<<<<<< HEAD:PRACTICA FINAL/backend/apps/tickets-service/src/main.ts
 >>>>>>> feature/202106538
+=======
+>>>>>>> origin/feature/201908327:backend/apps/tickets-service/src/main.ts
 bootstrap();
