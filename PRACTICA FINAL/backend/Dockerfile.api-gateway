@@ -1,0 +1,47 @@
+# ============================================
+# STAGE 1: Builder
+# ============================================
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copiar archivos de dependencias
+COPY package*.json ./
+
+# Usar npm install
+RUN npm install
+
+# Copiar código fuente completo
+COPY . .
+
+# Copiar archivos proto
+COPY proto ./dist/proto
+
+# Compilar la aplicación
+RUN npm run build
+
+# ============================================
+# STAGE 2: Production
+# ============================================
+FROM node:20-alpine AS production
+
+WORKDIR /app
+
+# Variables de entorno para producción
+ENV NODE_ENV=production
+
+# Copiar solo lo necesario desde el builder
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/proto ./dist/proto
+
+# Instalar SOLO dependencias de producción
+RUN npm install --only=production && npm cache clean --force
+
+WORKDIR /app/dist/apps/api-gateway
+
+EXPOSE 4000
+
+USER node
+
+CMD ["node", "main.js"]

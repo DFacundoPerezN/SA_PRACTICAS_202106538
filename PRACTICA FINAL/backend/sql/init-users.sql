@@ -29,3 +29,7 @@ CREATE TABLE users (
   INDEX idx_users_role    (role_id),
   INDEX idx_users_deleted (deleted_at)
 ) ENGINE=InnoDB;
+
+-- Activar usuario administrador por defecto
+INSERT INTO users (id, name, email, role_id, is_active) VALUES
+('16df9e7f-3150-11f1-9cc0-002b6738278b', 'Admin User', 'admin@admin.com', 3, 1);

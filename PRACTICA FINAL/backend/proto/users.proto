@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package users;
+
+service UsersService {
+  rpc CreateUser   (CreateUserRequest)   returns (UserResponse);
+  rpc FindById     (FindByIdRequest)     returns (UserResponse);
+  rpc FindByEmail  (FindByEmailRequest)  returns (UserResponse);
+  rpc FindAll      (FindAllRequest)      returns (FindAllResponse);
+  rpc UpdateUser   (UpdateUserRequest)   returns (UserResponse);
+  rpc DeleteUser   (DeleteUserRequest)   returns (DeleteUserResponse);
+}
+
+message CreateUserRequest {
+  string id    = 1;
+  string name  = 2;
+  string email = 3;
+  string role  = 4;
+}
+
+message FindByIdRequest {
+  string id = 1;
+}
+
+message FindByEmailRequest {
+  string email = 1;
+}
+
+message FindAllRequest {
+  string role   = 1;
+  int32  page   = 2;
+  int32  limit  = 3;
+}
+
+message UpdateUserRequest {
+  string id    = 1;
+  string name  = 2;
+  string email = 3;
+  string role  = 4;
+}
+
+message DeleteUserRequest {
+  string id = 1;
+}
+
+message UserResponse {
+  string id         = 1;
+  string name       = 2;
+  string email      = 3;
+  string role       = 4;
+  bool   is_active  = 5;
+  string created_at = 6;
+}
+
+message FindAllResponse {
+  repeated UserResponse users = 1;
+  int32                 total = 2;
+}
+
+message DeleteUserResponse {
+  bool   success = 1;
+  string message = 2;
+}
