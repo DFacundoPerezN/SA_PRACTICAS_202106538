@@ -91,3 +91,13 @@
 | **201908327** | Se solucionó la conexión a RabbitMQ, levante completo exitoso | Ejecutar pruebas finales y preparar entrega | Ninguno |
 
 ---
+
+## 🔄 Sprint Retrospective
+
+| Integrante | ¿Qué se hizo bien durante el Sprint? | ¿Qué se hizo mal? | ¿Qué mejoras se deben implementar para el próximo sprint? |
+| ---------- | ------------------------------------ | ----------------- | --------------------------------------------------------- |
+| 202106538 |  |  |  |
+| 201504070 |  |  |  |
+| 201908327 | El levantamiento completo con docker-compose funcionó sin errores críticos | La configuración inicial de RabbitMQ fue confusa y consumió tiempo | Incluir ejemplos de configuración de colas en la documentación interna |
+
+---
