@@ -21,19 +21,19 @@ const _doRefresh = async (): Promise<string | null> => {
   if (!refreshToken) return null;
 
   try {
-    const response = await fetch(`${CONFIG.API_URL}/auth/refresh`, {
+    const response = await fetch(`${CONFIG.API_URL}/api/auth/refresh`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken }),
+      body: JSON.stringify({ refresh_token: refreshToken }),
     });
 
     if (!response.ok) throw new Error("Refresh token inválido");
 
     const data = await response.json();
-    
+
     setSession({
-      accessToken: data.accessToken,
-      refreshToken: data.refreshToken ?? refreshToken,
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token ?? refreshToken,
     });
 
     return data.accessToken;

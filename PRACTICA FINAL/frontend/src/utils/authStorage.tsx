@@ -52,13 +52,13 @@ export const logout = async (): Promise<boolean> => {
   try {
     if (refreshToken) {
       // Hacer la petición de logout al backend
-      const response = await fetch(`${CONFIG.API_URL}/auth/logout`, {
+      const response = await fetch(`${CONFIG.API_URL}/api/auth/logout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          refreshToken: refreshToken
+          refresh_token: refreshToken,
         }),
       });
 

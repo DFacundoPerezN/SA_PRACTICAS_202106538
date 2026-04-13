@@ -213,6 +213,18 @@ services:
     ports:
       - "4000:4000"
 
+  # =============================
+  # FRONTEND
+  # =============================
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - api-gateway
+
 volumes:
   mysql_auth_data:
   mysql_users_data:

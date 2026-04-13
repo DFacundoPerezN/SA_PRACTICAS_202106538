@@ -1,27 +1,30 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import PrivateRoute       from "./PrivateRoute";
-import PublicRoute        from "./PublicRoute";
-import NavBar             from "../components/NavBar";
-import Login              from "../pages/auth/Login";
-import Register           from "../pages/auth/Register";
-import AdminRestaurants   from "../pages/admin/AdminRestaurants";
-import AdminUsers         from "../pages/admin/AdminUsers";
-import AdminMenus         from "../pages/admin/AdminMenus";
-import AdminOrders        from "../pages/admin/AdminOrders";
-import AdminReembolso     from "../pages/admin/AdminReembolso";
-import AdminCoupons       from "../pages/admin/AdminCoupons";
-import HomeCatalog        from "../pages/client/HomeCatalog";
-import RestaurantMenu     from "../pages/client/RestaurantMenu";
-import MyOrders           from "../pages/client/MyOrders";
-import MyWallet           from "../pages/client/MyWallet";
-import MyPayments         from "../pages/client/MyPayments";
-import IncomingOrders     from "../pages/restaurant/IncomingOrders";
-import ManageMenu         from "../pages/restaurant/ManageMenu";
-import AvailableDeliveries from "../pages/delivery/AvailableDeliveries";
-import ActiveDelivery     from "../pages/delivery/ActiveDelivery";
-import NotFound           from "../pages/errors/NotFound";
-import Unauthorized       from "../pages/errors/Unauthorized";
+import PrivateRoute        from "./PrivateRoute";
+import PublicRoute         from "./PublicRoute";
+import NavBar              from "../components/NavBar";
+import Login               from "../pages/auth/Login";
+import Register            from "../pages/auth/Register";
+
+// ── CLIENTE ────────────────────────────────────────────────────
+import ClientTickets       from "../pages/client/ClientTickets";
+import ClientNewTicket     from "../pages/client/ClientNewTicket";
+import ClientTicketDetail  from "../pages/client/ClientTicketDetail";
+
+// ── TÉCNICO ────────────────────────────────────────────────────
+import TecnicoTickets      from "../pages/technician/TechnicianTickets";
+import TecnicoTicketDetail from "../pages/technician/TechnicianTicketDetail";
+
+// ── ADMINISTRADOR ──────────────────────────────────────────────
+import AdminUsers          from "../pages/admin/AdminUsers";
+import AdminRegisterUser   from "../pages/admin/AdminRegisterUser";
+import AdminTickets        from "../pages/admin/AdminTickets";
+import AdminAssignments    from "../pages/admin/AdminAssignments";
+import AdminWorkload       from "../pages/admin/AdminWorkload";
+
+// ── ERRORES ────────────────────────────────────────────────────
+import NotFound            from "../pages/errors/NotFound";
+import Unauthorized        from "../pages/errors/Unauthorized";
 
 export const RouterApp = createBrowserRouter([
   {
@@ -29,142 +32,107 @@ export const RouterApp = createBrowserRouter([
     element: <NavBar />,
     errorElement: <NotFound />,
     children: [
-      // ── CLIENTE ────────────────────────────────────────────
+
+      // ── CLIENTE ──────────────────────────────────────────────
       {
         index: true,
         element: (
-          <PrivateRoute roles={['CLIENTE']}>
-            <HomeCatalog />
+          <PrivateRoute roles={["cliente"]}>
+            <ClientTickets />
           </PrivateRoute>
         ),
       },
       {
-        path: "client/restaurants/:id",
+        path: "client/tickets",
         element: (
-          <PrivateRoute roles={['CLIENTE']}>
-            <RestaurantMenu />
+          <PrivateRoute roles={["cliente"]}>
+            <ClientTickets />
           </PrivateRoute>
         ),
       },
       {
-        path: "client/orders",
+        path: "client/tickets/new",
         element: (
-          <PrivateRoute roles={['CLIENTE']}>
-            <MyOrders />
-          </PrivateRoute>
-        ),
-      },
-      // ── Nuevas rutas de pagos (CLIENTE) ───────────────────
-      {
-        path: "client/wallet",
-        element: (
-          <PrivateRoute roles={['CLIENTE']}>
-            <MyWallet />
+          <PrivateRoute roles={["cliente"]}>
+            <ClientNewTicket />
           </PrivateRoute>
         ),
       },
       {
-        path: "client/payments",
+        path: "client/tickets/:id",
         element: (
-          <PrivateRoute roles={['CLIENTE']}>
-            <MyPayments />
+          <PrivateRoute roles={["cliente"]}>
+            <ClientTicketDetail />
           </PrivateRoute>
         ),
       },
 
-      // ── ADMINISTRADOR ──────────────────────────────────────
+      // ── TÉCNICO ──────────────────────────────────────────────
       {
-        path: "admin/restaurants",
+        path: "tecnico/tickets",
         element: (
-          <PrivateRoute roles={['ADMINISTRADOR']}>
-            <AdminRestaurants />
+          <PrivateRoute roles={["tecnico"]}>
+            <TecnicoTickets />
           </PrivateRoute>
         ),
       },
       {
+        path: "tecnico/tickets/:id",
+        element: (
+          <PrivateRoute roles={["tecnico"]}>
+            <TecnicoTicketDetail />
+          </PrivateRoute>
+        ),
+      },
+
+      // ── ADMINISTRADOR ─────────────────────────────────────────
+      {
         path: "admin/users",
         element: (
-          <PrivateRoute roles={['ADMINISTRADOR']}>
+          <PrivateRoute roles={["administrador"]}>
             <AdminUsers />
           </PrivateRoute>
         ),
       },
       {
-        path: "admin/menus",
+        path: "admin/users/register",
         element: (
-          <PrivateRoute roles={['ADMINISTRADOR']}>
-            <AdminMenus />
+          <PrivateRoute roles={["administrador"]}>
+            <AdminRegisterUser />
           </PrivateRoute>
         ),
       },
       {
-        path: "admin/orders",
+        path: "admin/tickets",
         element: (
-          <PrivateRoute roles={['ADMINISTRADOR']}>
-            <AdminOrders />
-          </PrivateRoute>
-        ),
-      },
-      // ── Nueva ruta de cupones (ADMIN) ─────────────────────
-      {
-        path: "admin/coupons",
-        element: (
-          <PrivateRoute roles={['ADMINISTRADOR']}>
-            <AdminCoupons />
+          <PrivateRoute roles={["administrador"]}>
+            <AdminTickets />
           </PrivateRoute>
         ),
       },
       {
-        path: "admin/reembolso",
+        path: "admin/assignments",
         element: (
-          <PrivateRoute roles={['ADMINISTRADOR']}>
-            <AdminReembolso />
-          </PrivateRoute>
-        )
-      },
-
-      // ── RESTAURANTE ────────────────────────────────────────
-      {
-        path: "restaurant/orders",
-        element: (
-          <PrivateRoute roles={['RESTAURANTE']}>
-            <IncomingOrders />
+          <PrivateRoute roles={["administrador"]}>
+            <AdminAssignments />
           </PrivateRoute>
         ),
       },
       {
-        path: "restaurant/menu",
+        path: "admin/workload",
         element: (
-          <PrivateRoute roles={['RESTAURANTE']}>
-            <ManageMenu />
+          <PrivateRoute roles={["administrador"]}>
+            <AdminWorkload />
           </PrivateRoute>
         ),
       },
 
-      // ── REPARTIDOR ─────────────────────────────────────────
-      {
-        path: "delivery/available",
-        element: (
-          <PrivateRoute roles={['REPARTIDOR']}>
-            <AvailableDeliveries />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "delivery/active",
-        element: (
-          <PrivateRoute roles={['REPARTIDOR']}>
-            <ActiveDelivery />
-          </PrivateRoute>
-        ),
-      },
-
-      // ── ERRORES ────────────────────────────────────────────
+      // ── ERRORES ───────────────────────────────────────────────
       { path: "unauthorized", element: <Unauthorized /> },
     ],
   },
 
-  // ── PUBLIC ─────────────────────────────────────────────────
+  // ── PUBLIC ───────────────────────────────────────────────────
   { path: "/login",    element: <PublicRoute><Login /></PublicRoute> },
   { path: "/register", element: <PublicRoute><Register /></PublicRoute> },
 ]);

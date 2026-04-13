@@ -2,18 +2,17 @@ import { useState, useEffect } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { logout, getUser } from "../utils/authStorage";
 import {
-  HomeIcon,
+  TicketIcon,
   UsersIcon,
-  BuildingStorefrontIcon,
+  PlusCircleIcon,
   ClipboardDocumentListIcon,
-  TruckIcon,
+  ChartBarIcon,
   ArrowLeftOnRectangleIcon,
   Bars3Icon,
   XMarkIcon,
-  CubeIcon,
+  WrenchScrewdriverIcon,
   UserCircleIcon,
-  BookOpenIcon,
-  WalletIcon,
+  ShieldCheckIcon,
 } from "@heroicons/react/24/outline";
 
 const NavBar = () => {
@@ -24,7 +23,6 @@ const NavBar = () => {
   const [isHoverEnabled, setIsHoverEnabled] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Detectar si estamos en móvil
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -33,7 +31,6 @@ const NavBar = () => {
         setIsHoverEnabled(false);
       }
     };
-
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
@@ -47,41 +44,54 @@ const NavBar = () => {
   const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
     setIsLoggingOut(true);
-    
     try {
       await logout();
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.error("Error during logout:", error);
       localStorage.clear();
-      navigate('/login');
+      navigate("/login");
     } finally {
       setIsLoggingOut(false);
     }
   };
 
-  // Clases base para los enlaces
-  const linkClass = "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 group";
+  const linkClass =
+    "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 group";
   const activeClass = "bg-blue-600 text-white shadow-md";
   const inactiveClass = "text-slate-300 hover:bg-slate-800 hover:text-white";
 
+  // Etiqueta e icono del rol
+  const roleLabel: Record<string, string> = {
+    cliente: "Cliente",
+    tecnico: "Técnico",
+    administrador: "Administrador",
+  };
+  const roleIcon: Record<string, React.ReactNode> = {
+    cliente: <UserCircleIcon className="w-4 h-4" />,
+    tecnico: <WrenchScrewdriverIcon className="w-4 h-4" />,
+    administrador: <ShieldCheckIcon className="w-4 h-4" />,
+  };
+
+  const role: string = user?.role ?? "";
+
   return (
     <div className="flex min-h-screen bg-slate-50">
-      {/* Overlay para móvil */}
+      {/* Overlay móvil */}
       {isExpanded && isMobile && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden"
           onClick={() => setIsExpanded(false)}
         />
       )}
 
-      {/* Botón toggle para móvil/desktop */}
+      {/* Botón toggle */}
       <button
         onClick={handleToggle}
         className={`fixed top-4 z-50 p-2 rounded-lg bg-slate-900 text-white shadow-lg transition-all duration-300 hover:bg-slate-800 ${
-          isExpanded 
-            ? isMobile 
-              ? "left-64" 
+          isExpanded
+            ? isMobile
+              ? "left-64"
               : "left-56"
             : "left-4"
         } md:left-4`}
@@ -96,12 +106,8 @@ const NavBar = () => {
       {/* Sidebar */}
       <aside
         className={`fixed top-0 left-0 h-screen bg-gradient-to-b from-slate-900 to-slate-950 text-white z-40 transition-all duration-500 ease-in-out shadow-xl ${
-          isExpanded 
-            ? "w-64 md:w-56" 
-            : "w-20"
-        } ${
-          isMobile && !isExpanded ? "-translate-x-full" : ""
-        }`}
+          isExpanded ? "w-64 md:w-56" : "w-20"
+        } ${isMobile && !isExpanded ? "-translate-x-full" : ""}`}
         onMouseEnter={() => {
           if (isHoverEnabled && !isMobile) setIsExpanded(true);
         }}
@@ -110,18 +116,24 @@ const NavBar = () => {
         }}
       >
         <div className="flex flex-col h-full">
-          {/* Logo y título */}
+          {/* Logo */}
           <div className="p-4 border-b border-slate-800">
             <div className="flex items-center gap-3">
-              <div className="bg-blue-600 p-2 rounded-lg">
-                <CubeIcon className="w-6 h-6" />
+              <div className="bg-blue-600 p-2 rounded-lg flex-shrink-0">
+                <WrenchScrewdriverIcon className="w-6 h-6" />
               </div>
-              <div className={`overflow-hidden transition-all duration-300 ${isExpanded ? "w-auto opacity-100" : "w-0 opacity-0"}`}>
-                <h1 className="text-xl font-bold whitespace-nowrap">Food Delivery</h1>
+              <div
+                className={`overflow-hidden transition-all duration-300 ${
+                  isExpanded ? "w-auto opacity-100" : "w-0 opacity-0"
+                }`}
+              >
+                <h1 className="text-xl font-bold whitespace-nowrap">
+                  HelpDesk
+                </h1>
                 {user && (
                   <div className="flex items-center gap-2 mt-1 text-sm text-slate-400">
-                    <UserCircleIcon className="w-4 h-4" />
-                    <span>{user.role?.toLowerCase()}</span>
+                    {roleIcon[role] ?? <UserCircleIcon className="w-4 h-4" />}
+                    <span>{roleLabel[role] ?? role}</span>
                   </div>
                 )}
               </div>
@@ -131,74 +143,76 @@ const NavBar = () => {
           {/* Navegación */}
           <nav className="flex-1 p-4 overflow-y-auto">
             <div className="space-y-1">
-              {/* CLIENTE */}
-              {user?.role === "CLIENTE" && (
+
+              {/* ── CLIENTE ─────────────────────────────────── */}
+              {role === "cliente" && (
                 <>
                   <NavLink
-                    to="/"
+                    to="/client/tickets"
                     className={({ isActive }) =>
                       `${linkClass} ${isActive ? activeClass : inactiveClass}`
                     }
-                    title="Catálogo"
+                    title="Mis Tickets"
                   >
-                    <HomeIcon className="w-5 h-5 flex-shrink-0" />
-                    <span className={`transition-all duration-300 whitespace-nowrap ${
-                      isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 absolute"
-                    }`}>
-                      Catálogo
+                    <TicketIcon className="w-5 h-5 flex-shrink-0" />
+                    <span
+                      className={`transition-all duration-300 whitespace-nowrap ${
+                        isExpanded
+                          ? "opacity-100 translate-x-0"
+                          : "opacity-0 -translate-x-4 absolute"
+                      }`}
+                    >
+                      Mis Tickets
                     </span>
                   </NavLink>
 
                   <NavLink
-                    to="/client/orders"
+                    to="/client/tickets/new"
                     className={({ isActive }) =>
                       `${linkClass} ${isActive ? activeClass : inactiveClass}`
                     }
-                    title="Mis Órdenes"
+                    title="Nuevo Ticket"
                   >
-                    <ClipboardDocumentListIcon className="w-5 h-5 flex-shrink-0" />
-                    <span className={`transition-all duration-300 whitespace-nowrap ${
-                      isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 absolute"
-                    }`}>
-                      Mis Órdenes
+                    <PlusCircleIcon className="w-5 h-5 flex-shrink-0" />
+                    <span
+                      className={`transition-all duration-300 whitespace-nowrap ${
+                        isExpanded
+                          ? "opacity-100 translate-x-0"
+                          : "opacity-0 -translate-x-4 absolute"
+                      }`}
+                    >
+                      Nuevo Ticket
                     </span>
                   </NavLink>
-
-                  <NavLink
-                    to="/client/wallet"
-                    className={({ isActive }) =>
-                      `${linkClass} ${isActive ? activeClass : inactiveClass}`
-                    }
-                    title="Mi Billetera"
-                  >
-                    <WalletIcon className="w-5 h-5 flex-shrink-0" />
-                    <span className={`transition-all duration-300 whitespace-nowrap ${
-                      isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 absolute"
-                    }`}>
-                      Mi Billetera
-                    </span>
-                  </NavLink>
-
-                  <NavLink
-                    to="/client/payments"
-                    className={({ isActive }) =>
-                      `${linkClass} ${isActive ? activeClass : inactiveClass}`
-                    }
-                    title="Mis Pagos"
-                  > 
-                    <ClipboardDocumentListIcon className="w-5 h-5 flex-shrink-0" />
-                    <span className={`transition-all duration-300 whitespace-nowrap ${
-                      isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 absolute"
-                    }`}>
-                      Mis Pagos
-                    </span>
-                  </NavLink>
-
                 </>
               )}
 
-              {/* ADMIN */}
-              {user?.role === "ADMINISTRADOR" && (
+              {/* ── TÉCNICO ─────────────────────────────────── */}
+              {role === "tecnico" && (
+                <>
+                  <NavLink
+                    to="/tecnico/tickets"
+                    className={({ isActive }) =>
+                      `${linkClass} ${isActive ? activeClass : inactiveClass}`
+                    }
+                    title="Tickets Asignados"
+                  >
+                    <ClipboardDocumentListIcon className="w-5 h-5 flex-shrink-0" />
+                    <span
+                      className={`transition-all duration-300 whitespace-nowrap ${
+                        isExpanded
+                          ? "opacity-100 translate-x-0"
+                          : "opacity-0 -translate-x-4 absolute"
+                      }`}
+                    >
+                      Tickets Asignados
+                    </span>
+                  </NavLink>
+                </>
+              )}
+
+              {/* ── ADMINISTRADOR ───────────────────────────── */}
+              {role === "administrador" && (
                 <>
                   <NavLink
                     to="/admin/users"
@@ -208,156 +222,71 @@ const NavBar = () => {
                     title="Usuarios"
                   >
                     <UsersIcon className="w-5 h-5 flex-shrink-0" />
-                    <span className={`transition-all duration-300 whitespace-nowrap ${
-                      isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 absolute"
-                    }`}>
+                    <span
+                      className={`transition-all duration-300 whitespace-nowrap ${
+                        isExpanded
+                          ? "opacity-100 translate-x-0"
+                          : "opacity-0 -translate-x-4 absolute"
+                      }`}
+                    >
                       Usuarios
                     </span>
                   </NavLink>
 
                   <NavLink
-                    to="/admin/restaurants"
+                    to="/admin/tickets"
                     className={({ isActive }) =>
                       `${linkClass} ${isActive ? activeClass : inactiveClass}`
                     }
-                    title="Restaurantes"
+                    title="Tickets"
                   >
-                    <BuildingStorefrontIcon className="w-5 h-5 flex-shrink-0" />
-                    <span className={`transition-all duration-300 whitespace-nowrap ${
-                      isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 absolute"
-                    }`}>
-                      Restaurantes
+                    <TicketIcon className="w-5 h-5 flex-shrink-0" />
+                    <span
+                      className={`transition-all duration-300 whitespace-nowrap ${
+                        isExpanded
+                          ? "opacity-100 translate-x-0"
+                          : "opacity-0 -translate-x-4 absolute"
+                      }`}
+                    >
+                      Tickets
                     </span>
                   </NavLink>
 
                   <NavLink
-                    to="/admin/menus"
+                    to="/admin/assignments"
                     className={({ isActive }) =>
                       `${linkClass} ${isActive ? activeClass : inactiveClass}`
                     }
-                    title="Menús"
+                    title="Asignaciones"
                   >
-                    <BookOpenIcon className="w-5 h-5 flex-shrink-0" />
-                    <span className={`transition-all duration-300 whitespace-nowrap ${
-                      isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 absolute"
-                    }`}>
-                      Menús
+                    <WrenchScrewdriverIcon className="w-5 h-5 flex-shrink-0" />
+                    <span
+                      className={`transition-all duration-300 whitespace-nowrap ${
+                        isExpanded
+                          ? "opacity-100 translate-x-0"
+                          : "opacity-0 -translate-x-4 absolute"
+                      }`}
+                    >
+                      Asignaciones
                     </span>
                   </NavLink>
 
                   <NavLink
-                    to="/admin/orders"
+                    to="/admin/workload"
                     className={({ isActive }) =>
                       `${linkClass} ${isActive ? activeClass : inactiveClass}`
                     }
-                    title="Órdenes"
+                    title="Carga de Trabajo"
                   >
-                    <ClipboardDocumentListIcon className="w-5 h-5 flex-shrink-0" />
-                    <span className={`transition-all duration-300 whitespace-nowrap ${
-                      isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 absolute"
-                    }`}>
-                      Órdenes
-                    </span>
-                  </NavLink>
-
-                  <NavLink
-                    to="/admin/reembolso"
-                    className={({ isActive }) =>
-                      `${linkClass} ${isActive ? activeClass : inactiveClass}`
-                    }
-                    title="Reembolsos"
-                  >
-                    <WalletIcon className="w-5 h-5 flex-shrink-0" />
-                    <span className={`transition-all duration-300 whitespace-nowrap ${
-                      isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 absolute"
-                    }`}>
-                      Reembolsos
-                    </span>
-                  </NavLink>
-
-                  <NavLink
-                    to="/admin/coupons"
-                    className={({ isActive }) =>
-                      `${linkClass} ${isActive ? activeClass : inactiveClass}`
-                    }
-                    title="Cupones"
-                  >
-                    <BookOpenIcon className="w-5 h-5 flex-shrink-0" />
-                    <span className={`transition-all duration-300 whitespace-nowrap ${
-                      isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 absolute"
-                    }`}>
-                      Cupones
-                    </span>
-                  </NavLink>
-                  
-                </>
-              )}
-
-              {/* RESTAURANTE */}
-              {user?.role === "RESTAURANTE" && (
-                <>
-                  <NavLink
-                    to="/restaurant/orders"
-                    className={({ isActive }) =>
-                      `${linkClass} ${isActive ? activeClass : inactiveClass}`
-                    }
-                    title="Órdenes"
-                  >
-                    <ClipboardDocumentListIcon className="w-5 h-5 flex-shrink-0" />
-                    <span className={`transition-all duration-300 whitespace-nowrap ${
-                      isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 absolute"
-                    }`}>
-                      Órdenes
-                    </span>
-                  </NavLink>
-
-                  <NavLink
-                    to="/restaurant/menu"
-                    className={({ isActive }) =>
-                      `${linkClass} ${isActive ? activeClass : inactiveClass}`
-                    }
-                    title="Menú"
-                  >
-                    <BuildingStorefrontIcon className="w-5 h-5 flex-shrink-0" />
-                    <span className={`transition-all duration-300 whitespace-nowrap ${
-                      isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 absolute"
-                    }`}>
-                      Menú
-                    </span>
-                  </NavLink>
-                </>
-              )}
-
-              {/* DELIVERY */}
-              {user?.role === "REPARTIDOR" && (
-                <>
-                  <NavLink
-                    to="/delivery/available"
-                    className={({ isActive }) =>
-                      `${linkClass} ${isActive ? activeClass : inactiveClass}`
-                    }
-                    title="Pedidos Disponibles"
-                  >
-                    <TruckIcon className="w-5 h-5 flex-shrink-0" />
-                    <span className={`transition-all duration-300 whitespace-nowrap ${
-                      isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 absolute"
-                    }`}>
-                      Pedidos Disponibles
-                    </span>
-                  </NavLink>
-
-                  <NavLink
-                    to="/delivery/active"
-                    className={({ isActive }) =>
-                      `${linkClass} ${isActive ? activeClass : inactiveClass}`
-                    }
-                    title="Pedido Activo"
-                  >
-                    <TruckIcon className="w-5 h-5 flex-shrink-0" />
-                    <span className={`transition-all duration-300 whitespace-nowrap ${
-                      isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 absolute"
-                    }`}>
-                      Pedido Activo
+                    <ChartBarIcon className="w-5 h-5 flex-shrink-0" />
+                    <span
+                      className={`transition-all duration-300 whitespace-nowrap ${
+                        isExpanded
+                          ? "opacity-100 translate-x-0"
+                          : "opacity-0 -translate-x-4 absolute"
+                      }`}
+                    >
+                      Carga de Trabajo
                     </span>
                   </NavLink>
                 </>
@@ -365,7 +294,7 @@ const NavBar = () => {
             </div>
           </nav>
 
-          {/* Botón de Logout */}
+          {/* Logout */}
           <div className="p-4 border-t border-slate-800">
             <button
               onClick={handleLogout}
@@ -374,9 +303,13 @@ const NavBar = () => {
               title="Cerrar sesión"
             >
               <ArrowLeftOnRectangleIcon className="w-5 h-5 flex-shrink-0" />
-              <span className={`transition-all duration-300 whitespace-nowrap ${
-                isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 absolute"
-              }`}>
+              <span
+                className={`transition-all duration-300 whitespace-nowrap ${
+                  isExpanded
+                    ? "opacity-100 translate-x-0"
+                    : "opacity-0 -translate-x-4 absolute"
+                }`}
+              >
                 {isLoggingOut ? (
                   <span className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-red-300 border-t-transparent rounded-full animate-spin"></div>
