@@ -1,4 +1,16 @@
 import { NestFactory } from '@nestjs/core';
+<<<<<<< HEAD:PRACTICA FINAL/backend/apps/users-service/src/main.ts
+<<<<<<< HEAD
+=======
+>>>>>>> origin/feature/201908327:backend/apps/users-service/src/main.ts
+import { UsersServiceModule } from './users-service.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(UsersServiceModule);
+  await app.listen(process.env.USERS_GRPC_PORT ?? 5002);
+}
+<<<<<<< HEAD:PRACTICA FINAL/backend/apps/users-service/src/main.ts
+=======
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { AppModule } from './app.module';
@@ -27,4 +39,7 @@ async function bootstrap() {
   console.log(`User Service running on ${host}:${grpcPort}`);
 }
 
+>>>>>>> feature/202106538
+=======
+>>>>>>> origin/feature/201908327:backend/apps/users-service/src/main.ts
 bootstrap();

@@ -52,9 +52,20 @@
 
 | Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
 |-------------|----------------------------|---------------------------|--------------|
+<<<<<<< HEAD:PRACTICA FINAL/documentación/DocumentaciónSprint2.md
+<<<<<<< HEAD
+| **202106538** |  |  |  |
+| **201504070** | Análisis de la integración entre api-gateway y los microservicios | Configurar api-gateway y tickets-svc + comenzar JWT | Ninguno |
+=======
 | **202106538** | Se completó auth-svc, CRUD de users funcionando parcialmente | Terminar CRUD de usuarios + configurar MySQL para auth, users y assignments | Endpoint de registro no encripta contraseñas correctamente |
 | **201504070** |  |  |  |
+>>>>>>> feature/202106538
 | **201908327** |  |  |  |
+=======
+| **202106538** |  |  |  |
+| **201504070** |  |  |  |
+| **201908327** | Estudio de docker-compose y RabbitMQ para eventos asíncronos | Crear CRUD de assignments-svc y crear Dockerfiles iniciales | Falta de claridad en la comunicación entre contenedores |
+>>>>>>> origin/feature/201908327:documentación/DocumentaciónSprint2.md
 
 ---
 
@@ -64,6 +75,15 @@
 
 | Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
 |-------------|----------------------------|---------------------------|--------------|
+<<<<<<< HEAD:PRACTICA FINAL/documentación/DocumentaciónSprint2.md
+<<<<<<< HEAD
+| **202106538** |  |  |  |
+| **201504070** | Api-gateway y tickets-svc configurados, JWT en progreso | Finalizar JWT + implementar CRUD de tickets, Configurar MySQL tickets | Conflictos de rutas entre api-gateway y auth-svc |
+| **201908327** |  |  |  |
+
+---
+
+=======
 | **202106538** | Se completaron auth-svc y users-svc, CRUD de auth funcionando parcialmente | Terminar CRUD de usuarios + configurar MySQL para auth, users y assignments | Endpoint de registro no encripta contraseñas correctamente |
 | **201504070** |  |  |  |
 | **201908327** |  |  |  |
@@ -72,17 +92,38 @@
 ---
 
 
+>>>>>>> feature/202106538
+=======
+| **202106538** |  |  |  |
+| **201504070** |  |  |  |
+| **201908327** | Assignments-svc configurado, Dockerfiles creados para 4 servicios | Crear docker-compose.yml y configurar RabbitMQ | Ninguno |
+
+>>>>>>> origin/feature/201908327:documentación/DocumentaciónSprint2.md
 ## 📝 Daily Standup 3
 
 **Fecha:** 06/04/2026
 
 | Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
 |-------------|----------------------------|---------------------------|--------------|
+<<<<<<< HEAD:PRACTICA FINAL/documentación/DocumentaciónSprint2.md
+<<<<<<< HEAD
+| **202106538** |  |  |  |
+| **201504070** | JWT implementado y validado, CRUD de tickets listo, MySQL tickets terminado | Implementar evento ticket.created y su consumo en assignments-svc | RabbitMQ no reconoce la cola automáticamente |
+| **201908327** |  |  |  |
+
+=======
 | **202106538** | CRUD de usuarios completado, MySQL funcionando para auth, users y assignments | Documentar principios SOLID + actualizar bitácora | Algunos principios SOLID no se reflejan claramente en el código |
 | **201504070** |  |  |  |
 | **201908327** |  |  |  |
 
 
+>>>>>>> feature/202106538
+=======
+| **202106538** |  |  |  |
+| **201504070** |  |  |  |
+| **201908327** | docker-compose.yml funcional, RabbitMQ corriendo | Probar levantamiento completo con docker-compose up + ajustes finales | El servicio assignments-svc no conecta con RabbitMQ |
+
+>>>>>>> origin/feature/201908327:documentación/DocumentaciónSprint2.md
 ---
 
 ## 📝 Daily Standup 4
@@ -91,6 +132,15 @@
 
 | Responsable | Qué se hizo el día anterior | Qué se hará el día actual | Impedimentos |
 |-------------|----------------------------|---------------------------|--------------|
+<<<<<<< HEAD:PRACTICA FINAL/documentación/DocumentaciónSprint2.md
+<<<<<<< HEAD
+| **202106538** |  |  |  |
+| **201504070** | Evento ticket.created publicado y consumido exitosamente | Validar integración completa y ayudar con documentación final | Ninguno |
+| **201908327** |  |  |  |
+
+---
+
+=======
 | **202106538** | Documentación SOLID completada, bitácora actualizada | Preparar documentación final junto al equipo | Ninguno |
 | **201504070** |  |  |  |
 | **201908327** |  |  |  |
@@ -99,14 +149,37 @@
 ---
 
 ---
+>>>>>>> feature/202106538
 
+=======
+| **202106538** |  |  |  |
+| **201504070** |  |  |  |
+| **201908327** | Se solucionó la conexión a RabbitMQ, levante completo exitoso | Ejecutar pruebas finales y preparar entrega | Ninguno |
+
+---
+
+>>>>>>> origin/feature/201908327:documentación/DocumentaciónSprint2.md
 ## 🔄 Sprint Retrospective
 
 | Integrante | ¿Qué se hizo bien durante el Sprint? | ¿Qué se hizo mal? | ¿Qué mejoras se deben implementar para el próximo sprint? |
 | ---------- | ------------------------------------ | ----------------- | --------------------------------------------------------- |
+<<<<<<< HEAD:PRACTICA FINAL/documentación/DocumentaciónSprint2.md
+<<<<<<< HEAD
+| 202106538 |  | |  |
+| 201504070 | La integración de JWT y eventos asíncronos con RabbitMQ funcionó correctamente | Hubo conflictos de rutas entre servicios que retrasaron tareas | Definir un estándar de rutas antes de comenzar a codificar |
+| 201908327 |  |  |  |
+=======
 | 202106538 | Se logró configurar todos los servicios y CRUDs a tiempo | La documentación SOLID se dejó para el final, causando presión adicional | Documentar principios de diseño desde el inicio del desarrollo |
 | 201504070 |  |  |  |
 | 201908327 |  |  |  |
 
 ---
 
+>>>>>>> feature/202106538
+=======
+| 202106538 |  |  |  |
+| 201504070 |  |  |  |
+| 201908327 | El levantamiento completo con docker-compose funcionó sin errores críticos | La configuración inicial de RabbitMQ fue confusa y consumió tiempo | Incluir ejemplos de configuración de colas en la documentación interna |
+
+---
+>>>>>>> origin/feature/201908327:documentación/DocumentaciónSprint2.md
