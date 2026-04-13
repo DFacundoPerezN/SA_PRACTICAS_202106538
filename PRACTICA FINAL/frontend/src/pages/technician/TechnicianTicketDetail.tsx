@@ -88,7 +88,7 @@ const CommentBubble = ({
     >
       {comment.content}
     </div>
-    <span className="text-xs text-slate-400 px-1">{formatDateTime(comment.created_at)}</span>
+    <span className="text-xs text-slate-400 px-1">{formatDateTime(comment.createdAt)}</span>
   </div>
 );
 
@@ -326,7 +326,7 @@ const TechnicianTicketDetail = () => {
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="px-5 py-3.5 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
           <h2 className="text-sm font-semibold text-slate-600">Detalles del ticket</h2>
-          <span className="text-xs text-slate-400">{formatDate(ticket.created_at)}</span>
+          <span className="text-xs text-slate-400">{formatDate(ticket.createdAt)}</span>
         </div>
         <div className="px-5 divide-y divide-slate-100">
           <DetailRow label="Descripción">
@@ -356,7 +356,7 @@ const TechnicianTicketDetail = () => {
               <span className="text-slate-400 italic">Sin asignar</span>
             )}
           </DetailRow>
-          <DetailRow label="Última actualización">{formatDateTime(ticket.updated_at)}</DetailRow>
+          <DetailRow label="Última actualización">{formatDateTime(ticket.updatedAt)}</DetailRow>
         </div>
       </div>
 

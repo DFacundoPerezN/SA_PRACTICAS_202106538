@@ -83,6 +83,7 @@ El rol puede ser:
 {
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI...",
   "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI...",
+  "role": "administrador",
   "user_id": "uuid-generado"
 }
 ```

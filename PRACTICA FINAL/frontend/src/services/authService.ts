@@ -10,9 +10,10 @@ export interface LoginPayload {
 }
 
 export interface LoginResponse {
-  access_token: string;
-  refresh_token: string;
-  user_id: string;
+  accessToken: string;
+  refreshToken: string;
+  role: string;
+  userId: string;
 }
 
 export interface RegisterPayload {
@@ -21,13 +22,15 @@ export interface RegisterPayload {
 }
 
 export interface RegisterResponse {
-  user_id: string;
+  userId: string;
   message: string;
 }
 
 // ── Peticiones ─────────────────────────────────────────────────────────────
 
 export const loginRequest = async (payload: LoginPayload): Promise<LoginResponse> => {
+
+
   const response = await fetch(`${BASE}/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

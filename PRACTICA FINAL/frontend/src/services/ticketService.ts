@@ -6,6 +6,7 @@ import type {
   CreateTicketPayload,
   CommentsResponse,
   CreateCommentPayload,
+  TicketsResponsebyId,
 } from '../types/ticket.types';
 
 const BASE = `${CONFIG.API_URL}/api/tickets`;
@@ -24,7 +25,13 @@ export const getMyTickets = async (): Promise<MyTicketsResponse> => {
     throw new Error(err.message || 'Error al cargar los tickets');
   }
 
-  return response.json();
+  const data = await response.json();
+
+  // El backend puede omitir "tickets" cuando no hay resultados
+  return {
+    tickets: data.tickets ?? [],
+    total: data.total ?? 0,
+  };
 };
 
 // ─── Detalle de ticket ────────────────────────────────────────────────────────
@@ -33,7 +40,7 @@ export const getMyTickets = async (): Promise<MyTicketsResponse> => {
  * GET /api/tickets/:id
  * Detalle completo de un ticket. Accesible por cualquier rol autenticado.
  */
-export const getTicketById = async (id: string): Promise<Ticket> => {
+export const getTicketById = async (id: string): Promise<TicketsResponsebyId> => {
   const response = await authFetch(`${BASE}/${id}`);
 
   if (!response.ok) {
@@ -78,7 +85,13 @@ export const getComments = async (ticketId: string): Promise<CommentsResponse> =
     throw new Error(err.message || 'Error al cargar los comentarios');
   }
 
-  return response.json();
+  const data = await response.json();
+
+  // El backend puede omitir "comments" cuando no hay resultados
+  return {
+    comments: data.comments ?? [],
+    total: data.total ?? 0,
+  };
 };
 
 /**

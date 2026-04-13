@@ -20,6 +20,7 @@ export type PriorityId = 1 | 2 | 3 | 4;
 
 /** Ticket completo devuelto por GET /api/tickets/:id  */
 export interface Ticket {
+  ticket:{}
   id: string;
   title: string;
   description: string;
@@ -28,9 +29,25 @@ export interface Ticket {
   status: TicketStatus;
   created_by: string;
   assigned_to: string | null;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 }
+
+export interface TicketsResponsebyId {
+  ticket: {
+    id: string;
+    title: string;
+    description: string;
+    category: string;
+    priority: TicketPriority;
+    status: TicketStatus;
+    created_by: string;
+    assigned_to: string | null;
+    createdAt: string;
+    updatedAt: string;
+  }
+};
+
 
 /** Item de la lista devuelta por GET /api/tickets/my  */
 export interface TicketListItem {
@@ -39,7 +56,7 @@ export interface TicketListItem {
   status: TicketStatus;
   priority: TicketPriority;
   category: string;
-  created_at: string;
+  createdAt: string;
 }
 
 /** Respuesta paginada de GET /api/tickets/my  */
@@ -66,7 +83,7 @@ export interface Comment {
   author_id: string;
   content: string;
   is_internal: boolean;
-  created_at: string;
+  createdAt: string;
 }
 
 /** Respuesta de GET /api/tickets/:id/comments  */
