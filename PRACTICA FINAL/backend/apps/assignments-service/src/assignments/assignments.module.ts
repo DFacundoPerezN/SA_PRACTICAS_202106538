@@ -76,7 +76,7 @@ import { TICKETS_GRPC_CLIENT_TOKEN } from './application/interfaces/tickets-grpc
           options: {
             package:   'tickets',
             protoPath: process.env.NODE_ENV === 'production'
-              ? join(__dirname, '../../../proto/tickets.proto')
+              ? join(__dirname, '../../proto/tickets.proto')
               : join(process.cwd(), 'proto/tickets.proto'),
             url: cfg.get<string>('TICKETS_SERVICE_URL') ?? 'localhost:50053',
             keepalive: {

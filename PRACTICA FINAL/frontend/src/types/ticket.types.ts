@@ -79,10 +79,10 @@ export interface CreateTicketPayload {
 
 export interface Comment {
   id: string;
-  ticket_id?: string;
-  author_id: string;
+  ticketId?: string;
+  authorId: string;
   content: string;
-  is_internal: boolean;
+  isInternal: boolean;
   createdAt: string;
 }
 

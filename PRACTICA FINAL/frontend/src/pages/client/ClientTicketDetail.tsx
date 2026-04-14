@@ -360,7 +360,7 @@ const ClientTicketDetail = () => {
               <CommentBubble
                 key={c.id}
                 comment={c}
-                isOwn={c.author_id === user?.sub}
+                isOwn={c.authorId === user?.sub}
               />
             ))
           )}

@@ -1,11 +1,12 @@
 import { Controller } from '@nestjs/common';
-import { GrpcMethod } from '@nestjs/microservices';
+import { GrpcMethod, RpcException } from '@nestjs/microservices';
+import { status as GrpcStatus } from '@grpc/grpc-js';
 import { AssignmentsService } from './application/assignments.service';
 import { toAssignmentResponse, toWorkloadEntry } from './assignments.mapper';
 
 @Controller()
 export class AssignmentsController {
-  constructor(private readonly assignmentsService: AssignmentsService) {}
+  constructor(private readonly assignmentsService: AssignmentsService) { }
 
   // ── RF-11: manual assign ──────────────────────────────────────────────────
   @GrpcMethod('AssignmentsService', 'ManualAssign')
@@ -13,10 +14,10 @@ export class AssignmentsController {
     ticketId: string; technicianId: string; assignedBy: string; notes?: string;
   }) {
     const assignment = await this.assignmentsService.manualAssign({
-      ticketId:     data.ticketId,
+      ticketId: data.ticketId,
       technicianId: data.technicianId,
-      assignedBy:   data.assignedBy,
-      notes:        data.notes,
+      assignedBy: data.assignedBy,
+      notes: data.notes,
     });
     return toAssignmentResponse(assignment);
   }
@@ -28,13 +29,13 @@ export class AssignmentsController {
     from?: string; to?: string; page?: number; limit?: number;
   }) {
     const { assignments, total } = await this.assignmentsService.findAssignments({
-      status:       data.status       || undefined,
+      status: data.status || undefined,
       technicianId: data.technicianId || undefined,
-      ticketId:     data.ticketId     || undefined,
-      from:         data.from         || undefined,
-      to:           data.to           || undefined,
-      page:         data.page         || 1,
-      limit:        data.limit        || 20,
+      ticketId: data.ticketId || undefined,
+      from: data.from || undefined,
+      to: data.to || undefined,
+      page: data.page || 1,
+      limit: data.limit || 20,
     });
     return { assignments: assignments.map(toAssignmentResponse), total };
   }
@@ -43,6 +44,12 @@ export class AssignmentsController {
   @GrpcMethod('AssignmentsService', 'FindByTicket')
   async findByTicket(data: { ticketId: string }) {
     const assignment = await this.assignmentsService.findByTicket(data.ticketId);
+    if (!assignment) {
+      throw new RpcException({
+        code: GrpcStatus.NOT_FOUND,
+        message: `No active assignment found for ticket ${data.ticketId}`,
+      });
+    }
     return toAssignmentResponse(assignment);
   }
 
@@ -51,7 +58,7 @@ export class AssignmentsController {
   async findByTechnician(data: { technicianId: string; status?: string }) {
     const assignments = await this.assignmentsService.findByTechnician({
       technicianId: data.technicianId,
-      status:       data.status || undefined,
+      status: data.status || undefined,
     });
     return { assignments: assignments.map(toAssignmentResponse), total: assignments.length };
   }
@@ -70,11 +77,11 @@ export class AssignmentsController {
     notes?: string; updatedBy: string;
   }) {
     const assignment = await this.assignmentsService.updateAssignment({
-      id:            data.id,
-      technicianId:  data.technicianId || undefined,
-      status:        data.status       || undefined,
-      notes:         data.notes        || undefined,
-      updatedBy:     data.updatedBy,
+      id: data.id,
+      technicianId: data.technicianId || undefined,
+      status: data.status || undefined,
+      notes: data.notes || undefined,
+      updatedBy: data.updatedBy,
     });
     return toAssignmentResponse(assignment);
   }

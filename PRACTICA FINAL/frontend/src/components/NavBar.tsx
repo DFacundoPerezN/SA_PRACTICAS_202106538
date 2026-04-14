@@ -149,6 +149,7 @@ const NavBar = () => {
                 <>
                   <NavLink
                     to="/client/tickets"
+					end
                     className={({ isActive }) =>
                       `${linkClass} ${isActive ? activeClass : inactiveClass}`
                     }

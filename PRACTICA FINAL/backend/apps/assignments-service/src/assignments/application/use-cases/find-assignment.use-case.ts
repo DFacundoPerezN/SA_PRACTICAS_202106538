@@ -1,4 +1,6 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
+import { status as GrpcStatus } from '@grpc/grpc-js';
 
 import {
   ASSIGNMENT_REPOSITORY,
@@ -8,24 +10,30 @@ import type {
   FindAssignmentsFilter,
   FindByTechnicianFilter,
 } from '../interfaces/assignment-repository.interface';
-import { AssignmentEntity }        from '../../domain/assignment.entity';
+import { AssignmentEntity } from '../../domain/assignment.entity';
 import { TechnicianWorkloadEntity } from '../../domain/technician-workload.entity';
 
 @Injectable()
 export class FindAssignmentUseCase {
   constructor(
     @Inject(ASSIGNMENT_REPOSITORY) private readonly assignRepo: IAssignmentRepository,
-  ) {}
+  ) { }
 
   async findById(id: string): Promise<AssignmentEntity> {
     const a = await this.assignRepo.findById(id);
-    if (!a) throw new NotFoundException(`Assignment ${id} not found`);
+    if (!a) throw new RpcException({
+      code: GrpcStatus.NOT_FOUND,
+      message: `Assignment ${id} not found`,
+    });
     return a;
   }
 
   async findByTicket(ticketId: string): Promise<AssignmentEntity> {
     const a = await this.assignRepo.findByTicket(ticketId);
-    if (!a) throw new NotFoundException(`No active assignment found for ticket ${ticketId}`);
+    if (!a) throw new RpcException({
+      code: GrpcStatus.NOT_FOUND,
+      message: `No active assignment found for ticket ${ticketId}`,
+    });
     return a;
   }
 

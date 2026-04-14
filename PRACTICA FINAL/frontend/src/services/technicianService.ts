@@ -10,6 +10,7 @@ import type {
   TicketAssignmentResponse,
   TechnicianAssignmentsResponse,
   TechnicianCreateCommentPayload,
+  TicketByIdAssignment,
 } from '../types/technician.types';
 
 const TICKETS_BASE = `${CONFIG.API_URL}/api/tickets`;
@@ -27,10 +28,10 @@ export const getTechnicianTickets = async (
   const params = new URLSearchParams();
 
   if (filters.status)      params.set('status',      filters.status);
-  if (filters.priority_id) params.set('priority_id', String(filters.priority_id));
-  if (filters.category_id) params.set('category_id', String(filters.category_id));
-  if (filters.assigned_to) params.set('assigned_to', filters.assigned_to);
-  if (filters.created_by)  params.set('created_by',  filters.created_by);
+  if (filters.priorityId) params.set('priority_id', String(filters.priorityId));
+  if (filters.categoryId) params.set('category_id', String(filters.categoryId));
+  if (filters.assignedTo) params.set('assigned_to', filters.assignedTo);
+  if (filters.createdBy)  params.set('created_by',  filters.createdBy);
   if (filters.from)        params.set('from',         filters.from);
   if (filters.to)          params.set('to',           filters.to);
   if (filters.page)        params.set('page',         String(filters.page));
@@ -47,7 +48,13 @@ export const getTechnicianTickets = async (
     throw new Error(err.message || 'Error al cargar los tickets');
   }
 
-  return response.json();
+  const data = await response.json();
+
+  // El backend puede omitir "tickets" cuando no hay resultados
+  return {
+    tickets: data.tickets ?? [],
+    total: data.total ?? 0,
+  };
 };
 
 // ─── Búsqueda fulltext ────────────────────────────────────────────────────────
@@ -63,8 +70,8 @@ export const searchTickets = async (
   const params = new URLSearchParams({ q });
 
   if (filters.status)      params.set('status',      filters.status);
-  if (filters.priority_id) params.set('priority_id', String(filters.priority_id));
-  if (filters.category_id) params.set('category_id', String(filters.category_id));
+  if (filters.priorityId) params.set('priority_id', String(filters.priorityId));
+  if (filters.categoryId) params.set('category_id', String(filters.categoryId));
   if (filters.page)        params.set('page',         String(filters.page));
   if (filters.limit)       params.set('limit',        String(filters.limit));
 
@@ -75,7 +82,13 @@ export const searchTickets = async (
     throw new Error(err.message || 'Error en la búsqueda');
   }
 
-  return response.json();
+  const data = await response.json();
+
+  // El backend puede omitir "tickets" cuando no hay resultados
+  return {
+    tickets: data.tickets ?? [],
+    total: data.total ?? 0,
+  };
 };
 
 // ─── Detalle de ticket ────────────────────────────────────────────────────────
@@ -84,7 +97,7 @@ export const searchTickets = async (
  * GET /api/tickets/:id
  * Detalle completo de un ticket.
  */
-export const getTechnicianTicketById = async (id: string): Promise<Ticket> => {
+export const getTechnicianTicketById = async (id: string): Promise<TicketByIdAssignment> => {
   const response = await authFetch(`${TICKETS_BASE}/${id}`);
 
   if (!response.ok) {
@@ -157,7 +170,13 @@ export const getTechnicianComments = async (
     throw new Error(err.message || 'Error al cargar los comentarios');
   }
 
-  return response.json();
+  const data = await response.json();
+
+  // El backend puede omitir "comments" cuando no hay resultados
+  return {
+    comments: data.comments ?? [],
+    total: data.total ?? 0,
+  };
 };
 
 /**
@@ -180,8 +199,6 @@ export const addTechnicianComment = async (
 
   return response.json();
 };
-
-// ─── Asignación del ticket ────────────────────────────────────────────────────
 
 /**
  * GET /api/assignments/ticket/:ticket_id

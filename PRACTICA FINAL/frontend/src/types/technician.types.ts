@@ -2,6 +2,31 @@ import type { TicketStatus, TicketPriority } from './ticket.types';
 
 // ─── Tickets (técnico) ────────────────────────────────────────────────────────
 
+export interface TicketByIdAssignment {
+  ticket: {
+    id: string;
+    title: string;
+    description: string;
+    category: string;
+    priority: TicketPriority;
+    status: TicketStatus;
+    createdBy: string;
+    assignedTo: string | null;
+    resolvedAt?: string | null;
+    closedAt?: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+  history: {
+    id: string;
+    fieldChanged: string;
+    oldValue: string;
+    newValue: string;
+    changedBy: string;
+    changedAt: string;
+  }[];
+}
+
 /** Item del listado de tickets para técnico (GET /api/tickets) */
 export interface TechnicianTicketListItem {
   id: string;
@@ -9,10 +34,10 @@ export interface TechnicianTicketListItem {
   status: TicketStatus;
   priority: TicketPriority;
   category: string;
-  created_by: string;
-  assigned_to: string | null;
-  created_at: string;
-  updated_at: string;
+  createdBy: string;
+  assignedTo: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 /** Respuesta paginada de GET /api/tickets */
@@ -24,10 +49,10 @@ export interface TechnicianTicketsResponse {
 /** Filtros para GET /api/tickets */
 export interface TicketFilters {
   status?: TicketStatus;
-  priority_id?: 1 | 2 | 3 | 4;
-  category_id?: 1 | 2 | 3 | 4 | 5 | 6;
-  assigned_to?: string;
-  created_by?: string;
+  priorityId?: 1 | 2 | 3 | 4;
+  categoryId?: 1 | 2 | 3 | 4 | 5 | 6;
+  assignedTo?: string;
+  createdBy?: string;
   from?: string;
   to?: string;
   page?: number;
@@ -50,7 +75,7 @@ export interface UpdateTicketStatusPayload {
 export interface UpdateTicketStatusResponse {
   id: string;
   status: TicketStatus;
-  updated_at: string;
+  updatedAt: string;
 }
 
 // ─── Assignments ──────────────────────────────────────────────────────────────
@@ -71,10 +96,10 @@ export interface Assignment {
 /** Respuesta de GET /api/assignments/ticket/:ticket_id */
 export interface TicketAssignmentResponse {
   id: string;
-  ticket_id: string;
-  technician_id: string;
+  ticketId: string;
+  technicianId: string;
   status: AssignmentStatus;
-  assigned_at: string;
+  assignedAt: string;
 }
 
 /** Respuesta de GET /api/assignments/technician/:technician_id */

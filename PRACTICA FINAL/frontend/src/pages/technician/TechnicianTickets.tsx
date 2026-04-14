@@ -319,11 +319,11 @@ const TechnicianTickets = () => {
                       </td>
                       <td className="px-4 py-3.5 text-slate-600 text-xs whitespace-nowrap">{ticket.category}</td>
                       <td className="px-4 py-3.5">
-                        {ticket.assigned_to
-                          ? <span className="text-xs text-slate-600 font-mono bg-slate-100 px-2 py-0.5 rounded">{ticket.assigned_to.slice(0, 8)}…</span>
+                        {ticket.assignedTo
+                          ? <span className="text-xs text-slate-600 font-mono bg-slate-100 px-2 py-0.5 rounded">{ticket.assignedTo.slice(0, 8)}…</span>
                           : <span className="text-xs text-slate-400 italic">Sin asignar</span>}
                       </td>
-                      <td className="px-4 py-3.5 text-xs text-slate-500 whitespace-nowrap">{formatDate(ticket.created_at)}</td>
+                      <td className="px-4 py-3.5 text-xs text-slate-500 whitespace-nowrap">{formatDate(ticket.createdAt)}</td>
                     </tr>
                   );
                 })
