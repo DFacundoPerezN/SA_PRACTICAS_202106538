@@ -2,7 +2,7 @@
 
 ---
 
-## Actores del Sistema
+## **Actores del Sistema**
 
 Antes de definir los requerimientos, se identifican los actores que interactúan con el sistema:
 
@@ -15,7 +15,7 @@ Antes de definir los requerimientos, se identifican los actores que interactúan
 
 ---
 
-## Requerimientos Funcionales (RF)
+## **Requerimientos Funcionales (RF)**
 
 ### Módulo de Gestión de Usuarios
 
@@ -61,7 +61,7 @@ Antes de definir los requerimientos, se identifican los actores que interactúan
 
 ---
 
-## Requerimientos No Funcionales (RNF)
+## **Requerimientos No Funcionales (RNF)**
 
 ### Arquitectura y Despliegue
 
@@ -108,14 +108,14 @@ Antes de definir los requerimientos, se identifican los actores que interactúan
 
 ---
 
-## Diagrama general de Casos de Uso de alto nivel
+## **Diagrama general de Casos de Uso de alto nivel**
 
 <div align="center">
   <img src="img/casos_de_uso_alto_nivel.png" alt="" width="50%">
   <p><i>Figura 1: Diagrama general de casos de Uso de alto nivel.</i></p>
 </div>
 
-## Casos de Uso Expandidos
+## **Casos de Uso Expandidos**
 
 ### Flujo Crítico 1: Creación de Ticket
 
@@ -401,10 +401,10 @@ Antes de definir los requerimientos, se identifican los actores que interactúan
 
 ---
 
-## Diagrama de arquitectura de alto nivel
+## **Diagrama de arquitectura de alto nivel**
 
 <div align="center">
-  <img src="img/diagrama-de-arquitectura.jpg" alt="" width="50%">
+  <img src="img/diagrama-de-arquitecturam.jpg" alt="" width="50%">
   <p><i>Figura 2: Diagrama de arquitectura de alto nivel.</i></p>
 </div>
 
@@ -419,7 +419,7 @@ Antes de definir los requerimientos, se identifican los actores que interactúan
 
 ---
 
-## Diagrama de actividades
+## **Diagrama de actividades**
 
 <div align="center">
   <img src="img/diagrama-de-actividades.png" alt="" width="80%">
@@ -428,7 +428,7 @@ Antes de definir los requerimientos, se identifican los actores que interactúan
 
 ---
 
-## Diagrama de secuencias
+## **Diagrama de secuencias**
 
 <div align="center">
   <img src="img/diagrama-de-secuencia.png" alt="" width="80%">
@@ -437,7 +437,7 @@ Antes de definir los requerimientos, se identifican los actores que interactúan
 
 ---
 
-## Diagrama de entidad-relación
+## **Diagrama de entidad-relación**
 
 <div align="center">
   <img src="img/diagrama-entidad-relacion.png" alt="" width="100%">
@@ -446,7 +446,7 @@ Antes de definir los requerimientos, se identifican los actores que interactúan
 
 ---
 
-## Justificación Técnica del Stack Tecnológico
+## **Justificación Técnica del Stack Tecnológico**
 
 La selección del stack tecnológico para el Sistema de Soporte Técnico se ha realizado considerando los requerimientos funcionales y no funcionales del proyecto, teniendo en cuenta la mantenibilidad del código y la portabilidad del sistema en entornos de nube.
 
@@ -657,7 +657,7 @@ Cada microservicio tiene su propia base de datos, evitando acoplamiento directo 
 
 ## 9. GitHub Actions — CI/CD y coherencia general del stack
 
-# Reporte de Principios SOLID Aplicados
+## **Reporte de Principios SOLID Aplicados**
 
 ## 1. S — Single Responsibility Principle (SRP) {#srp}
 
@@ -1016,3 +1016,668 @@ Módulos (*.module.ts)  ←── único lugar donde se conocen las implementaci
 ```
 
 ---
+
+
+## **Manejo de la prioridad en los tickes**
+
+Se creo 6 categorías con varios posibles problemas que el cliente pueda tener, la prioridad se elíge en base a estos posibles problemas ya que si se le da la posibiidad al cliente de elegir la prioridad este siempre elegirá la prioridad crítica para que el técnico de soporte le conteste más rapido.
+
+## 🖥️ Hardware
+- La computadora no enciende al presionar el botón de encendido. **(Prioridad: Crítica)**  
+- El equipo se apaga repentinamente después de unos minutos de uso. **(Prioridad: Alta)**  
+- El disco duro no es reconocido por el sistema. **(Prioridad: Crítica)**  
+- El teclado o mouse dejan de responder de forma intermitente. **(Prioridad: Media)**  
+- La pantalla muestra líneas o no da imagen correctamente. **(Prioridad: Alta)**  
+
+## 💾 Software
+- Una aplicación se cierra inesperadamente al intentar abrirla. **(Prioridad: Media)**  
+- El sistema operativo se vuelve lento después de una actualización. **(Prioridad: Baja)**  
+- No se puede instalar un programa por errores de compatibilidad. **(Prioridad: Media)**  
+- Aparece un mensaje de error al iniciar el sistema. **(Prioridad: Alta)**  
+- El antivirus detecta amenazas constantemente en el equipo. **(Prioridad: Crítica)**  
+
+## 🌐 Red / Conectividad
+- No hay conexión a internet aunque el cable esté conectado. **(Prioridad: Crítica)**  
+- La red WiFi aparece pero no permite navegar. **(Prioridad: Alta)**  
+- La conexión es muy lenta en comparación con lo habitual. **(Prioridad: Media)**  
+- No se puede acceder a recursos compartidos en la red. **(Prioridad: Media)**  
+- El equipo pierde la conexión de forma intermitente. **(Prioridad: Alta)**  
+
+## 🔐 Accesos y Permisos
+- El usuario no puede iniciar sesión con sus credenciales. **(Prioridad: Crítica)**  
+- Se deniega el acceso a ciertas carpetas o archivos. **(Prioridad: Media)**  
+- La cuenta se bloquea después de varios intentos fallidos. **(Prioridad: Alta)**  
+- No se tienen permisos para instalar aplicaciones. **(Prioridad: Media)**  
+- El sistema solicita permisos de administrador constantemente. **(Prioridad: Baja)**  
+
+## 📧 Correo Electrónico
+- No se pueden enviar correos desde la cuenta. **(Prioridad: Alta)**  
+- Los correos no llegan a la bandeja de entrada. **(Prioridad: Alta)**  
+- El cliente de correo no sincroniza correctamente. **(Prioridad: Media)**  
+- Los archivos adjuntos no se pueden abrir. **(Prioridad: Media)**  
+- Se reciben correos sospechosos o de spam constantemente. **(Prioridad: Baja)**  
+
+## 📋 Otro
+- El sistema presenta comportamientos inesperados sin causa aparente. **(Prioridad: Alta)**  
+- Se requiere capacitación para el uso de una herramienta. **(Prioridad: Baja)**  
+- El usuario necesita configurar un nuevo dispositivo. **(Prioridad: Media)**  
+- Se solicita asesoría sobre buenas prácticas de seguridad. **(Prioridad: Baja)**  
+- Se reporta un problema que no encaja en las categorías anteriores. **(Prioridad: Media)**  
+- Mi pregunta no esta en las anteriores. **(Prioridad: Media)**
+
+---
+
+## **Manejo de casos comunes**
+
+El técnico podrá responder automáticamente a las preguntas dependiendo de lo común que esta sea. Los mensajes que se incluyen son los siguientes:
+
+## 🖥️ Hardware
+
+### La computadora no enciende al presionar el botón de encendido. *(Crítica)*
+
+```markdown
+**Respuesta automática - Prioridad Crítica**
+
+1. Verifica que el cable de poder esté bien conectado tanto al equipo como al tomacorriente.
+2. Prueba enchufando otro dispositivo (como una lámpara) al mismo tomacorriente para descartar fallo eléctrico.
+3. Si es una laptop, asegúrate de que el cargador esté conectado y que el LED de carga se encienda.
+4. Mantén presionado el botón de encendido por 15 segundos, suelta, espera 5 segundos y vuelve a intentar.
+
+Si después de esto sigue sin encender, **solicitamos que nos prestes el equipo para revisión física** (posible falla en fuente de poder, placa madre o botón de encendido).
+```
+
+---
+
+### El equipo se apaga repentinamente después de unos minutos de uso. *(Alta)*
+
+```markdown
+**Respuesta automática - Prioridad Alta**
+
+Posibles causas:
+- Sobrecalentamiento: Verifica que los ventiladores giren y que las rejillas no estén obstruidas por polvo.
+- Fuente de poder insuficiente: ¿Agregaste nuevo hardware recientemente (disco, RAM, tarjeta gráfica)?
+- Configuración de energía: Ve a *Panel de control > Opciones de energía* y selecciona "Alto rendimiento" o restaura valores predeterminados.
+
+**Pasos inmediatos**:
+1. Descarga e instala HWMonitor para revisar temperaturas (CPU > 90°C es peligroso).
+2. Si se apaga solo al jugar o editar video, probablemente sea sobrecalentamiento o fuente débil.
+
+Abre un nuevo ticket si el problema persiste después de limpiar el polvo interno.
+```
+
+---
+
+### El disco duro no es reconocido por el sistema. *(Crítica)*
+
+```markdown
+**Respuesta automática - Prioridad Crítica**
+
+⚠️ **No apagues el equipo abruptamente si crees que el disco tiene datos importantes.**
+
+Pasos:
+1. Reinicia y entra a la BIOS (F2, F10, DEL al encender). Si el disco no aparece allí → problema físico.
+2. Si aparece en BIOS pero no en Windows:
+   - Abre *Administración de discos* (Win + R → `diskmgmt.msc`)
+   - Busca el disco sin letra → Asigna una letra.
+3. Si el disco es externo: prueba otro cable USB y otro puerto.
+
+Si el disco no es detectado en BIOS ni en otra computadora, **es probable que haya fallado físicamente**. Recomendamos reemplazo inmediato y recuperación de datos con servicio especializado.
+```
+
+---
+
+### El teclado o mouse dejan de responder de forma intermitente. *(Media)*
+
+```markdown
+**Respuesta automática - Prioridad Media**
+
+1. Para equipos de escritorio:
+   - Desconecta y vuelve a conectar el USB.
+   - Prueba en otro puerto USB (preferiblemente 2.0 si es 3.0).
+2. Para laptops:
+   - Limpia el área del teclado con aire comprimido.
+   - Desactiva el "Filtro de teclas" en Configuración > Accesibilidad.
+3. Actualiza o reinstala el controlador desde Administrador de dispositivos.
+4. Prueba el teclado/mouse en otra computadora para descartar falla del periférico.
+
+Si solo falla en una aplicación específica, puede ser conflicto de software. Avísanos si eso ocurre.
+```
+
+---
+
+### La pantalla muestra líneas o no da imagen correctamente. *(Alta)*
+
+```markdown
+**Respuesta automática - Prioridad Alta**
+
+1. Verifica que el cable de video (HDMI, VGA, DisplayPort) esté firmemente conectado en ambos extremos.
+2. Prueba con otro cable o monitor (si es posible).
+3. Actualiza los controladores de la tarjeta gráfica desde el sitio oficial (NVIDIA, AMD, Intel).
+4. Si es una laptop: conecta un monitor externo.
+   - Si el externo funciona bien → problema de la pantalla LCD o flexor.
+   - Si también da líneas → problema de tarjeta gráfica.
+
+**Solución temporal**: Si ves líneas pero aún operas, baja la resolución y la tasa de refresco hasta recibir revisión.
+```
+
+---
+
+## 💾 Software
+
+### Una aplicación se cierra inesperadamente al intentar abrirla. *(Media)*
+
+```markdown
+**Respuesta automática - Prioridad Media**
+
+1. Reinicia la computadora (suena básico, pero resuelve el 60% de estos casos).
+2. Desinstala y vuelve a instalar la aplicación.
+3. Busca actualizaciones: muchas apps fallan por versiones desactualizadas.
+4. Ejecuta la aplicación como administrador (clic derecho > Ejecutar como administrador).
+5. Revisa el Visor de eventos de Windows (Win + R → `eventvwr.msc`) en *Registros de Windows > Aplicación* para ver el código de error.
+
+Si el error persiste, indícanos el **nombre exacto de la app** y el **código de error** si aparece.
+```
+
+---
+
+### El sistema operativo se vuelve lento después de una actualización. *(Baja)*
+
+```markdown
+**Respuesta automática - Prioridad Baja**
+
+Pasos recomendados (no requieren soporte urgente):
+
+1. Espera unas horas: a veces Windows sigue instalando actualizaciones en segundo plano.
+2. Desinstala la última actualización:
+   - Ve a *Configuración > Actualización y seguridad > Ver historial de actualizaciones > Desinstalar actualizaciones*
+3. Libera espacio en disco:
+   - Ejecuta "Liberador de espacio en disco" (busca en inicio)
+4. Desactiva efectos visuales:
+   - *Configuración > Personalización > Colores > Transparencias* (desactivar)
+
+Si después de 48 horas sigue lento, haremos una restauración del sistema a un punto anterior.
+```
+
+---
+
+### No se puede instalar un programa por errores de compatibilidad. *(Media)*
+
+```markdown
+**Respuesta automática - Prioridad Media**
+
+Prueba estas soluciones en orden:
+
+1. Ejecuta el instalador como administrador.
+2. Cambia el modo de compatibilidad:
+   - Clic derecho en el instalador > Propiedades > Compatibilidad
+   - Ejecutar en modo compatibilidad para Windows 7/8.
+3. Desactiva temporalmente el antivirus (a veces bloquea instaladores legítimos).
+4. Si el error menciona "Microsoft Visual C++" o ".NET Framework", instala esas dependencias desde Microsoft.
+
+Si el programa es muy antiguo (anterior a 2010), considera usar una máquina virtual o buscar una alternativa moderna.
+```
+
+---
+
+### Aparece un mensaje de error al iniciar el sistema. *(Alta)*
+
+```markdown
+**Respuesta automática - Prioridad Alta**
+
+**Paso 1**: Anota el mensaje de error completo o toma una foto.
+
+**Paso 2**: Prueba estos arreglos generales:
+- Inicia en **Modo seguro** (presiona F8 antes de que cargue Windows) – si no hay error en modo seguro, es un programa o driver problemático.
+- Ejecuta `SFC /SCANNOW` en Símbolo del sistema como administrador.
+- Abre *MSCONFIG* y desmarca servicios no de Microsoft en "Inicio".
+
+**Paso 3**: Si el error es como `0xc00000e9` o `MACHINE_CHECK_EXCEPTION`, puede ser falla de hardware (disco o RAM). Te ayudamos a correr diagnósticos.
+
+Envía la foto del error en tu respuesta.
+```
+
+---
+
+### El antivirus detecta amenazas constantemente en el equipo. *(Crítica)*
+
+```markdown
+**Respuesta automática - Prioridad Crítica**
+
+⚠️ **No ingreses contraseñas bancarias ni personales hasta resolver esto.**
+
+Acción inmediata:
+1. Ejecuta un análisis completo con Windows Defender (o tu antivirus) fuera de línea.
+2. Instala y corre **Malwarebytes Free** (análisis completo).
+3. Revisa extensiones del navegador: desinstala cualquier extensión que no reconozcas.
+4. Si el antivirus detecta el mismo archivo repetidas veces, anota su ruta y súbela a [VirusTotal](https://www.virustotal.com).
+
+Si después de limpiar sigue apareciendo, **recomendamos formateo completo del sistema operativo** (respalda solo documentos personales, NO programas).
+```
+
+---
+
+## 🌐 Red / Conectividad
+
+### No hay conexión a internet aunque el cable esté conectado. *(Crítica)*
+
+```markdown
+**Respuesta automática - Prioridad Crítica**
+
+1. Prueba otro dispositivo en el mismo cable (si funciona → problema de tu PC).
+2. En tu PC:
+   - Abre *Símbolo del sistema* y escribe: `ipconfig /release` → luego `ipconfig /renew`
+   - Luego: `ipconfig /flushdns`
+3. Desactiva y reactiva la tarjeta de red desde *Panel de control > Centro de redes > Cambiar configuración adaptador*.
+4. Si el icono de red muestra una "x" roja, prueba otro cable o puerto del switch/router.
+
+Si nada funciona, reinicia el router/módem desconectándolo 30 segundos. Si el problema persiste, puede ser falla de la tarjeta de red.
+```
+
+---
+
+### La red WiFi aparece pero no permite navegar. *(Alta)*
+
+```markdown
+**Respuesta automática - Prioridad Alta**
+
+Estás conectado a la WiFi pero sin internet (posible puerta de enlace caída).
+
+Soluciones:
+1. Olvida la red WiFi y vuelve a conectarte.
+2. Cambia la dirección DNS a la de Google:
+   - Centro de redes > Cambiar configuración adaptador > Propiedades de WiFi > IPv4
+   - DNS: `8.8.8.8` y `8.8.4.4`
+3. Abre CMD como admin y ejecuta:
+   ```
+   netsh winsock reset
+   netsh int ip reset
+   ipconfig /flushdns
+   ```
+   Luego reinicia.
+4. Si el problema es solo en tu equipo pero otros dispositivos sí navegan, actualiza el driver de la tarjeta WiFi.
+
+Si todos los dispositivos tienen el mismo problema → reinicia el router.
+```
+
+---
+
+### La conexión es muy lenta en comparación con lo habitual. *(Media)*
+
+```markdown
+**Respuesta automática - Prioridad Media**
+
+Antes de reportar, haz esto:
+
+1. Mide tu velocidad en [speedtest.net](https://speedtest.net) y compárala con lo contratado.
+2. Si la velocidad es baja solo en tu PC:
+   - Cierra aplicaciones que usan red en segundo plano (OneDrive, Steam, actualizaciones).
+   - Escanea con Malwarebytes (puede haber un miner o botnet).
+3. Si es lenta en todos los dispositivos:
+   - Reinicia el router.
+   - Conéctate por cable Ethernet para descartar interferencia WiFi.
+4. Cambia el canal WiFi desde la configuración del router (evita canales saturados).
+
+Si la lentitud persiste por más de un día, contacta a tu ISP (proveedor de internet) para revisar la señal.
+```
+
+---
+
+### No se puede acceder a recursos compartidos en la red. *(Media)*
+
+```markdown
+**Respuesta automática - Prioridad Media**
+
+Esto suele ser por permisos o configuración de red.
+
+Pasos:
+1. Verifica que estés en el perfil de red **Privada** (no Pública).
+   - Configuración > Red e Internet > Ethernet/WiFi > Perfil de red > Privado.
+2. Habilita "Detección de redes y uso compartido de archivos" en *Centro de redes > Configuración avanzada de uso compartido*.
+3. Intenta acceder por IP en lugar de nombre de equipo: `\\192.168.x.x`
+4. En el equipo que comparte la carpeta: asegura que "Invitado" o el usuario tenga permisos.
+
+Si el error es de acceso denegado, puede que el servidor tenga bloqueado tu usuario. Solicita a tu administrador de red que revise los permisos.
+```
+
+---
+
+### El equipo pierde la conexión de forma intermitente. *(Alta)*
+
+```markdown
+**Respuesta automática - Prioridad Alta**
+
+Causa más común: **conflicto de IP** o **driver inestable**.
+
+Pruebas rápidas:
+1. Asigna una IP fija (estática) en lugar de DHCP.
+   - Propiedades de IPv4 > Usar siguiente dirección IP (ej: 192.168.1.150)
+2. Actualiza el driver de red desde el fabricante (no desde Windows Update).
+3. Si es WiFi:
+   - Cambia la banda de 2.4 GHz a 5 GHz (menos interferencia)
+   - En propiedades del adaptador WiFi > Configuración avanzada > Desactiva "Ahorro de energía"
+4. Si es cableado: prueba otro cable.
+
+Si se desconecta cada cierto tiempo exacto (ej: cada 30 min), puede ser configuración de energía del adaptador: desactiva "Permitir que el equipo apague este dispositivo" en Administrador de dispositivos.
+```
+
+---
+
+## 🔐 Accesos y Permisos
+
+### El usuario no puede iniciar sesión con sus credenciales. *(Crítica)*
+
+```markdown
+**Respuesta automática - Prioridad Crítica**
+
+No intentes más de 3 veces para evitar bloqueo.
+
+Soluciones:
+1. Verifica que el teclado esté en el idioma correcto (ej: @ vs ").
+2. Usa la opción "¿Olvidaste tu contraseña?" si está disponible.
+3. Si es dominio corporativo:
+   - Conéctate a otra red (ej: hotspot móvil) para que valide contra el controlador de dominio.
+   - Prueba con el usuario `.\nombre_usuario` para cuenta local.
+4. Si es cuenta local de Windows:
+   - Inicia en Modo seguro y crea un nuevo usuario desde `net user nuevo_usuario contraseña /add`
+
+Si todo falla, necesitamos que un administrador de sistemas restablezca tu contraseña manualmente.
+```
+
+---
+
+### Se deniega el acceso a ciertas carpetas o archivos. *(Media)*
+
+```markdown
+**Respuesta automática - Prioridad Media**
+
+No es una falla, es configuración de permisos.
+
+Para resolverlo tú mismo:
+1. Clic derecho en la carpeta > Propiedades > Seguridad
+2. Haz clic en "Editar" y agrega tu usuario con control total.
+3. Si los botones están grises, la carpeta pertenece a otro usuario o sistema. Debes pedir al propietario que te comparta el acceso.
+
+Si es una carpeta de red (servidor):
+- El administrador debe agregar tu usuario al grupo de permisos.
+- A veces basta cerrar sesión y volver a abrirla.
+
+**No muevas ni borres archivos desde ubicaciones del sistema (C:\Windows) aunque tengas acceso.**
+```
+
+---
+
+### La cuenta se bloquea después de varios intentos fallidos. *(Alta)*
+
+```markdown
+**Respuesta automática - Prioridad Alta**
+
+Tu cuenta se bloqueó por política de seguridad (generalmente 5 intentos fallidos).
+
+¿Qué hacer?
+1. Espera 15-30 minutos. Algunas políticas desbloquean automáticamente.
+2. Si no se desbloquea: contacta al administrador del sistema para que la desbloquee manualmente.
+3. **Para evitar que vuelva a pasar**:
+   - Revisa si tienes guardada una contraseña vieja en aplicaciones (Outlook, Teams, red WiFi corporativa).
+   - Cambia tu contraseña a una que no tengas en otros servicios.
+
+**Importante**: Si se bloquea incluso con la contraseña correcta, puede haber un ataque de fuerza bruta sobre tu cuenta. Avisa al equipo de seguridad.
+```
+
+---
+
+### No se tienen permisos para instalar aplicaciones. *(Media)*
+
+```markdown
+**Respuesta automática - Prioridad Media**
+
+Esto es normal si tu usuario no es administrador. No es un error, es una política de seguridad.
+
+Opciones:
+1. Si la aplicación es necesaria para tu trabajo: solicita a TI que la instale remotamente.
+2. Pide que te otorguen permisos temporales de instalación (muchas empresas usan herramientas como ManageEngine o PolicyPak).
+3. Busca una versión portable de la app (no necesita instalación).
+
+**No intentes usar trucos como "runas" o software para bypassear permisos** – eso puede activar alertas de seguridad y suspender tu cuenta.
+```
+
+---
+
+### El sistema solicita permisos de administrador constantemente. *(Baja)*
+
+```markdown
+**Respuesta automática - Prioridad Baja**
+
+Esto es molesto pero no crítico. Soluciones:
+
+1. Baja el nivel del Control de cuentas de usuario (UAC):
+   - Escribe "UAC" en inicio → Baja la barra a "Nunca notificar"
+   - ⚠️ No recomendado si usas el equipo para cosas personales o navegas sitios no confiables.
+2. Ejecuta la aplicación problemática una vez como administrador y marca "Ejecutar siempre como administrador" en sus propiedades.
+3. Si son muchas apps diferentes, tu perfil de usuario puede estar corrupto. Crea un nuevo usuario local.
+
+Para entornos corporativos: consulta con TI si pueden agregar las apps frecuentes a una lista de confianza.
+```
+
+---
+
+## 📧 Correo Electrónico
+
+### No se pueden enviar correos desde la cuenta. *(Alta)*
+
+```markdown
+**Respuesta automática - Prioridad Alta**
+
+Primero verifica:
+1. Que tengas conexión a internet.
+2. Que el servidor de correo saliente (SMTP) sea correcto:
+   - Outlook/Hotmail: `smtp-mail.outlook.com`, puerto 587
+   - Gmail: `smtp.gmail.com`, puerto 465 o 587
+   - Corporativo: consulta con TI.
+3. Si usas autenticación en dos pasos: genera una "contraseña de aplicación".
+
+Errores típicos:
+- `0x800CCC0F` → El servidor no responde. Cambia puerto a 587 con TLS.
+- `Correo rechazado por spam` → Tu IP o dominio está en lista negra temporal.
+
+Si envías y no llegan (pero no da error): revisa la bandeja de "enviados" – si está allí, el problema es del receptor o filtro antispam.
+```
+
+---
+
+### Los correos no llegan a la bandeja de entrada. *(Alta)*
+
+```markdown
+**Respuesta automática - Prioridad Alta**
+
+No entres en pánico, los correos rara vez se pierden.
+
+Busca en:
+1. **Correo no deseado (spam)** – revisa bien.
+2. **Otras pestañas** (si usas Gmail: Social, Promociones)
+3. **Filtros o reglas** que hayas creado sin querer.
+4. **Carpeta de correo no deseado del servidor** (accede vía webmail).
+
+Si es un correo esperado de un remitente específico:
+- Agrégalo a la lista de contactos.
+- Pídele que reenvíe el mensaje.
+
+**Caso especial**: Si no te llega ningún correo de nadie, puede que tu cuenta esté llena (liberar espacio) o que el proveedor tenga caída (revisar estado del servicio).
+```
+
+---
+
+### El cliente de correo no sincroniza correctamente. *(Media)*
+
+```markdown
+**Respuesta automática - Prioridad Media**
+
+Pasos progresivos:
+
+1. **Modo desconectado/Conectado**: En Outlook, ve a *Enviar/Recibir > Preferencias > Trabajar sin conexión* y desmárcalo.
+2. **Elimina y vuelve a agregar la cuenta** (no perderás correos locales si usas IMAP).
+3. **Cambia el servidor entrante**:
+   - Si da error de autenticación, regenera contraseña de app.
+   - Si se queda en "Sin conexión", revisa el firewall.
+4. **Reduce el tamaño de la caché**:
+   - Outlook: Configuración avanzada > Enviar/Recibir > Sincronizar solo los últimos 12 meses.
+
+Para Thunderbird, Apple Mail, etc.: el problema suele ser el mismo. Indícanos tu cliente y versión.
+```
+
+---
+
+### Los archivos adjuntos no se pueden abrir. *(Media)*
+
+```markdown
+**Respuesta automática - Prioridad Media**
+
+Causas y soluciones:
+
+1. **Archivo dañado** durante envío → pide al remitente que lo reenvíe o comprima en ZIP.
+2. **Extensión bloqueada** (ej: .exe, .js, .vbs):
+   - Guarda el adjunto en tu PC y cambia la extensión a .txt temporalmente (no ejecutes nada sospechoso).
+3. **No hay programa asociado**:
+   - .pdf → instala Adobe Reader o usa navegador.
+   - .docx → Word Online gratuito.
+4. **El adjunto supera el tamaño permitido** (muchos servidores limitan a 25MB). Pide un enlace de descarga (OneDrive, Google Drive).
+
+⚠️ **Nunca abras adjuntos .exe, .scr, .js de remitentes desconocidos aunque el antivirus lo permita.**
+```
+
+---
+
+### Se reciben correos sospechosos o de spam constantemente. *(Baja)*
+
+```markdown
+**Respuesta automática - Prioridad Baja**
+
+No es un fallo técnico, es higiene digital.
+
+Acciones inmediatas:
+1. Marca como **Spam/Correo no deseado** cada vez que llegue uno.
+2. **No des clic en "Desuscribir"** en correos sospechosos – eso confirma que tu cuenta está activa.
+3. Bloquea remitentes en tu cliente de correo.
+4. Cambia tu dirección de correo si el spam es masivo (más de 50 al día).
+
+Si tu correo corporativo recibe mucho spam: solicita a TI que active un filtro antispam más agresivo (ej: Proofpoint, Barracuda).
+
+Nunca respondas ni reenvíes esos correos a compañeros.
+```
+
+---
+
+## 📋 Otro
+
+### El sistema presenta comportamientos inesperados sin causa aparente. *(Alta)*
+
+```markdown
+**Respuesta automática - Prioridad Alta**
+
+"Comportamiento inesperado" puede ser desde ventanas que se mueven solas hasta apagados mágicos.
+
+Guía genérica:
+1. Reinicia el equipo (resuelve fallos de memoria temporal).
+2. Abre **Visor de eventos** → *Administrativos* y busca errores rojos en la última hora.
+3. Ejecuta `chkdsk /f /r` en CMD como administrador (revisa disco duro).
+4. Prueba a iniciar en Modo seguro – si allí no falla, el problema es un driver o programa de inicio.
+
+**Pide ayuda con más detalles**: ¿Cuándo ocurre? ¿Cada cuánto? ¿Qué estabas haciendo justo antes?
+```
+
+---
+
+### Se requiere capacitación para el uso de una herramienta. *(Baja)*
+
+```markdown
+**Respuesta automática - Prioridad Baja**
+
+Este sistema es para reportes de fallos técnicos, no para capacitación.
+
+Sin embargo, te dejamos recursos útiles:
+- **YouTube**: Busca "[nombre herramienta] tutorial básico"
+- **LinkedIn Learning / Coursera** (si tu empresa tiene suscripción)
+- **Documentación oficial** de la herramienta (suele tener guías paso a paso)
+
+Si la herramienta es interna de la empresa, solicita a tu jefe directo que organice una sesión de capacitación con el equipo de TI o superusuarios.
+```
+
+---
+
+### El usuario necesita configurar un nuevo dispositivo. *(Media)*
+
+```markdown
+**Respuesta automática - Prioridad Media**
+
+Indícanos:
+- Tipo de dispositivo (impresora, monitor, mouse, teléfono, tablet)
+- Sistema operativo (Windows, macOS, Linux, iOS, Android)
+
+Mientras tanto:
+1. **Impresoras**: La mayoría son plug-and-play por USB o WiFi. Descarga el driver desde la web oficial.
+2. **Monitores**: Conecta, selecciona entrada correcta (HDMI 1/2, DisplayPort), luego ajusta resolución en Windows.
+3. **Periféricos USB**: Si no funcionan, prueba otro puerto o reinicia.
+
+Si el dispositivo es corporativo (ej: lector de huella, VPN hardware), necesitamos que nos des el modelo exacto para darte una guía personalizada.
+```
+
+---
+
+### Se solicita asesoría sobre buenas prácticas de seguridad. *(Baja)*
+
+```markdown
+**Respuesta automática - Prioridad Baja**
+
+Buenas prácticas básicas (aplican siempre):
+
+1. **Contraseñas**: mínimo 12 caracteres, mayúsculas, números, símbolos. No reutilices.
+2. **Autenticación en dos pasos (2FA)** – actívala en correo, redes sociales y banca.
+3. **Actualizaciones**: No pospongas las actualizaciones de sistema y navegador.
+4. **Correos**: No descargues adjuntos sospechosos ni hagas clic en enlaces acortados.
+5. **Redes WiFi**: No uses redes públicas sin VPN.
+
+Para asesoría más profunda (normativas como ISO 27001, GDPR, PCI DSS), solicita una reunión con el área de seguridad informática.
+
+Este canal es solo para incidentes técnicos, no para consultas estratégicas.
+```
+
+---
+
+### Se reporta un problema que no encaja en las categorías anteriores. *(Media)*
+
+```markdown
+**Respuesta automática - Prioridad Media**
+
+Entendido. Como no está en nuestra base de problemas conocidos:
+
+1. Descríbenos con el mayor detalle posible:
+   - ¿Qué estabas haciendo justo antes del problema?
+   - ¿Recibes algún mensaje de error? (texto exacto o captura)
+   - ¿El problema ocurre siempre o a veces?
+   - ¿Desde cuándo sucede?
+
+2. Si es posible, graba un video corto con tu teléfono mostrando el comportamiento.
+
+Con esa información, lo escalaremos al área técnica correspondiente. Mientras tanto, intenta reiniciar el equipo y la aplicación involucrada.
+```
+
+---
+
+### Mi pregunta no está en las anteriores. *(Media)*
+
+```markdown
+**Respuesta automática - Prioridad Media**
+
+No te preocupes. Para darte una respuesta útil, necesitamos que reformules tu problema respondiendo estas preguntas:
+
+1. **¿Qué intentabas hacer?** (ej: "imprimir un PDF", "iniciar sesión en SAP")
+2. **¿Qué pasó exactamente?** (ej: "no pasó nada", "apareció una ventana roja")
+3. **¿Qué esperabas que pasara?**
+4. **¿Has probado algo para solucionarlo?** (reiniciar, reinstalar, etc.)
+
+Cuanto más específico seas, más rápido podremos ayudarte. Si es urgente y el problema te impide trabajar, indícalo con la palabra **#URGENTE** en tu respuesta.
+
+Mientras esperas, reinicia el equipo. Resuelve el 40% de los problemas raros.
+```
+
+---
+

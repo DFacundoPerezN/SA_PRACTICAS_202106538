@@ -14,19 +14,55 @@ const CATEGORIES: { id: CategoryId; label: string; icon: string }[] = [
   { id: 6, label: 'Otro',               icon: '📋' },
 ];
 
-const PRIORITIES: { id: PriorityId; label: string; description: string; color: string }[] = [
-  { id: 1, label: 'Baja',    description: 'Sin urgencia',          color: 'border-slate-300 peer-checked:border-slate-500 peer-checked:bg-slate-50' },
-  { id: 2, label: 'Media',   description: 'Afecta productividad',  color: 'border-slate-300 peer-checked:border-blue-500 peer-checked:bg-blue-50' },
-  { id: 3, label: 'Alta',    description: 'Requiere atención hoy', color: 'border-slate-300 peer-checked:border-orange-500 peer-checked:bg-orange-50' },
-  { id: 4, label: 'Crítica', description: 'Sistema inoperante',    color: 'border-slate-300 peer-checked:border-red-500 peer-checked:bg-red-50' },
-];
+// Cada problema lleva la prioridad que le corresponde
+type Problem = { label: string; priority: PriorityId };
 
-const PRIORITY_LABEL_COLOR: Record<PriorityId, string> = {
-  1: 'text-slate-500',
-  2: 'text-blue-600',
-  3: 'text-orange-600',
-  4: 'text-red-600 font-semibold',
+const PROBLEMS_BY_CATEGORY: Record<CategoryId, Problem[]> = {
+  1: [
+    { label: 'La computadora no enciende al presionar el botón de encendido.',   priority: 4 },
+    { label: 'El equipo se apaga repentinamente después de unos minutos de uso.', priority: 3 },
+    { label: 'El disco duro no es reconocido por el sistema.',                    priority: 4 },
+    { label: 'El teclado o mouse dejan de responder de forma intermitente.',      priority: 2 },
+    { label: 'La pantalla muestra líneas o no da imagen correctamente.',          priority: 3 },
+  ],
+  2: [
+    { label: 'Una aplicación se cierra inesperadamente al intentar abrirla.',         priority: 2 },
+    { label: 'El sistema operativo se vuelve lento después de una actualización.',    priority: 1 },
+    { label: 'No se puede instalar un programa por errores de compatibilidad.',       priority: 2 },
+    { label: 'Aparece un mensaje de error al iniciar el sistema.',                    priority: 3 },
+    { label: 'El antivirus detecta amenazas constantemente en el equipo.',            priority: 4 },
+  ],
+  3: [
+    { label: 'No hay conexión a internet aunque el cable esté conectado.',         priority: 4 },
+    { label: 'La red WiFi aparece pero no permite navegar.',                        priority: 3 },
+    { label: 'La conexión es muy lenta en comparación con lo habitual.',            priority: 2 },
+    { label: 'No se puede acceder a recursos compartidos en la red.',               priority: 2 },
+    { label: 'El equipo pierde la conexión de forma intermitente.',                 priority: 3 },
+  ],
+  4: [
+    { label: 'El usuario no puede iniciar sesión con sus credenciales.',              priority: 4 },
+    { label: 'Se deniega el acceso a ciertas carpetas o archivos.',                   priority: 2 },
+    { label: 'La cuenta se bloquea después de varios intentos fallidos.',             priority: 3 },
+    { label: 'No se tienen permisos para instalar aplicaciones.',                     priority: 2 },
+    { label: 'El sistema solicita permisos de administrador constantemente.',         priority: 1 },
+  ],
+  5: [
+    { label: 'No se pueden enviar correos desde la cuenta.',                   priority: 3 },
+    { label: 'Los correos no llegan a la bandeja de entrada.',                 priority: 3 },
+    { label: 'El cliente de correo no sincroniza correctamente.',              priority: 2 },
+    { label: 'Los archivos adjuntos no se pueden abrir.',                      priority: 2 },
+    { label: 'Se reciben correos sospechosos o de spam constantemente.',       priority: 1 },
+  ],
+  6: [
+    { label: 'El sistema presenta comportamientos inesperados sin causa aparente.',  priority: 3 },
+    { label: 'Se requiere capacitación para el uso de una herramienta.',             priority: 1 },
+    { label: 'El usuario necesita configurar un nuevo dispositivo.',                 priority: 2 },
+    { label: 'Se solicita asesoría sobre buenas prácticas de seguridad.',            priority: 1 },
+    { label: 'Se reporta un problema que no encaja en las categorías anteriores.',   priority: 2 },
+    { label: 'Mi pregunta no está en las anteriores.',                               priority: 2 },
+  ],
 };
+
 
 // ─── Componente ───────────────────────────────────────────────────────────────
 
@@ -36,19 +72,36 @@ const ClientNewTicket = () => {
   const [title, setTitle]           = useState('');
   const [description, setDescription] = useState('');
   const [categoryId, setCategoryId] = useState<CategoryId | null>(null);
-  const [priorityId, setPriorityId] = useState<PriorityId>(2); // media por defecto
+  const [problemIndex, setProblemIndex] = useState<number | null>(null); // índice dentro de PROBLEMS_BY_CATEGORY[categoryId]
 
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState<string | null>(null);
 
-  // Validaciones en tiempo real
+  // Prioridad derivada automáticamente del problema seleccionado
+  const selectedProblem: Problem | null =
+    categoryId !== null && problemIndex !== null
+      ? PROBLEMS_BY_CATEGORY[categoryId][problemIndex]
+      : null;
+
+  const priorityId: PriorityId | null = selectedProblem?.priority ?? null;
+
+  // Validaciones
   const titleError       = title.length > 0 && title.trim().length < 5;
   const descriptionError = description.length > 0 && description.trim().length < 10;
-  const canSubmit        = title.trim().length >= 5 && description.trim().length >= 10 && categoryId !== null;
+  const canSubmit =
+    title.trim().length >= 5 &&
+    description.trim().length >= 10 &&
+    categoryId !== null &&
+    selectedProblem !== null;
+
+  const handleCategoryChange = (id: CategoryId) => {
+    setCategoryId(id);
+    setProblemIndex(null); // resetear problema al cambiar categoría
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!canSubmit || !categoryId) return;
+    if (!canSubmit || !categoryId || priorityId === null) return;
 
     setLoading(true);
     setError(null);
@@ -152,7 +205,7 @@ const ClientNewTicket = () => {
                 key={cat.id}
                 type="button"
                 disabled={loading}
-                onClick={() => setCategoryId(cat.id)}
+                onClick={() => handleCategoryChange(cat.id)}
                 className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border text-sm font-medium transition-all text-left
                   ${categoryId === cat.id
                     ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm shadow-blue-100'
@@ -166,35 +219,30 @@ const ClientNewTicket = () => {
           </div>
         </div>
 
-        {/* Prioridad */}
-        <div>
-          <p className="text-sm font-medium text-slate-700 mb-2">Prioridad</p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            {PRIORITIES.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                disabled={loading}
-                onClick={() => setPriorityId(p.id)}
-                className={`flex flex-col gap-0.5 px-3 py-3 rounded-lg border text-left transition-all
-                  ${priorityId === p.id
-                    ? `border-2 ${
-                        p.id === 1 ? 'border-slate-500 bg-slate-50' :
-                        p.id === 2 ? 'border-blue-500 bg-blue-50' :
-                        p.id === 3 ? 'border-orange-500 bg-orange-50' :
-                                     'border-red-500 bg-red-50'
-                      }`
-                    : 'border-slate-200 bg-white hover:border-slate-400'
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
-              >
-                <span className={`text-sm font-semibold ${PRIORITY_LABEL_COLOR[p.id]}`}>
-                  {p.label}
-                </span>
-                <span className="text-xs text-slate-400 leading-tight">{p.description}</span>
-              </button>
-            ))}
+        {/* Problema (select dinámico según categoría) */}
+        {categoryId !== null && (
+          <div>
+            <label htmlFor="problem" className="block text-sm font-medium text-slate-700 mb-1.5">
+              ¿Cuál es tu problema? <span className="text-red-500">*</span>
+            </label>
+            <select
+              id="problem"
+              disabled={loading}
+              value={problemIndex ?? ''}
+              onChange={(e) => setProblemIndex(e.target.value === '' ? null : Number(e.target.value))}
+              className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm text-slate-700 bg-white
+                focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-colors
+                disabled:bg-slate-50 disabled:text-slate-400"
+            >
+              <option value="">— Selecciona la opción que mejor describe tu problema —</option>
+              {PROBLEMS_BY_CATEGORY[categoryId].map((problem, idx) => (
+                <option key={idx} value={idx}>
+                  {problem.label}
+                </option>
+              ))}
+            </select>
           </div>
-        </div>
+        )}
 
         {/* Error global */}
         {error && (
