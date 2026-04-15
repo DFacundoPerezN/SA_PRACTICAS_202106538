@@ -192,6 +192,25 @@ const NavBar = () => {
               {role === "tecnico" && (
                 <>
                   <NavLink
+                    to="/tecnico/assignments"
+                    className={({ isActive }) =>
+                      `${linkClass} ${isActive ? activeClass : inactiveClass}`
+                    }
+                    title="Asignar Tickets"
+                  >
+                    <WrenchScrewdriverIcon className="w-5 h-5 flex-shrink-0" />
+                    <span
+                      className={`transition-all duration-300 whitespace-nowrap ${
+                        isExpanded
+                          ? "opacity-100 translate-x-0"
+                          : "opacity-0 -translate-x-4 absolute"
+                      }`}
+                    >
+                      Asignar Tickets
+                    </span>
+                  </NavLink>
+                  
+                  <NavLink
                     to="/tecnico/tickets"
                     className={({ isActive }) =>
                       `${linkClass} ${isActive ? activeClass : inactiveClass}`
