@@ -55,17 +55,17 @@ El rol puede ser:
 
 ```json
 {
-  "email": "juan@example.com",
-  "password": "Segura1234!",
-  "rol": 3
+  "email": "cliente2@gmail.com",
+  "password": "201504070",
+  "rol": 1 //1:cliente, 2:técnico, 3:administrador
 }
 ```
 **Respuesta esperada:**
 ```json
 {
-  "userId": "d2f336af-b952-49f7-8cf3-4ef319cf2e22",
-  "role": "administrador",
-  "message": "User registered successfully"
+    "user_id": "ea1bc2e6-e1a3-485a-a837-d620c5e7f77f",
+    "role": "cliente",
+    "message": "User registered successfully"
 }
 ```
 
@@ -202,12 +202,12 @@ Sin body.
 **Respuesta esperada:**
 ```json
 {
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "name": "Juan Pérez",
-  "email": "juan@example.com",
-  "role": "cliente",
-  "isActive": true,
-  "createdAt": "2026-04-04T21:00:00.000Z"
+    "id": "ae5288e1-5e9d-44ef-b473-1b299da9de54",
+    "name": "tecnico",
+    "email": "tecnico@gmail.com",
+    "role": "tecnico",
+    "isActive": true,
+    "createdAt": "2026-04-14T05:35:10.000Z"
 }
 ```
 
@@ -216,6 +216,18 @@ Sin body.
 #### GET `/api/users/email/juan@example.com`
 
 Sin body.
+
+**Respuesta esperada:**
+```json
+{
+    "id": "ae5288e1-5e9d-44ef-b473-1b299da9de54",
+    "name": "tecnico",
+    "email": "tecnico@gmail.com",
+    "role": "tecnico",
+    "isActive": true,
+    "createdAt": "2026-04-14T05:35:10.000Z"
+}
+```
 
 ---
 

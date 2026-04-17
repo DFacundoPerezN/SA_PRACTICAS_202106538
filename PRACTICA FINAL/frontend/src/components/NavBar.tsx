@@ -89,11 +89,7 @@ const NavBar = () => {
       <button
         onClick={handleToggle}
         className={`fixed top-4 z-50 p-2 rounded-lg bg-slate-900 text-white shadow-lg transition-all duration-300 hover:bg-slate-800 ${
-          isExpanded
-            ? isMobile
-              ? "left-64"
-              : "left-56"
-            : "left-4"
+          isExpanded ? (isMobile ? "left-64" : "left-56") : "left-4"
         } md:left-4`}
       >
         {isExpanded ? (
@@ -143,13 +139,12 @@ const NavBar = () => {
           {/* Navegación */}
           <nav className="flex-1 p-4 overflow-y-auto">
             <div className="space-y-1">
-
               {/* ── CLIENTE ─────────────────────────────────── */}
               {role === "cliente" && (
                 <>
                   <NavLink
                     to="/client/tickets"
-					end
+                    end
                     className={({ isActive }) =>
                       `${linkClass} ${isActive ? activeClass : inactiveClass}`
                     }
@@ -192,25 +187,6 @@ const NavBar = () => {
               {role === "tecnico" && (
                 <>
                   <NavLink
-                    to="/tecnico/assignments"
-                    className={({ isActive }) =>
-                      `${linkClass} ${isActive ? activeClass : inactiveClass}`
-                    }
-                    title="Asignar Tickets"
-                  >
-                    <WrenchScrewdriverIcon className="w-5 h-5 flex-shrink-0" />
-                    <span
-                      className={`transition-all duration-300 whitespace-nowrap ${
-                        isExpanded
-                          ? "opacity-100 translate-x-0"
-                          : "opacity-0 -translate-x-4 absolute"
-                      }`}
-                    >
-                      Asignar Tickets
-                    </span>
-                  </NavLink>
-                  
-                  <NavLink
                     to="/tecnico/tickets"
                     className={({ isActive }) =>
                       `${linkClass} ${isActive ? activeClass : inactiveClass}`
@@ -236,6 +212,7 @@ const NavBar = () => {
                 <>
                   <NavLink
                     to="/admin/users"
+                    end
                     className={({ isActive }) =>
                       `${linkClass} ${isActive ? activeClass : inactiveClass}`
                     }
@@ -252,6 +229,25 @@ const NavBar = () => {
                       Usuarios
                     </span>
                   </NavLink>
+                  
+                  <NavLink
+                    to="/admin/users/register"
+                    className={({ isActive }) =>
+                      `${linkClass} ${isActive ? activeClass : inactiveClass}`
+                    }
+                    title="Registrar Usuario"
+                  >
+                    <PlusCircleIcon className="w-5 h-5 flex-shrink-0" />
+                    <span
+                      className={`transition-all duration-300 whitespace-nowrap ${
+                        isExpanded
+                          ? "opacity-100 translate-x-0"
+                          : "opacity-0 -translate-x-4 absolute"
+                      }`}
+                    >
+                      Registrar Usuario
+                    </span>
+                  </NavLink>  
 
                   <NavLink
                     to="/admin/tickets"

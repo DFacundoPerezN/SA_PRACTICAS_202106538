@@ -13,11 +13,13 @@ import { TechnicianWorkloadEntity } from './domain/technician-workload.entity';
 import { AssignmentsController } from './assignments.controller';
 
 // Application layer
-import { AssignmentsService }       from './application/assignments.service';
-import { ManualAssignUseCase }      from './application/use-cases/manual-assign.use-case';
-import { AutoAssignUseCase }        from './application/use-cases/auto-assign.use-case';
-import { UpdateAssignmentUseCase }  from './application/use-cases/update-assignment.use-case';
-import { FindAssignmentUseCase }    from './application/use-cases/find-assignment.use-case';
+import { AssignmentsService }           from './application/assignments.service';
+import { ManualAssignUseCase }          from './application/use-cases/manual-assign.use-case';
+import { AutoAssignUseCase }            from './application/use-cases/auto-assign.use-case';
+import { UpdateAssignmentUseCase }      from './application/use-cases/update-assignment.use-case';
+import { FindAssignmentUseCase }        from './application/use-cases/find-assignment.use-case';
+import { HandleUserCreatedUseCase }     from './application/use-cases/handle-user-created.use-case';
+import { HandleTicketClosedUseCase }    from './application/use-cases/handle-ticket-closed.use-case';
 
 // Infrastructure — repository
 import { AssignmentRepository }   from './infrastructure/repositories/assignment.repository';
@@ -92,7 +94,7 @@ import { TICKETS_GRPC_CLIENT_TOKEN } from './application/interfaces/tickets-grpc
 
   controllers: [
     AssignmentsController,        // gRPC methods
-    RabbitMqConsumerController,   // RMQ event handler (ticket.created)
+    RabbitMqConsumerController,   // RMQ event handlers (ticket.created, user.created, ticket.status.updated)
   ],
 
   providers: [
@@ -102,6 +104,8 @@ import { TICKETS_GRPC_CLIENT_TOKEN } from './application/interfaces/tickets-grpc
     AutoAssignUseCase,
     UpdateAssignmentUseCase,
     FindAssignmentUseCase,
+    HandleUserCreatedUseCase,
+    HandleTicketClosedUseCase,
 
     // Infrastructure — repository (concrete + DIP binding)
     AssignmentRepository,

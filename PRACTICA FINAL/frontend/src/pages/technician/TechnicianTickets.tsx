@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { getTechnicianTickets, searchTickets } from '../../services/technicianService';
 import type { TechnicianTicketListItem } from '../../types/technician.types';
 import type { TicketStatus, TicketPriority } from '../../types/ticket.types';
-
+import { getUser } from "../../utils/authStorage";
+import { getUserInfoByEmail } from '../../services/userService';
 // ─── Catálogos ────────────────────────────────────────────────────────────────
 
 const STATUS_CONFIG: Record<TicketStatus, { label: string; badge: string; dot: string }> = {
@@ -137,6 +138,19 @@ const TechnicianTickets = () => {
       const data = debouncedQuery.trim()
         ? await searchTickets(debouncedQuery.trim(), filters)
         : await getTechnicianTickets(filters);
+
+      const user = getUser();
+      if (user) {
+        const userByEmail = await getUserInfoByEmail(user?.email);
+        if (!userByEmail) {
+          setError('No se encontró información del usuario');
+          setLoading(false);
+          return;
+        }
+        data.tickets = data.tickets.filter((t) => t.assignedTo === userByEmail.id);
+        data.total = data.tickets.length;
+      }
+
       setTickets(data.tickets);
       setTotal(data.total);
     } catch (err: any) {

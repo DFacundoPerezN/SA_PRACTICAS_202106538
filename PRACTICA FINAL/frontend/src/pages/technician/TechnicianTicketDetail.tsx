@@ -747,7 +747,6 @@ Con esa información, lo escalaremos al área técnica correspondiente. Mientras
 };
 
 // Componente del panel de respuestas predefinidas
-// Componente del panel de respuestas predefinidas - CORREGIDO
 const PredefinedResponsesPanel = ({
   category,
   onSelectResponse,
@@ -904,13 +903,6 @@ const TechnicianTicketDetail = () => {
           getTechnicianTicketById(id),
           getTicketAssignment(id),
         ]);
-
-        console.log(
-          "Datos del ticket:",
-          ticketData.ticket.category,
-          ticketData.ticket.priority,
-          ticketData.ticket.status,
-        );
 
         let ticketConvert: Ticket = {
           id: ticketData.ticket.id,

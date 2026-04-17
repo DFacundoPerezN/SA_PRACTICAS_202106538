@@ -10,14 +10,18 @@ import {
 } from './interfaces/assignment-repository.interface';
 import { AssignmentEntity }        from '../domain/assignment.entity';
 import { TechnicianWorkloadEntity } from '../domain/technician-workload.entity';
+import { HandleUserCreatedUseCase, UserCreatedEvent } from './use-cases/handle-user-created.use-case';
+import { HandleTicketClosedUseCase, TicketStatusUpdatedEvent } from './use-cases/handle-ticket-closed.use-case';
 
 @Injectable()
 export class AssignmentsService {
   constructor(
-    private readonly manualAssignUseCase:   ManualAssignUseCase,
-    private readonly autoAssignUseCase:     AutoAssignUseCase,
+    private readonly manualAssignUseCase:     ManualAssignUseCase,
+    private readonly autoAssignUseCase:       AutoAssignUseCase,
     private readonly updateAssignmentUseCase: UpdateAssignmentUseCase,
-    private readonly findAssignmentUseCase: FindAssignmentUseCase,
+    private readonly findAssignmentUseCase:   FindAssignmentUseCase,
+    private readonly handleUserCreatedUseCase:  HandleUserCreatedUseCase,
+    private readonly handleTicketClosedUseCase: HandleTicketClosedUseCase,
   ) {}
 
   manualAssign(input: ManualAssignInput): Promise<AssignmentEntity> {
@@ -50,5 +54,13 @@ export class AssignmentsService {
 
   getWorkload(): Promise<TechnicianWorkloadEntity[]> {
     return this.findAssignmentUseCase.getWorkload();
+  }
+
+  handleUserCreated(event: UserCreatedEvent): Promise<void> {
+    return this.handleUserCreatedUseCase.execute(event);
+  }
+
+  handleTicketStatusUpdated(event: TicketStatusUpdatedEvent): Promise<void> {
+    return this.handleTicketClosedUseCase.execute(event);
   }
 }

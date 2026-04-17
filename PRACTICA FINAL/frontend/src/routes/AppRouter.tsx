@@ -25,7 +25,6 @@ import AdminWorkload       from "../pages/admin/AdminWorkload";
 // ── ERRORES ────────────────────────────────────────────────────
 import NotFound            from "../pages/errors/NotFound";
 import Unauthorized        from "../pages/errors/Unauthorized";
-import AssignmentTicket from "../pages/technician/AssignmentTicket";
 
 export const RouterApp = createBrowserRouter([
   {
@@ -69,14 +68,6 @@ export const RouterApp = createBrowserRouter([
       },
 
       // ── TÉCNICO ──────────────────────────────────────────────
-      {
-        path: "tecnico/assignments",
-        element: (
-          <PrivateRoute roles={["tecnico"]}>
-            <AssignmentTicket />
-          </PrivateRoute>
-        ),
-      },
       {
         path: "tecnico/tickets",
         element: (

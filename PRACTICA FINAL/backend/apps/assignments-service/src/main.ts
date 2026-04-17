@@ -37,8 +37,7 @@ async function bootstrap() {
       queue:        rmqQueue,
       exchangeName: rmqExchange,
       queueOptions: { durable: true },
-      noAck:        false,
-      prefetchCount: 1,
+      noAck:        true
     },
   });
 

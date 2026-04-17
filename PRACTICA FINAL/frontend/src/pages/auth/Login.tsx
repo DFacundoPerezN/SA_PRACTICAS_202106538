@@ -45,7 +45,7 @@ const Login = () => {
           navigate("/admin/users");
           break;
         case "tecnico":
-          navigate("/tecnico/assignments");
+          navigate("/tecnico/tickets");
           break;
         case "cliente":
         default:
