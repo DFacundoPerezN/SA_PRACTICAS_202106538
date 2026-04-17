@@ -183,13 +183,38 @@ El rol puede ser:
 Sin body. Query params opcionales:
 - `page` (número, default 1)
 - `limit` (número, default 20)
-- `role` (string, opcional)
+- `role` (string, opcional) // puede ser: "cliente", "administrador" o "tecnico"
 
 **Respuesta esperada:**
 ```json
 {
-  "users": [ { "id": "...", "name": "...", "...": "..." } ],
-  "total": 42
+    "users": [
+        {
+            "id": "993c479f-1d7b-4610-aa0c-4caa372cbb54",
+            "name": "hugo.1997rm",
+            "email": "hugo.1997rm@gmail.com",
+            "role": "cliente",
+            "isActive": true,
+            "createdAt": "2026-04-14T06:05:58.000Z"
+        },
+        {
+            "id": "c1a9812e-bf41-428c-bffe-382635bd38fa",
+            "name": "cliente5",
+            "email": "cliente5@gmail.com",
+            "role": "cliente",
+            "isActive": true,
+            "createdAt": "2026-04-17T07:03:33.000Z"
+        },
+        {
+            "id": "ea1bc2e6-e1a3-485a-a837-d620c5e7f77f",
+            "name": "cliente2",
+            "email": "cliente2@gmail.com",
+            "role": "cliente",
+            "isActive": true,
+            "createdAt": "2026-04-17T05:20:41.000Z"
+        }
+    ],
+    "total": 3
 }
 ```
 
@@ -240,6 +265,19 @@ Sin body.
 ```
 > Todos los campos son opcionales.
 
+**Respuesta:**
+
+```json
+{
+    "id": "02a292ed-1af4-46bb-a8d3-6d5c59dc4b65",
+    "name": "Juan Pérez Actualizado",
+    "email": "tecnicoreprueba@gmail.com",
+    "role": "tecnico",
+    "isActive": true,
+    "createdAt": "2026-04-17T07:04:14.000Z"
+}
+```
+
 ---
 
 #### DELETE `/api/users/550e8400-e29b-41d4-a716-446655440000`
@@ -249,8 +287,8 @@ Sin body.
 **Respuesta esperada:**
 ```json
 {
-  "success": true,
-  "message": "User deleted"
+    "success": true,
+    "message": "User 02a292ed-1af4-46bb-a8d3-6d5c59dc4b65 deleted successfully"
 }
 ```
 
