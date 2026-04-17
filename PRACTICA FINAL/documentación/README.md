@@ -1681,3 +1681,72 @@ Mientras esperas, reinicia el equipo. Resuelve el 40% de los problemas raros.
 
 ---
 
+## Flujo de las asignaciones de tickets a técnicos
+
+---
+
+## ¿Cómo funciona el Auto-Assign?
+
+### 1. Disparador — Evento `ticket.created` (RabbitMQ)
+
+Todo empieza cuando el **tickets-service** crea un ticket nuevo y publica un evento `ticket.created` en RabbitMQ. El `RabbitMqConsumerController` está escuchando ese patrón y llama a `assignmentsService.autoAssign(event)`.
+
+---
+
+### 2. Lógica principal — `AutoAssignUseCase`
+
+Una vez recibido el evento, el use case ejecuta estos pasos en orden:
+
+**Paso 1 — Obtener la carga de trabajo de todos los técnicos**
+Consulta la tabla `technician_workload` que guarda cuántos tickets activos tiene cada técnico.
+
+**Paso 2 — Verificar que haya técnicos disponibles**
+Si la tabla está vacía, simplemente no asigna (no es un error, el ticket queda sin asignar esperando una asignación manual).
+
+**Paso 3 — Balanceo de carga (RF-22)**
+Ordena los técnicos de menor a mayor por `active_tickets` y selecciona el primero, es decir, **el que tiene menos carga de trabajo en ese momento**.
+
+**Paso 4 — Buscar el estado `"asignado"`**
+Busca en la tabla de estados el registro con nombre `"asignado"`. Si no existe, aborta.
+
+**Paso 5 — Crear el registro de asignación**
+Crea un registro en la tabla `assignments` con:
+- El `ticketId` del evento
+- El `technicianId` del técnico elegido
+- `assignedBy = null` (señal de que fue el sistema, no una persona)
+- Nota: `"Asignación automática por carga de trabajo"`
+
+**Paso 6 — Incrementar el contador del técnico**
+Llama a `upsertWorkload(technicianId, +1)` para sumar 1 al contador de tickets activos del técnico elegido.
+
+**Paso 7 — Notificar al tickets-service vía gRPC**
+Llama al `ticketsClient.assignTicket(...)` para actualizar el campo `assigned_to` en el ticket original. Esta llamada es **no bloqueante** (fire-and-forget con `.catch()`).
+
+**Paso 8 — Publicar evento `ticket.assigned` en RabbitMQ**
+Publica un evento indicando `isAutomatic: true` para que otros servicios sepan que fue asignación automática. También fire-and-forget.
+
+---
+
+### Resumen visual del flujo
+
+```
+tickets-service
+    └─► publica "ticket.created" en RabbitMQ
+            └─► RabbitMqConsumerController recibe el evento
+                    └─► AutoAssignUseCase.execute()
+                            ├─ Consulta technician_workload
+                            ├─ Ordena por active_tickets ASC
+                            ├─ Elige el técnico con menor carga
+                            ├─ Crea registro en assignments (assignedBy = null)
+                            ├─ Incrementa workload del técnico (+1)
+                            ├─ Notifica a tickets-service por gRPC
+                            └─ Publica "ticket.assigned" en RabbitMQ
+```
+
+---
+
+### Puntos clave a tener en cuenta
+
+- **Si no hay técnicos registrados en `technician_workload`**, el ticket queda sin asignar silenciosamente. Hay que asegurarse de que esa tabla se popule cuando un técnico se registra en el sistema.
+- **El contador `active_tickets` es el corazón del balanceo.** Si ese contador se desincroniza (por ejemplo, si un ticket se cierra pero no se decrementa el contador), el balanceo empezará a elegir técnicos incorrectos.
+- **`assignedBy = null`** es la forma en que distingues una asignación automática de una manual en la base de datos.

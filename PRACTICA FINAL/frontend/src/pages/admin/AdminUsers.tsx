@@ -8,8 +8,8 @@ import {
   XMarkIcon,
   FunnelIcon
 } from '@heroicons/react/24/outline';
-import { AdminService } from '../../services/adminServices';
-import type { User, GetUsersParams } from '../../types/admin.types';
+import { UserService } from '../../services/userService';
+import type { User, GetUsersParams } from '../../types/users.type';
 
 const AdminUsers: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -44,7 +44,7 @@ const AdminUsers: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await AdminService.getUsers(filters);
+      const response = await UserService.getUsers(filters);
       setUsers(response.users);
       setTotal(response.total);
     } catch (err) {
@@ -96,7 +96,7 @@ const AdminUsers: React.FC = () => {
         return;
       }
       
-      await AdminService.updateUser(editingUser.id, updateData);
+      await UserService.updateUser(editingUser.id, updateData);
       await loadUsers();
       setEditingUser(null);
     } catch (err) {
@@ -117,7 +117,7 @@ const AdminUsers: React.FC = () => {
     
     setDeleteLoading(true);
     try {
-      await AdminService.deleteUser(deletingUser.id);
+      await UserService.deleteUser(deletingUser.id);
       await loadUsers();
       setDeletingUser(null);
     } catch (err) {

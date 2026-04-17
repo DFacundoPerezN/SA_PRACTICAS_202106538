@@ -227,12 +227,12 @@ Sin body.
 **Respuesta esperada:**
 ```json
 {
-    "id": "ae5288e1-5e9d-44ef-b473-1b299da9de54",
-    "name": "tecnico",
-    "email": "tecnico@gmail.com",
+    "id": "430578f0-f31b-44db-a391-2c41d99bc5cb",
+    "name": "tecnico2",
+    "email": "tecnico2@gmail.com",
     "role": "tecnico",
     "isActive": true,
-    "createdAt": "2026-04-14T05:35:10.000Z"
+    "createdAt": "2026-04-14T22:49:27.000Z"
 }
 ```
 
@@ -707,18 +707,28 @@ Sin body. Devuelve la carga de trabajo activa de todos los técnicos ordenada de
 **Respuesta esperada:**
 ```json
 {
-  "workload": [
-    {
-      "technicianId": "tecnico-uuid-5678",
-      "active_tickets": 2,
-      "last_updated": "2026-04-05T12:00:00.000Z"
-    },
-    {
-      "technician_id": "tecnico-uuid-1234",
-      "active_tickets": 5,
-      "last_updated": "2026-04-05T12:00:00.000Z"
-    }
-  ]
+    "workload": [
+        {
+            "technicianId": "02a292ed-1af4-46bb-a8d3-6d5c59dc4b65",
+            "activeTickets": 0,
+            "lastUpdated": "2026-04-17T07:04:14.000Z"
+        },
+        {
+            "technicianId": "93e13a08-3b5a-44f9-9468-91573789f9c7",
+            "activeTickets": 1,
+            "lastUpdated": "2026-04-17T05:00:52.000Z"
+        },
+        {
+            "technicianId": "ae5288e1-5e9d-44ef-b473-1b299da9de55",
+            "activeTickets": 7,
+            "lastUpdated": "2026-04-17T03:20:41.000Z"
+        },
+        {
+            "technicianId": "ae5288e1-5e9d-44ef-b473-1b299da9de54",
+            "activeTickets": 8,
+            "lastUpdated": "2026-04-17T03:22:17.000Z"
+        }
+    ]
 }
 ```
 

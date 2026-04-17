@@ -4,7 +4,7 @@ import { getTechnicianTickets, searchTickets } from '../../services/technicianSe
 import type { TechnicianTicketListItem } from '../../types/technician.types';
 import type { TicketStatus, TicketPriority } from '../../types/ticket.types';
 import { getUser } from "../../utils/authStorage";
-import { getUserInfoByEmail } from '../../services/userService';
+import { UserService } from '../../services/userService';
 // ─── Catálogos ────────────────────────────────────────────────────────────────
 
 const STATUS_CONFIG: Record<TicketStatus, { label: string; badge: string; dot: string }> = {
@@ -141,7 +141,7 @@ const TechnicianTickets = () => {
 
       const user = getUser();
       if (user) {
-        const userByEmail = await getUserInfoByEmail(user?.email);
+        const userByEmail = await UserService.getUserInfoByEmail(user?.email);
         if (!userByEmail) {
           setError('No se encontró información del usuario');
           setLoading(false);
