@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { createPortal } from "react-dom";
 import {
   getTechnicianTicketById,
   getTechnicianComments,
@@ -163,58 +164,65 @@ const CommentBubble = ({
   comment: Comment;
   isOwn: boolean;
 }) => {
-  // Función para procesar el contenido y mantener el formato
+  // 1. Nueva función auxiliar para detectar **texto** dentro de cualquier string
+  const parseBoldText = (text: string) => {
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return (
+          <strong key={i} className="font-bold">
+            {part.slice(2, -2)}
+          </strong>
+        );
+      }
+      return part;
+    });
+  };
+
   const renderContent = (content: string) => {
-    // Dividir el contenido por saltos de línea
     const lines = content.split("\n");
 
     return lines.map((line, index) => {
-      // Detectar si la línea es un título (comienza con **)
-      if (line.startsWith("**") && line.endsWith("**")) {
+      // Línea vacía
+      if (line.trim() === "") {
+        return <div key={index} className="h-2" />;
+      }
+
+      // 2. Títulos (Toda la línea en negrita si empieza y termina con **)
+      if (line.trim().startsWith("**") && line.trim().endsWith("**")) {
         return (
           <div key={index} className="font-bold mb-2 mt-1">
             {line.replace(/\*\*/g, "")}
           </div>
         );
       }
-      // Detectar si la línea es un paso numerado (ej: "1. ", "2. ")
-      else if (/^\d+\./.test(line)) {
+
+      // 3. Pasos numerados (Ej: "1. **Texto**")
+      if (/^\d+\./.test(line)) {
         return (
           <div key={index} className="ml-2 mb-1">
-            {line}
+            {parseBoldText(line)}
           </div>
         );
       }
-      // Detectar si la línea es un ítem de lista (comienza con -)
-      else if (line.startsWith("-")) {
+
+      // 4. Ítems de lista (Ej: "- **Texto**")
+      if (line.trim().startsWith("-")) {
+        const contentAfterDash = line.trim().substring(1).trim();
         return (
           <div key={index} className="ml-4 mb-1 flex items-start gap-2">
             <span className="text-current">•</span>
-            <span className="flex-1">{line.substring(1).trim()}</span>
+            <span className="flex-1">{parseBoldText(contentAfterDash)}</span>
           </div>
         );
       }
-      // Línea vacía
-      else if (line.trim() === "") {
-        return <div key={index} className="h-2" />;
-      }
-      // Texto normal
-      else {
-        // Procesar texto con **negritas** inline
-        const parts = line.split(/(\*\*.*?\*\*)/g);
-        const processedParts = parts.map((part, i) => {
-          if (part.startsWith("**") && part.endsWith("**")) {
-            return <strong key={i}>{part.slice(2, -2)}</strong>;
-          }
-          return part;
-        });
 
-        return (
-          <div key={index} className="mb-1">
-            {processedParts}
-          </div>
-        );
-      }
+      // 5. Texto normal (con negritas inline)
+      return (
+        <div key={index} className="mb-1">
+          {parseBoldText(line)}
+        </div>
+      );
     });
   };
 
@@ -755,60 +763,74 @@ const PredefinedResponsesPanel = ({
   onSelectResponse: (content: string) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [panelStyle, setPanelStyle] = useState<React.CSSProperties>({});
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const responses = PREDEFINED_RESPONSES[category] || PREDEFINED_RESPONSES.Otro;
 
   if (!responses || responses.length === 0) return null;
 
-  return (
-    <div className="relative">
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
-        title="Respuestas predefinidas"
-      >
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-          />
-        </svg>
-        Respuestas rápidas
-        <svg
-          className={`w-3 h-3 transition-transform ${isOpen ? "rotate-180" : ""}`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </button>
+  // Calcular posición del panel relativa al botón cada vez que se abre
+  useEffect(() => {
+    if (!isOpen || !buttonRef.current) return;
 
-      {isOpen && (
+    const rect = buttonRef.current.getBoundingClientRect();
+    const panelHeight = 320;
+    const panelWidth = 320;
+
+    const spaceAbove = rect.top;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const openUpward = spaceAbove > panelHeight || spaceAbove > spaceBelow;
+
+    let left = rect.right - panelWidth;
+    if (left < 8) left = 8;
+
+    setPanelStyle({
+      position: "fixed",
+      width: panelWidth,
+      zIndex: 9999,
+      ...(openUpward
+        ? { bottom: window.innerHeight - rect.top + 8 }
+        : { top: rect.bottom + 8 }),
+      left,
+    });
+  }, [isOpen]);
+
+  // Cerrar solo al hacer scroll FUERA del panel, y al resize
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleScroll = (e: Event) => {
+      // Si el scroll ocurrió dentro del panel, ignorarlo
+      if (panelRef.current?.contains(e.target as Node)) return;
+      setIsOpen(false);
+    };
+
+    const handleResize = () => setIsOpen(false);
+
+    window.addEventListener("scroll", handleScroll, true);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("scroll", handleScroll, true);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isOpen]);
+
+  const panel = isOpen
+    ? createPortal(
         <>
           {/* Overlay para cerrar al hacer click fuera */}
-          <div
-            className="fixed inset-0 z-10"
-            onClick={() => setIsOpen(false)}
-          />
+          <div className="fixed inset-0 z-[9998]" onClick={() => setIsOpen(false)} />
 
-          {/* Panel desplegable - ajustado hacia la izquierda */}
-          <div className="absolute bottom-full mb-2 right-0 z-20 w-80 bg-white rounded-lg shadow-xl border border-slate-200 overflow-visible">
+          {/* Panel flotante */}
+          <div
+            ref={panelRef}
+            style={panelStyle}
+            className="bg-white rounded-lg shadow-xl border border-slate-200 overflow-hidden"
+          >
             <div className="px-4 py-2 bg-slate-50 border-b border-slate-200">
               <h3 className="text-xs font-semibold text-slate-600 uppercase tracking-wide">
-                Respuestas predefinidas - {category}
+                Respuestas predefinidas — {category}
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
                 Haz clic en una respuesta para insertarla
@@ -835,8 +857,40 @@ const PredefinedResponsesPanel = ({
               ))}
             </div>
           </div>
-        </>
-      )}
+        </>,
+        document.body,
+      )
+    : null;
+
+  return (
+    <div className="relative">
+      <button
+        ref={buttonRef}
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+        title="Respuestas predefinidas"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+          />
+        </svg>
+        Respuestas rápidas
+        <svg
+          className={`w-3 h-3 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {panel}
     </div>
   );
 };

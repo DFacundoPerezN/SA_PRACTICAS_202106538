@@ -79,58 +79,65 @@ const CommentBubble = ({
   comment: Comment;
   isOwn: boolean;
 }) => {
-  // Función para procesar el contenido y mantener el formato
+  // 1. Nueva función auxiliar para detectar **texto** dentro de cualquier string
+  const parseBoldText = (text: string) => {
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return (
+          <strong key={i} className="font-bold">
+            {part.slice(2, -2)}
+          </strong>
+        );
+      }
+      return part;
+    });
+  };
+
   const renderContent = (content: string) => {
-    // Dividir el contenido por saltos de línea
     const lines = content.split("\n");
 
     return lines.map((line, index) => {
-      // Detectar si la línea es un título (comienza con **)
-      if (line.startsWith("**") && line.endsWith("**")) {
+      // Línea vacía
+      if (line.trim() === "") {
+        return <div key={index} className="h-2" />;
+      }
+
+      // 2. Títulos (Toda la línea en negrita si empieza y termina con **)
+      if (line.trim().startsWith("**") && line.trim().endsWith("**")) {
         return (
           <div key={index} className="font-bold mb-2 mt-1">
             {line.replace(/\*\*/g, "")}
           </div>
         );
       }
-      // Detectar si la línea es un paso numerado (ej: "1. ", "2. ")
-      else if (/^\d+\./.test(line)) {
+
+      // 3. Pasos numerados (Ej: "1. **Texto**")
+      if (/^\d+\./.test(line)) {
         return (
           <div key={index} className="ml-2 mb-1">
-            {line}
+            {parseBoldText(line)}
           </div>
         );
       }
-      // Detectar si la línea es un ítem de lista (comienza con -)
-      else if (line.startsWith("-")) {
+
+      // 4. Ítems de lista (Ej: "- **Texto**")
+      if (line.trim().startsWith("-")) {
+        const contentAfterDash = line.trim().substring(1).trim();
         return (
           <div key={index} className="ml-4 mb-1 flex items-start gap-2">
             <span className="text-current">•</span>
-            <span className="flex-1">{line.substring(1).trim()}</span>
+            <span className="flex-1">{parseBoldText(contentAfterDash)}</span>
           </div>
         );
       }
-      // Línea vacía
-      else if (line.trim() === "") {
-        return <div key={index} className="h-2" />;
-      }
-      // Texto normal
-      else {
-        // Procesar texto con **negritas** inline
-        const parts = line.split(/(\*\*.*?\*\*)/g);
-        const processedParts = parts.map((part, i) => {
-          if (part.startsWith("**") && part.endsWith("**")) {
-            return <strong key={i}>{part.slice(2, -2)}</strong>;
-          }
-          return part;
-        });
 
-        return (
-          <div key={index} className="mb-1">
-            {processedParts}
-          </div>
-        );
-      }
+      // 5. Texto normal (con negritas inline)
+      return (
+        <div key={index} className="mb-1">
+          {parseBoldText(line)}
+        </div>
+      );
     });
   };
 
