@@ -101,6 +101,26 @@ services:
       retries: 5
 
   # =============================
+  # NOTIFICATIONS DATABASE
+  # =============================
+  mysql-notifications:
+    image: mysql:8.0
+    container_name: mysql-notifications
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 201504070
+      MYSQL_DATABASE: notification_db
+    ports:
+      - "3311:3306"
+    volumes:
+      - mysql_notifications_data:/var/lib/mysql
+      - ./backend/sql/init-notifications.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+
+  # =============================
   # AUTH SERVICE
   # =============================
   auth-service:
@@ -190,6 +210,31 @@ services:
       - "50054:50054"
 
   # =============================
+  # NOTIFICATIONS SERVICE
+  # =============================
+  notifications-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.notifications-service
+    container_name: notifications-service
+    env_file:
+      - ./backend/.env
+    environment:
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      RABBITMQ_QUEUE: ticket_assignments
+      RABBITMQ_EXCHANGE: tickets_exchange
+      USERS_SERVICE_URL: users-service:50052   # necesario para resolver emails via gRPC
+    depends_on:
+      mysql-notifications:
+        condition: service_healthy             # espera a que la BD esté lista
+      rabbitmq:
+        condition: service_healthy
+      users-service:
+        condition: service_started             # necesario para el cliente gRPC de emails
+    ports:
+      - "50055:50055"
+
+  # =============================
   # API GATEWAY
   # =============================
   api-gateway:
@@ -204,7 +249,6 @@ services:
       USERS_SERVICE_URL: users-service:50052
       TICKETS_SERVICE_URL: tickets-service:50053
       ASSIGNMENTS_SERVICE_URL: assignments-service:50054
-      NOTIFICATION_SERVICE_URL: notifications-service:50055
     depends_on:
       - auth-service
       - users-service
@@ -230,4 +274,5 @@ volumes:
   mysql_users_data:
   mysql_tickets_data:
   mysql_assignments_data:
+  mysql_notifications_data:
   rabbitmq_data:
