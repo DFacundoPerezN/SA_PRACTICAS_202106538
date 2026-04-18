@@ -13,38 +13,11 @@ import {
 } from '@heroicons/react/24/outline';
 import { UserService } from '../../services/userService';
 import type { User } from '../../types/users.type';
-import { CONFIG } from '../../config/config';
-
-interface Ticket {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  priority: 'baja' | 'media' | 'alta' | 'critica';
-  status: string;
-  createdBy: string;
-  assignedTo: string | null;
-  resolvedAt: string;
-  closedAt: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface GetTicketsResponse {
-  tickets: Ticket[];
-  total: number;
-  page: number;
-  limit: number;
-}
-
-interface GetTicketsParams {
-  status?: string;
-  page?: number;
-  limit?: number;
-}
+import type { AdminTicket, AdminGetTicketsParams } from '../../types/admin.types';
+import { AdminService } from '../../services/adminServices';
 
 const AdminTickets: React.FC = () => {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [tickets, setTickets] = useState<AdminTicket[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -54,7 +27,7 @@ const AdminTickets: React.FC = () => {
   const [loadingUsers, setLoadingUsers] = useState(false);
   
   // Filtros y paginación
-  const [filters, setFilters] = useState<GetTicketsParams>({
+  const [filters, setFilters] = useState<AdminGetTicketsParams>({
     status: 'abierto',
     page: 1,
     limit: 20,
@@ -67,14 +40,19 @@ const AdminTickets: React.FC = () => {
   const loadAllUsers = async () => {
     setLoadingUsers(true);
     try {
-      // Obtener clientes
-      const clientsResponse = await UserService.getUsers({ role: 'cliente', limit: 100 });
-      // Obtener técnicos
-      const techniciansResponse = await UserService.getUsers({ role: 'tecnico', limit: 100 });
-      // Obtener administradores
-      const adminsResponse = await UserService.getUsers({ role: 'administrador', limit: 100 });
-      
-      const allUsers = [...clientsResponse.users, ...techniciansResponse.users, ...adminsResponse.users];
+      // Obtener clientes, técnicos y administradores en paralelo
+      const [clientsResponse, techniciansResponse, adminsResponse] = await Promise.all([
+        UserService.getUsers({ role: 'cliente', limit: 100 }),
+        UserService.getUsers({ role: 'tecnico', limit: 100 }),
+        UserService.getUsers({ role: 'administrador', limit: 100 }),
+      ]);
+
+      // Defensive: asegurar que cada lista sea siempre un array
+      const clients: User[] = Array.isArray(clientsResponse?.users) ? clientsResponse.users : [];
+      const technicians: User[] = Array.isArray(techniciansResponse?.users) ? techniciansResponse.users : [];
+      const admins: User[] = Array.isArray(adminsResponse?.users) ? adminsResponse.users : [];
+
+      const allUsers = [...clients, ...technicians, ...admins];
       const map = new Map<string, User>();
       allUsers.forEach(user => map.set(user.id, user));
       setUserMap(map);
@@ -95,21 +73,12 @@ const AdminTickets: React.FC = () => {
       if (filters.status) queryParams.append('status', filters.status);
       queryParams.append('page', (filters.page ?? 1).toString());
       queryParams.append('limit', (filters.limit ?? 20).toString());
+
+      const result = await AdminService.getTickets(Object.fromEntries(queryParams));
       
-      const url = `${CONFIG.API_URL}/api/tickets?${queryParams.toString()}`;
-      const response = await fetch(url, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-      
-      const result: GetTicketsResponse = await response.json();
-      setTickets(result.tickets);
-      setTotal(result.total);
+      // Defensive: asegurar que tickets sea siempre un array
+      setTickets(Array.isArray(result?.tickets) ? result.tickets : []);
+      setTotal(result?.total ?? 0);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al cargar los tickets');
     } finally {
@@ -137,7 +106,7 @@ const AdminTickets: React.FC = () => {
   };
 
   // Obtener email por ID
-  const getUserEmail = (userId: string | null): string => {
+  const getUserEmail = (userId: string | null | undefined): string => {
     if (!userId) return 'No asignado';
     const user = userMap.get(userId);
     return user ? user.email : 'Cargando...';
@@ -179,6 +148,7 @@ const AdminTickets: React.FC = () => {
   const formatDate = (dateString: string) => {
     if (!dateString) return '-';
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '-';
     return new Intl.DateTimeFormat('es-ES', {
       day: '2-digit',
       month: '2-digit',
@@ -189,7 +159,8 @@ const AdminTickets: React.FC = () => {
   };
 
   // Truncar texto
-  const truncateText = (text: string, maxLength: number = 50) => {
+  const truncateText = (text: string | null | undefined, maxLength: number = 50): string => {
+    if (!text) return '-';
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '...';
   };
@@ -224,30 +195,30 @@ const AdminTickets: React.FC = () => {
               <span>Filtros</span>
             </button>
           </div>
-        </div>
 
-        {/* Filtros */}
-        <div className={`${showFilters ? 'block' : 'hidden sm:block'} mb-6`}>
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="flex flex-wrap items-end gap-4">
-              <div className="flex-1 min-w-[200px]">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Filtrar por Estado
+          {/* Filtros */}
+          <div className={`mt-4 ${showFilters ? 'block' : 'hidden sm:block'}`}>
+            <div className="flex flex-wrap gap-4">
+              {/* Filtro de estado */}
+              <div className="flex flex-col space-y-1">
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Estado
                 </label>
                 <select
                   value={filters.status}
                   onChange={(e) => handleStatusFilter(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                 >
-                  <option value="abierto">Abiertos</option>
-                  <option value="en_progreso">En Progreso</option>
-                  <option value="resuelto">Resueltos</option>
-                  <option value="cerrado">Cerrados</option>
+                  <option value="abierto">Abierto</option>
+                  <option value="en_progreso">En progreso</option>
+                  <option value="cerrado">Cerrado</option>
+                  <option value="">Todos</option>
                 </select>
               </div>
-              
-              <div className="w-32">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+
+              {/* Límite de resultados */}
+              <div className="flex flex-col space-y-1">
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Mostrar
                 </label>
                 <select
@@ -334,14 +305,16 @@ const AdminTickets: React.FC = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className="text-sm text-gray-600">
-                            {ticket.category}
+                            {ticket.category || '-'}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center space-x-1">
-                            {getPriorityIcon(ticket.priority)}
-                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(ticket.priority)}`}>
-                              {ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1)}
+                            {ticket.priority ? getPriorityIcon(ticket.priority) : null}
+                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(ticket.priority || '')}`}>
+                              {ticket.priority
+                                ? ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1)
+                                : 'Sin prioridad'}
                             </span>
                           </div>
                         </td>

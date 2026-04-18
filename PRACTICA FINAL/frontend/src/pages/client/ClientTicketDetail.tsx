@@ -78,23 +78,106 @@ const CommentBubble = ({
 }: {
   comment: Comment;
   isOwn: boolean;
-}) => (
-  <div className={`flex flex-col gap-1 ${isOwn ? "items-end" : "items-start"}`}>
+}) => {
+  // Función para procesar el contenido y mantener el formato
+  const renderContent = (content: string) => {
+    // Dividir el contenido por saltos de línea
+    const lines = content.split("\n");
+
+    return lines.map((line, index) => {
+      // Detectar si la línea es un título (comienza con **)
+      if (line.startsWith("**") && line.endsWith("**")) {
+        return (
+          <div key={index} className="font-bold mb-2 mt-1">
+            {line.replace(/\*\*/g, "")}
+          </div>
+        );
+      }
+      // Detectar si la línea es un paso numerado (ej: "1. ", "2. ")
+      else if (/^\d+\./.test(line)) {
+        return (
+          <div key={index} className="ml-2 mb-1">
+            {line}
+          </div>
+        );
+      }
+      // Detectar si la línea es un ítem de lista (comienza con -)
+      else if (line.startsWith("-")) {
+        return (
+          <div key={index} className="ml-4 mb-1 flex items-start gap-2">
+            <span className="text-current">•</span>
+            <span className="flex-1">{line.substring(1).trim()}</span>
+          </div>
+        );
+      }
+      // Línea vacía
+      else if (line.trim() === "") {
+        return <div key={index} className="h-2" />;
+      }
+      // Texto normal
+      else {
+        // Procesar texto con **negritas** inline
+        const parts = line.split(/(\*\*.*?\*\*)/g);
+        const processedParts = parts.map((part, i) => {
+          if (part.startsWith("**") && part.endsWith("**")) {
+            return <strong key={i}>{part.slice(2, -2)}</strong>;
+          }
+          return part;
+        });
+
+        return (
+          <div key={index} className="mb-1">
+            {processedParts}
+          </div>
+        );
+      }
+    });
+  };
+
+  return (
     <div
-      className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm leading-relaxed shadow-sm
-        ${
-          isOwn
-            ? "bg-blue-600 text-white rounded-tr-sm"
-            : "bg-white border border-slate-200 text-slate-700 rounded-tl-sm"
-        }`}
+      className={`flex flex-col gap-1 ${isOwn ? "items-end" : "items-start"}`}
     >
-      {comment.content}
+      {comment.isInternal && (
+        <span className="text-xs text-amber-600 flex items-center gap-1 px-1">
+          <svg
+            className="w-3 h-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+            />
+          </svg>
+          Nota interna
+        </span>
+      )}
+
+      <div
+        className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm shadow-sm
+          ${
+            isOwn
+              ? comment.isInternal
+                ? "bg-amber-500 text-white rounded-tr-sm"
+                : "bg-blue-600 text-white rounded-tr-sm"
+              : "bg-white border border-slate-200 text-slate-700 rounded-tl-sm"
+          }`}
+      >
+        <div className="space-y-0.5 leading-relaxed">
+          {renderContent(comment.content)}
+        </div>
+      </div>
+
+      <span className="text-xs text-slate-400 px-1">
+        {formatDateTime(comment.createdAt)}
+      </span>
     </div>
-    <span className="text-xs text-slate-400 px-1">
-      {formatDateTime(comment.createdAt)}
-    </span>
-  </div>
-);
+  );
+};
 
 // Skeletons
 const TicketDetailSkeleton = () => (
@@ -303,9 +386,9 @@ const ClientTicketDetail = () => {
             </span>
           </DetailRow>
           <DetailRow label="Asignado a">
-            {ticket.assigned_to ? (
+            {ticket.assignedTo ? (
               <span className="font-medium text-slate-700">
-                {ticket.assigned_to}
+                {ticket.assignedTo}
               </span>
             ) : (
               <span className="text-slate-400 italic">Sin asignar</span>

@@ -1,3 +1,7 @@
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+SET character_set_connection=utf8mb4;
+
 -- ──────────────────────────────────────────────────────────────────
 -- 5. NOTIFICATIONS_DB — Notification Service (:5005) [opcional]
 -- ──────────────────────────────────────────────────────────────────

@@ -911,8 +911,8 @@ const TechnicianTicketDetail = () => {
           category: ticketData.ticket.category,
           priority: ticketData.ticket.priority as TicketPriority,
           status: ticketData.ticket.status as TicketStatus,
-          created_by: ticketData.ticket.createdBy,
-          assigned_to: ticketData.ticket.assignedTo,
+          createdBy: ticketData.ticket.createdBy,
+          assignedTo: ticketData.ticket.assignedTo,
           createdAt: ticketData.ticket.createdAt,
           updatedAt: ticketData.ticket.updatedAt,
           ticket: ticketData.ticket,
@@ -1200,7 +1200,7 @@ const TechnicianTicketDetail = () => {
           </DetailRow>
           <DetailRow label="Creado por">
             <span className="font-mono text-xs bg-slate-100 px-2 py-0.5 rounded">
-              {getShortCreadedBy(ticket.created_by)}...
+              {getShortCreadedBy(ticket.createdBy)}...
             </span>
           </DetailRow>
           <DetailRow label="Asignado a">
@@ -1213,9 +1213,9 @@ const TechnicianTicketDetail = () => {
                   Asignado el {formatDate(assignment.assignedAt)}
                 </p>
               </div>
-            ) : ticket.assigned_to ? (
+            ) : ticket.assignedTo ? (
               <span className="font-mono text-xs bg-slate-100 px-2 py-0.5 rounded">
-                {getShortAssignedTo(ticket.assigned_to)}...
+                {getShortAssignedTo(ticket.assignedTo)}...
               </span>
             ) : (
               <span className="text-slate-400 italic">Sin asignar</span>

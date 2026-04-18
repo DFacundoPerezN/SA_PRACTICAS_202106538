@@ -1,7 +1,17 @@
 import { authFetch } from '../utils/authFetch';
 import { CONFIG } from '../config/config';
-import type { RegisterUserRequest, RegisterUserResponse, ApiErrorResponse } from '../types/admin.types';
-import type { GetWorkloadResponse } from '../types/admin.types';
+import type {
+  RegisterUserRequest,
+  RegisterUserResponse,
+  ApiErrorResponse,
+  AdminGetTicketsResponse,
+  AdminGetTicketsParams,
+  GetWorkloadResponse,
+  GetAssignmentsResponse,
+  GetAssignmentsParams
+} from '../types/admin.types';
+
+
 
 export class AdminService {
   private static readonly API_URL = `${CONFIG.API_URL}/api/auth/admin/register`;
@@ -102,6 +112,110 @@ export class AdminService {
         throw error;
       }
       throw new Error('Error al obtener la carga de trabajo');
+    }
+  }
+
+  static async getTickets(params: AdminGetTicketsParams = {}): Promise<AdminGetTicketsResponse> {
+    const url = `${CONFIG.API_URL}/api/tickets?${new URLSearchParams(params as Record<string, string>).toString()}`;
+    const response = await authFetch(url, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+
+    const result: AdminGetTicketsResponse = await response.json();
+    return result;
+
+  } catch(error: any) {
+    if (error instanceof Error) {
+      throw error;
+    } else {
+      throw new Error('Error al obtener los tickets');
+    }
+  }
+
+  /**
+   * Obtiene la lista de asignaciones con filtros y paginación
+   * @param params - Parámetros de consulta (status, technician_id, ticket_id, from, to, page, limit)
+   * @returns Promise con la lista de asignaciones y total
+   */
+  static async getAssignments(params: GetAssignmentsParams = {}): Promise<GetAssignmentsResponse> {
+    try {
+      // Construir query params eliminando undefined y valores vacíos
+      const queryParams = new URLSearchParams();
+
+      if (params.status) queryParams.append('status', params.status);
+      if (params.technician_id) queryParams.append('technician_id', params.technician_id);
+      if (params.ticket_id) queryParams.append('ticket_id', params.ticket_id);
+      if (params.from) queryParams.append('from', params.from);
+      if (params.to) queryParams.append('to', params.to);
+      if (params.page) queryParams.append('page', params.page.toString());
+      if (params.limit) queryParams.append('limit', params.limit.toString());
+
+      const url = `${CONFIG.API_URL}/api/assignments?${queryParams.toString()}`;
+      const response = await authFetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        if (errorData.message) {
+          if (Array.isArray(errorData.message)) {
+            throw new Error(errorData.message.join(', '));
+          }
+          throw new Error(errorData.message);
+        }
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+
+      const result: GetAssignmentsResponse = await response.json();
+      return result;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('Error al obtener las asignaciones');
+    }
+  }
+
+  /**
+   * Obtiene la lista de tickets para filtros (sin paginación completa)
+   * @param params - Parámetros de consulta
+   * @returns Promise con la lista de tickets
+   */
+  static async getTicketsForFilter(params: { status?: string; limit?: number } = {}): Promise<AdminGetTicketsResponse> {
+    try {
+      const queryParams = new URLSearchParams();
+      queryParams.append('page', '1');
+      queryParams.append('limit', params.limit?.toString() || '100');
+      if (params.status) queryParams.append('status', params.status);
+
+      const url = `${CONFIG.API_URL}/api/tickets?${queryParams.toString()}`;
+      const response = await authFetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+
+      const result: AdminGetTicketsResponse = await response.json();
+      return result;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('Error al obtener los tickets');
     }
   }
 }

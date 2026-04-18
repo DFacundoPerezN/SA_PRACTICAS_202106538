@@ -35,28 +35,33 @@ const AdminWorkload: React.FC = () => {
     try {
       // Obtener carga de trabajo
       const response = await AdminService.getWorkload();
-      let workloadData = response.workload;
+      // Defensive: asegurar que workloadData sea siempre un array
+      let workloadData: EnhancedWorkloadItem[] = Array.isArray(response?.workload) ? response.workload : [];
       
-      // Obtener detalles de los técnicos (asumiendo que tienes un método getUsersByIds o similar)
-      // Esta es una implementación que obtiene todos los técnicos y filtra
+      // Obtener detalles de los técnicos
       try {
-
         const techniciansResponse = await UserService.getUsers({ 
           role: 'tecnico',
           limit: 100 
         });
 
-        // Filtrar solo los técnicos que tengan el campo isActive en true
-        techniciansResponse.users = techniciansResponse.users.filter(tech => tech.isActive);
+        // Defensive: asegurar que users sea siempre un array antes de operar
+        const techniciansList: User[] = Array.isArray(techniciansResponse?.users)
+          ? techniciansResponse.users
+          : [];
+
+        // Filtrar solo los técnicos activos
+        const activeTechnicians = techniciansList.filter(tech => tech.isActive);
         
         // Crear un mapa de ID a nombre/email
-        const technicianMap = new Map();
-        techniciansResponse.users.forEach((tech: User) => {
+        const technicianMap = new Map<string, { name: string; email: string }>();
+        activeTechnicians.forEach((tech: User) => {
           technicianMap.set(tech.id, {
             name: tech.name,
             email: tech.email
           });
         });
+
         // Enriquecer los datos de workload
         workloadData = workloadData.map(item => ({
           ...item,
@@ -65,7 +70,7 @@ const AdminWorkload: React.FC = () => {
         }));
       } catch (err) {
         console.error('Error al obtener nombres de técnicos:', err);
-        // Si falla, solo mostramos los IDs
+        // Si falla, solo mostramos los IDs (workloadData sin enriquecer)
       }
       
       setWorkload(workloadData);
@@ -128,7 +133,7 @@ const AdminWorkload: React.FC = () => {
     }).format(date);
   };
 
-  const totalActiveTickets = workload.reduce((sum, item) => sum + item.activeTickets, 0);
+  const totalActiveTickets = workload.reduce((sum, item) => sum + (item.activeTickets ?? 0), 0);
   const averageLoad = workload.length > 0 ? (totalActiveTickets / workload.length).toFixed(1) : 0;
   const availableTechnicians = workload.filter(w => w.activeTickets === 0).length;
 
@@ -174,37 +179,45 @@ const AdminWorkload: React.FC = () => {
                 <p className="text-sm font-medium text-gray-600">Total Técnicos</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">{workload.length}</p>
               </div>
-              <UserGroupIcon className="h-8 w-8 text-blue-400" />
+              <div className="p-3 bg-blue-100 rounded-full">
+                <UserGroupIcon className="h-6 w-6 text-blue-600" />
+              </div>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Tickets Activos</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">{totalActiveTickets}</p>
               </div>
-              <ChartBarIcon className="h-8 w-8 text-purple-400" />
+              <div className="p-3 bg-yellow-100 rounded-full">
+                <ChartBarIcon className="h-6 w-6 text-yellow-600" />
+              </div>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Carga Promedio</p>
+                <p className="text-sm font-medium text-gray-600">Promedio por Técnico</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">{averageLoad}</p>
               </div>
-              <div className="text-2xl">📊</div>
+              <div className="p-3 bg-purple-100 rounded-full">
+                <ChartBarIcon className="h-6 w-6 text-purple-600" />
+              </div>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Técnicos Disponibles</p>
-                <p className="text-2xl font-bold text-green-600 mt-1">{availableTechnicians}</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{availableTechnicians}</p>
               </div>
-              <CheckCircleIcon className="h-8 w-8 text-green-400" />
+              <div className="p-3 bg-green-100 rounded-full">
+                <CheckCircleIcon className="h-6 w-6 text-green-600" />
+              </div>
             </div>
           </div>
         </div>
@@ -273,14 +286,14 @@ const AdminWorkload: React.FC = () => {
                             </div>
                             <div>
                               <div className="text-sm font-medium text-gray-900">
-                                {item.technicianName || item.technicianId.substring(0, 8)}
+                                {item.technicianName || item.technicianId?.substring(0, 8) || 'ID desconocido'}
                               </div>
                               {item.technicianEmail && (
                                 <div className="text-xs text-gray-500">
                                   {item.technicianEmail}
                                 </div>
                               )}
-                              {!item.technicianName && (
+                              {!item.technicianName && item.technicianId && (
                                 <code className="text-xs bg-gray-100 px-1 py-0.5 rounded">
                                   {item.technicianId}
                                 </code>
@@ -290,9 +303,9 @@ const AdminWorkload: React.FC = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center space-x-2">
-                            <span className="text-lg">{getWorkloadIcon(item.activeTickets)}</span>
-                            <span className={`text-sm font-medium ${getWorkloadColor(item.activeTickets)}`}>
-                              {getWorkloadStatus(item.activeTickets)}
+                            <span className="text-lg">{getWorkloadIcon(item.activeTickets ?? 0)}</span>
+                            <span className={`text-sm font-medium ${getWorkloadColor(item.activeTickets ?? 0)}`}>
+                              {getWorkloadStatus(item.activeTickets ?? 0)}
                             </span>
                           </div>
                          </td>
@@ -302,21 +315,21 @@ const AdminWorkload: React.FC = () => {
                               <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
                                 <div 
                                   className={`h-full rounded-full transition-all duration-500 ${
-                                    item.activeTickets === 0 ? 'bg-green-500' :
-                                    item.activeTickets <= 3 ? 'bg-yellow-500' :
-                                    item.activeTickets <= 6 ? 'bg-orange-500' : 'bg-red-500'
+                                    (item.activeTickets ?? 0) === 0 ? 'bg-green-500' :
+                                    (item.activeTickets ?? 0) <= 3 ? 'bg-yellow-500' :
+                                    (item.activeTickets ?? 0) <= 6 ? 'bg-orange-500' : 'bg-red-500'
                                   }`}
-                                  style={{ width: `${Math.min((item.activeTickets / 10) * 100, 100)}%` }}
+                                  style={{ width: `${Math.min(((item.activeTickets ?? 0) / 10) * 100, 100)}%` }}
                                 />
                               </div>
                             </div>
-                            <span className={`text-sm font-bold ${getWorkloadColor(item.activeTickets)}`}>
-                              {item.activeTickets}
+                            <span className={`text-sm font-bold ${getWorkloadColor(item.activeTickets ?? 0)}`}>
+                              {item.activeTickets ?? 0}
                             </span>
                           </div>
                          </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {formatDate(item.lastUpdated)}
+                          {item.lastUpdated ? formatDate(item.lastUpdated) : '-'}
                          </td>
                        </tr>
                     ))}
@@ -370,8 +383,8 @@ const AdminWorkload: React.FC = () => {
                 {workload.length > 0 && (
                   <p className="text-xs text-blue-600 mt-2">
                     Próximo técnico para asignación: <strong>
-                      {workload[0].technicianName || workload[0].technicianId.substring(0, 8)}
-                    </strong> ({workload[0].activeTickets} tickets activos)
+                      {workload[0].technicianName || workload[0].technicianId?.substring(0, 8) || 'ID desconocido'}
+                    </strong> ({workload[0].activeTickets ?? 0} tickets activos)
                   </p>
                 )}
               </div>

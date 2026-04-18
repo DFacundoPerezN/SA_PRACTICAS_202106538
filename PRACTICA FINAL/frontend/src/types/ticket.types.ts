@@ -27,8 +27,8 @@ export interface Ticket {
   category: string;
   priority: TicketPriority;
   status: TicketStatus;
-  created_by: string;
-  assigned_to: string | null;
+  createdBy: string;
+  assignedTo: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -41,8 +41,8 @@ export interface TicketsResponsebyId {
     category: string;
     priority: TicketPriority;
     status: TicketStatus;
-    created_by: string;
-    assigned_to: string | null;
+    createdBy: string;
+    assignedTo: string | null;
     createdAt: string;
     updatedAt: string;
   }

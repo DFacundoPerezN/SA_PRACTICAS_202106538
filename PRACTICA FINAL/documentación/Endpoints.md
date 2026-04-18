@@ -338,8 +338,8 @@ Crea un ticket. El sistema asigna automáticamente `created_by` desde el JWT. Pu
   "category": "Correo Electrónico",
   "priority": "media",
   "status": "abierto",
-  "created_by": "550e8400-e29b-41d4-a716-446655440000",
-  "assigned_to": null,
+  "createdBy": "550e8400-e29b-41d4-a716-446655440000",
+  "assignedTo": null,
   "createdAt": "2026-04-05T10:00:00.000Z",
   "updatedAt": "2026-04-05T10:00:00.000Z"
 }
@@ -643,13 +643,13 @@ Sin body. Query params opcionales:
 {
     "assignments": [
         {
-            "id": "db77da92-fd4c-4c23-a5c2-22ce14ae36aa",
-            "ticketId": "c5a305ce-b31d-44a6-98a3-f14176eefe46",
-            "technicianId": "ae5288e1-5e9d-44ef-b473-1b299da9de55",
-            "assignedBy": "ae5288e1-5e9d-44ef-b473-1b299da9de54",
+            "id": "ffa1488d-8b05-4001-afd5-bf01dcd909eb",
+            "ticketId": "f275ebba-167a-4bd0-9a45-a88080659d5f",
+            "technicianId": "57e2172b-9833-4882-be2b-da0f1ccbbd33",
+            "assignedBy": "",
             "status": "asignado",
-            "notes": "Asignado por urgencia de categoría. El técnico tiene experiencia en accesos y permisos.",
-            "assignedAt": "2026-04-14T08:52:26.000Z",
+            "notes": "Asignación automática por carga de trabajo",
+            "assignedAt": "2026-04-17T23:38:23.000Z",
             "closedAt": ""
         }
     ],

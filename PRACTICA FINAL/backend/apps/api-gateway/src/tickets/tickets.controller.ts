@@ -261,6 +261,9 @@ export class TicketsController implements OnModuleInit {
   @Get()
   @Roles('tecnico', 'administrador')
   async findTickets(@Query() query: FindTicketsQueryDto) {
+
+    //problema con tildes, arreflarlo en el servicio de tickets con decodeURIComponent
+
     this.logger.log(`findTickets → page=${query.page}`);
     return firstValueFrom(
       this.ticketsService.findTickets({

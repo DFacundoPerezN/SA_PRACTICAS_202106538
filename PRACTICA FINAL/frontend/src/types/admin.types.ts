@@ -46,3 +46,66 @@ export interface WorkloadItem {
 export interface GetWorkloadResponse {
   workload: WorkloadItem[];
 }
+
+export interface AdminTicket {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  priority: 'baja' | 'media' | 'alta' | 'critica';
+  status: string;
+  createdBy: string;
+  assignedTo: string | null;
+  resolvedAt: string;
+  closedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdminGetTicketsResponse {
+  tickets: AdminTicket[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface AdminGetTicketsParams {
+  status?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface Assignment {
+  id: string;
+  ticketId: string;
+  technicianId: string;
+  assignedBy: string | null;
+  status: 'pendiente' | 'asignado' | 'reasignado' | 'cerrado';
+  notes: string;
+  assignedAt: string;
+  closedAt: string;
+}
+
+export interface GetAssignmentsResponse {
+  assignments: Assignment[];
+  total: number;
+}
+
+export interface GetAssignmentsParams {
+  status?: 'pendiente' | 'asignado' | 'reasignado' | 'cerrado';
+  technician_id?: string;
+  ticket_id?: string;
+  from?: string;
+  to?: string;
+  page?: number;
+  limit?: number;
+}
+
+// Interfaz para asignación enriquecida con emails
+export interface EnhancedAssignment extends Assignment {
+  technicianEmail?: string;
+  technicianName?: string;
+  assignedByEmail?: string;
+  assignedByName?: string;
+  ticketTitle?: string;
+}

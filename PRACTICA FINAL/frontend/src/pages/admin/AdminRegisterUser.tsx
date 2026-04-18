@@ -82,8 +82,8 @@ const AdminRegisterUser: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] py-6 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+    <div className="min-h-screen py-6 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md mx-auto bg-[#f8fafc] rounded-xl shadow-lg overflow-hidden">
         <div className="px-8 py-6">
           <div className="text-center mb-8">
             <div className="mx-auto h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
