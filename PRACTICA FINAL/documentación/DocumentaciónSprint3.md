@@ -169,3 +169,46 @@
 ---
 
 
+---
+
+## Imagen del tablero kanban al finalizar el Sprint
+
+![](img/sp3_final.jpg)
+
+[Link del tablero](https://trello.com/b/4MYI0zwc/sistema-de-soporte-tecnico)
+
+---
+
+## 🔄 Sprint Retrospective
+
+| Integrante | ¿Qué se hizo bien durante el Sprint? | ¿Qué se hizo mal? | ¿Qué mejoras se deben implementar para el próximo sprint? |
+| ---------- | ------------------------------------ | ----------------- | --------------------------------------------------------- |
+| **202106538** | Se logró configurar todos los servicios justo a tiempo | Parte de la documentación se dejó para el final, causando presión adicional | Documentar cada cosa que se haga desde el inicio del desarrollo |
+| **201504070** | Implementación efectiva de las pruebas unitarias y validación de microservicios | Falta de comunicación constante sobre los cuellos de botella técnicos encontrados | Establecer una breve reunión diaria (Daily) para reportar impedimentos |
+| **201908327** | Optimización de las consultas a la base de datos y mejora del rendimiento | Hubo una demora en la integración de los cambios al repositorio principal | Realizar Pull Requests (PR) más pequeños y frecuentes para evitar conflictos |
+
+---
+
+## 📌 Resultado del Sprint Backlog
+
+| # | Tarea | Estado | Justificación |
+|---|-------|--------|----------------|
+| 1 | Estructura inicial del frontend (rutas, páginas, navbar) | ✅ Completado | Finalizado el 13/04 tras correcciones de funcionalidad |
+| 2 | Implementación de vista de login | ✅ Completado | Finalizado el 13/04 tras correcciones de funcionalidad |
+| 3 | Implementación de vista de registro | ✅ Completado | Finalizado el 13/04 tras correcciones de funcionalidad |
+| 4 | Crear vista de creación de tickets | ✅ Completado | Finalizado el 13/04 tras correcciones de funcionalidad |
+| 6 | Vista para cliente: ver y comentar ticket | ✅ Completado | Finalizado el 14/04 según lo planeado en el Daily 3 |
+| 7 | Vista para técnico: ver tickets asignados | ✅ Completado | Finalizado el 13/04 tras correcciones de funcionalidad |
+| 8 | Vista para técnico: ver y comentar ticket asignado | ✅ Completado | Finalizado el 14/04 según lo planeado en el Daily 3 |
+| 9 | Vista para admin: ver usuarios con filtros | ✅ Completado | Finalizado el 17/04 (Daily 4) |
+| 10 | Vista para admin: registrar tipos de usuario | ✅ Completado | Finalizado el 17/04 (Daily 4) |
+| 11 | Vista para admin: ver tickets del sistema | ✅ Completado | Finalizado el 17/04 (Daily 4) |
+| 12 | Vista para admin: ver técnicos asignados a tickets | ✅ Completado | Finalizado el 17/04 (Daily 4) |
+| 13 | Vista para admin: balanceador de carga de tickets | ✅ Completado | Finalizado el 17/04 (Daily 4) |
+| 14 | Crear archivos Docker de los servicios | ✅ Completado | Finalizado el 17/04 (Daily 5) |
+| 15 | Crear servicio notifications-service | ✅ Completado | Finalizado el 17/04 (Daily 5) |
+| 16 | Integrar RabbitMQ en entorno de producción | ✅ Completado | Finalizado el 17/04 (Daily 5) |
+| 17 | Crear docker-compose para pruebas | ✅ Completado | Finalizado el 17/04 (Daily 5) |
+| 18 | Documentar la lógica de las funcionalidades | ✅ Completado | Finalizado el 17/04 (Daily 5) |
+
+---
