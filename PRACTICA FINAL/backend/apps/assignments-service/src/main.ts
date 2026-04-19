@@ -27,23 +27,23 @@ async function bootstrap() {
     },
   });
 
-  // ── Secondary transport: RabbitMQ (consumes ticket.created) ──────────────
-  // Uses the same queue tickets-service publishes to (RABBITMQ_QUEUE).
-  // Both services must reference the same queue name so messages route correctly.
+  // ── Secondary transport: RabbitMQ ─────────────────────────────────────────
   const rmqApp = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
     transport: Transport.RMQ,
     options: {
       urls:         [rmqUrl],
       queue:        rmqQueue,
-      exchangeName: rmqExchange,
+      exchange:     rmqExchange,
+      exchangeType: 'topic',
+      wildcards:    true,
       queueOptions: { durable: true },
-      noAck:        true
+      noAck:        true,
     },
   });
 
   await Promise.all([grpcApp.listen(), rmqApp.listen()]);
   console.log(`Assignments Service (gRPC) running on ${host}:${grpcPort}`);
-  console.log(`Assignments Service (RMQ)  consuming queue="${rmqQueue}" exchange="${rmqExchange}"`);
+  console.log(`Assignments Service (RMQ)  consuming queue="${rmqQueue}" exchange="${rmqExchange}" wildcards=true`);
 }
 
 bootstrap();

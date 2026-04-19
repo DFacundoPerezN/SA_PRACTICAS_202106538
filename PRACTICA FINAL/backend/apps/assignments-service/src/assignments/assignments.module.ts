@@ -61,9 +61,11 @@ import { TICKETS_GRPC_CLIENT_TOKEN } from './application/interfaces/tickets-grpc
           options: {
             urls:         [cfg.get<string>('RABBITMQ_URL') ?? 'amqp://localhost:5672'],
             queue:        cfg.get<string>('RABBITMQ_QUEUE') ?? 'ticket_assignments',
-            exchangeName: cfg.get<string>('RABBITMQ_EXCHANGE') ?? 'tickets_exchange',
+            exchange:     cfg.get<string>('RABBITMQ_EXCHANGE') ?? 'tickets_exchange',
+            exchangeType: 'topic',
+            wildcards:    true,
+            routingKey:   'ticket.created',
             queueOptions: { durable: true },
-            // noAck and prefetchCount are consumer options — omit from publisher client
           },
         }),
       },

@@ -37,7 +37,9 @@ import {
           options: {
             urls:         [cfg.get<string>('RABBITMQ_URL') ?? 'amqp://localhost:5672'],
             queue:        cfg.get<string>('RABBITMQ_QUEUE') ?? 'ticket_assignments',
-            exchangeName: cfg.get<string>('RABBITMQ_EXCHANGE') ?? 'tickets_exchange',
+            exchange:     cfg.get<string>('RABBITMQ_EXCHANGE') ?? 'tickets_exchange', // era exchangeName (typo)
+            exchangeType: 'topic',
+            wildcards:    true,   // CRÍTICO: sin esto NestJS usa sendToQueue en vez del exchange
             queueOptions: { durable: true },
           },
         }),
@@ -55,7 +57,6 @@ import {
     UserRepository,
     { provide: USER_REPOSITORY, useExisting: UserRepository },
 
-    // RabbitMQ publisher
     UsersRabbitMqPublisherService,
   ],
 })

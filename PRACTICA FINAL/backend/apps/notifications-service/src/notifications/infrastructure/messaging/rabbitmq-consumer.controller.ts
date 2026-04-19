@@ -6,13 +6,11 @@ import type { TicketAssignedEvent }      from '../../application/use-cases/handl
 import type { TicketStatusUpdatedEvent } from '../../application/use-cases/handle-ticket-status-updated.use-case';
 
 /**
- * Consumes events from the shared RabbitMQ exchange.
- * Registered on the RMQ microservice transport (not gRPC).
+ * Consume eventos desde la cola 'ticket_notifications' (exclusiva de este servicio).
+ * Patrón idéntico al RabbitMqConsumerController de assignments-service.
  *
- * Patterns handled:
- *  - 'ticket.created'        → published by tickets-service
- *  - 'ticket.assigned'       → published by assignments-service
- *  - 'ticket.status.updated' → published by tickets-service
+ * Al tener cola propia con binding '#', recibe todos los eventos del exchange
+ * sin competir con assignments-service (que consume su propia cola 'ticket_assignments').
  */
 @Controller()
 export class RabbitMqConsumerController {
@@ -26,7 +24,6 @@ export class RabbitMqConsumerController {
     try {
       await this.notificationsService.onTicketCreated(event);
     } catch (err) {
-      // Never throw from an event handler — it would NACK and potentially loop
       this.logger.error(
         `handleTicketCreated failed for ticket ${event.ticketId}: ${(err as Error).message}`,
         (err as Error).stack,

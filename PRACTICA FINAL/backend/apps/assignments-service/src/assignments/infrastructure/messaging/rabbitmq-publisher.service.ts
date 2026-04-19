@@ -31,7 +31,6 @@ export class RabbitMqPublisherService implements IAssignmentEventPublisher {
       this.logger.debug(`Published [${pattern}]`);
     } catch (err) {
       this.logger.error(`Failed to publish [${pattern}]: ${(err as Error).message}`);
-      // Never re-throw — messaging failure must not crash the gRPC response
     }
   }
 }

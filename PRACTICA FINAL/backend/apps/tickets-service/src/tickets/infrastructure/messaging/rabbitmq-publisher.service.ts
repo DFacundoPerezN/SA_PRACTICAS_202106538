@@ -11,8 +11,6 @@ import {
 
 export const RABBITMQ_CLIENT = 'RABBITMQ_CLIENT';
 
-// Routing keys (event patterns) — must match what assignments-service
-// binds with @EventPattern() in its RabbitMQ consumer controller.
 export const EVENTS = {
   TICKET_CREATED:        'ticket.created',
   TICKET_ASSIGNED:       'ticket.assigned',
@@ -45,7 +43,6 @@ export class RabbitMqPublisherService implements IEventPublisher {
       this.logger.debug(`Published [${pattern}]`);
     } catch (err) {
       this.logger.error(`Failed to publish [${pattern}]: ${(err as Error).message}`);
-      // Never re-throw — a messaging failure must not break the HTTP/gRPC response
     }
   }
 }

@@ -1,16 +1,18 @@
-import { NestFactory }     from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { join }            from 'path';
-import { AppModule }       from './app.module';
+import { join } from 'path';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const grpcPort    = process.env.NOTIFICATION_GRPC_PORT ?? '50055';
+  const grpcPort    = process.env.NOTIFICATIONS_GRPC_PORT ?? '50055';
   const host        = '0.0.0.0';
   const rmqUrl      = process.env.RABBITMQ_URL      ?? 'amqp://guest:guest@rabbitmq:5672';
-  const rmqQueue    = process.env.RABBITMQ_QUEUE    ?? 'ticket_assignments';
   const rmqExchange = process.env.RABBITMQ_EXCHANGE ?? 'tickets_exchange';
 
-  // ── Primary transport: gRPC ─────────────────────────────────────────────
+  // Cola exclusiva — separada de 'ticket_assignments' que usa assignments-service.
+  const notificationsQueue = 'ticket_notifications';
+
+  // ── Primary transport: gRPC ──────────────────────────────────────────────
   const grpcApp = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
     transport: Transport.GRPC,
     options: {
@@ -27,19 +29,19 @@ async function bootstrap() {
     },
   });
 
-  // ── Secondary transport: RabbitMQ (consumes ticket events) ──────────────
-  // notifications-service uses its OWN queue (ticket_assignments_notifications)
-  // bound to the same topic exchange. This way it receives every event
-  // independently from assignments-service — no message is stolen between queues.
-  // routingKey '#' matches all routing keys published to the exchange.
+  // ── Secondary transport: RabbitMQ ────────────────────────────────────────
+  // wildcards: true es CRÍTICO — le dice a NestJS que:
+  //   1. Use channel.publish(exchange, pattern) en vez de sendToQueue (lado publisher)
+  //   2. Bindee automáticamente cada @EventPattern como routing key al exchange (lado server)
+  //      → ticket.created, ticket.assigned, ticket.status.updated se bindean solos
   const rmqApp = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
     transport: Transport.RMQ,
     options: {
       urls:         [rmqUrl],
-      queue:        `${rmqQueue}_notifications`,
-      exchangeName: rmqExchange,
+      queue:        notificationsQueue,
+      exchange:     rmqExchange,
       exchangeType: 'topic',
-      routingKey:   '#',
+      wildcards:    true,
       queueOptions: { durable: true },
       noAck:        true,
     },
@@ -47,7 +49,7 @@ async function bootstrap() {
 
   await Promise.all([grpcApp.listen(), rmqApp.listen()]);
   console.log(`Notifications Service (gRPC) running on ${host}:${grpcPort}`);
-  console.log(`Notifications Service (RMQ)  consuming queue="${rmqQueue}_notifications" exchange="${rmqExchange}" [topic]`);
+  console.log(`Notifications Service (RMQ)  consuming queue="${notificationsQueue}" exchange="${rmqExchange}" wildcards=true`);
 }
 
 bootstrap();
