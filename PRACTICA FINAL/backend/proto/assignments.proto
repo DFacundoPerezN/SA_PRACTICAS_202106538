@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package assignments;
+
+service AssignmentsService {
+  rpc ManualAssign       (ManualAssignRequest)       returns (AssignmentResponse);
+  rpc FindAssignments    (FindAssignmentsRequest)    returns (FindAssignmentsResponse);
+  rpc FindByTicket       (FindByTicketRequest)       returns (AssignmentResponse);
+  rpc FindByTechnician   (FindByTechnicianRequest)   returns (FindAssignmentsResponse);
+  rpc GetWorkload        (WorkloadRequest)           returns (WorkloadResponse);
+  rpc UpdateAssignment   (UpdateAssignmentRequest)   returns (AssignmentResponse);
+}
+
+// ── Requests ────────────────────────────────────────────────────────────────
+
+message ManualAssignRequest {
+  string ticket_id     = 1;
+  string technician_id = 2;
+  string assigned_by   = 3;
+  string notes         = 4;
+}
+
+message FindAssignmentsRequest {
+  string status        = 1;
+  string technician_id = 2;
+  string ticket_id     = 3;
+  string from          = 4;
+  string to            = 5;
+  int32  page          = 6;
+  int32  limit         = 7;
+}
+
+message FindByTicketRequest {
+  string ticket_id = 1;
+}
+
+message FindByTechnicianRequest {
+  string technician_id = 1;
+  string status        = 2;
+}
+
+message WorkloadRequest {}
+
+message UpdateAssignmentRequest {
+  string id            = 1;
+  string technician_id = 2;
+  string status        = 3;
+  string notes         = 4;
+  string updated_by    = 5;
+}
+
+// ── Responses ───────────────────────────────────────────────────────────────
+
+message AssignmentResponse {
+  string id            = 1;
+  string ticket_id     = 2;
+  string technician_id = 3;
+  string assigned_by   = 4;
+  string status        = 5;
+  string notes         = 6;
+  string assigned_at   = 7;
+  string closed_at     = 8;
+}
+
+message FindAssignmentsResponse {
+  repeated AssignmentResponse assignments = 1;
+  int32                       total       = 2;
+}
+
+message WorkloadEntry {
+  string technician_id  = 1;
+  int32  active_tickets = 2;
+  string last_updated   = 3;
+}
+
+message WorkloadResponse {
+  repeated WorkloadEntry workload = 1;
+}

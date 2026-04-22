@@ -10,42 +10,65 @@ export class AuthController {
   async register(data: { email: string; password: string }) {
     const result = await this.authService.register(data);
     return {
-      user_id: result.userId,
+      userId:  result.userId,
+      message: result.message,
+    };
+  }
+
+  @GrpcMethod('AuthService', 'AdminRegister')
+  async adminRegister(data: { email: string; password: string; roleId: number }) {
+    const result = await this.authService.adminRegister({
+      email:    data.email,
+      password: data.password,
+      roleId:   data.roleId,
+    });
+    return {
+      userId:  result.userId,
       message: result.message,
     };
   }
 
   @GrpcMethod('AuthService', 'Login')
-  async login(data: { email: string; password: string }) {
-    const result = await this.authService.login(data);
+  async login(data: { email: string; password: string; role: string }) {
+    const result = await this.authService.login({
+      email:    data.email,
+      password: data.password,
+      role:     data.role,
+    });
     return {
-      access_token:  result.accessToken,
-      refresh_token: result.refreshToken,
-      user_id:       result.userId,
+      accessToken:  result.accessToken,
+      refreshToken: result.refreshToken,
+      userId:       result.userId,
+      role:         result.role,
     };
   }
 
   @GrpcMethod('AuthService', 'Refresh')
-  async refresh(data: { refresh_token: string }) {
-    const result = await this.authService.refresh({ refreshToken: data.refresh_token });
+  async refresh(data: { refreshToken: string }) {
+    const result = await this.authService.refresh({ refreshToken: data.refreshToken });
     return {
-      access_token:  result.accessToken,
-      refresh_token: result.refreshToken,
+      accessToken:  result.accessToken,
+      refreshToken: result.refreshToken,
     };
   }
 
   @GrpcMethod('AuthService', 'Validate')
-  validate(data: { access_token: string }) {
-    const result = this.authService.validate({ accessToken: data.access_token });
+  validate(data: { accessToken: string }) {
+    const result = this.authService.validate({ accessToken: data.accessToken });
     return {
-      valid:   result.valid,
-      user_id: result.userId,
+      valid:  result.valid,
+      userId: result.userId,
+      role:   result.role,
     };
   }
 
   @GrpcMethod('AuthService', 'Logout')
-  async logout(data: { refresh_token: string }) {
-    await this.authService.refresh({ refreshToken: data.refresh_token }).catch(() => null);
+  async logout(data: { refreshToken: string }) {
+    try {
+      await this.authService.logout({ refreshToken: data.refreshToken });
+    } catch {
+      // swallow — logout always succeeds from the client's perspective
+    }
     return { success: true };
   }
 }

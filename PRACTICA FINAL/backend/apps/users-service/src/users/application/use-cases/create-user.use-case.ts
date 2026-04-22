@@ -2,6 +2,9 @@ import { Inject, Injectable, ConflictException, BadRequestException } from '@nes
 import { USER_REPOSITORY } from '../interfaces/user-repository.interface';
 import type { IUserRepository } from '../interfaces/user-repository.interface';
 import { UserEntity } from '../../domain/user.entity';
+import {
+  UsersRabbitMqPublisherService,
+} from '../../infrastructure/messaging/rabbitmq-publisher.service';
 
 export interface CreateUserInput {
   id:    string;
@@ -14,6 +17,7 @@ export interface CreateUserInput {
 export class CreateUserUseCase {
   constructor(
     @Inject(USER_REPOSITORY) private readonly userRepo: IUserRepository,
+    private readonly publisher: UsersRabbitMqPublisherService,
   ) {}
 
   async execute(input: CreateUserInput): Promise<UserEntity> {
@@ -27,6 +31,16 @@ export class CreateUserUseCase {
       throw new BadRequestException(`Role '${input.role}' does not exist`);
     }
 
-    return this.userRepo.create(input.id, input.name, input.email, role.id);
+    const user = await this.userRepo.create(input.id, input.name, input.email, role.id);
+
+    // Publish user.created so assignments-service can seed technician_workload
+    this.publisher.publishUserCreated({
+      userId: user.id,
+      name:   user.name,
+      email:  user.email,
+      role:   role.name,
+    }).catch(() => { /* logged inside publisher */ });
+
+    return user;
   }
 }

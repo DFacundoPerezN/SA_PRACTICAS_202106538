@@ -7,8 +7,9 @@ export interface ValidateInput {
 }
 
 export interface ValidateOutput {
-  valid: boolean;
+  valid:  boolean;
   userId: string;
+  role:   string;
 }
 
 @Injectable()
@@ -20,8 +21,9 @@ export class ValidateTokenUseCase {
   execute(input: ValidateInput): ValidateOutput {
     const payload = this.tokenSvc.verifyAccessToken(input.accessToken);
     if (!payload) {
-      return { valid: false, userId: '' };
+      return { valid: false, userId: '', role: '' };
     }
-    return { valid: true, userId: payload.sub };
+    return { valid: true, userId: payload.sub, role: payload.role };
   }
 }
+

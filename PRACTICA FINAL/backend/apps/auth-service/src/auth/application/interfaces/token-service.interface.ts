@@ -1,6 +1,7 @@
 export interface TokenPayload {
-  sub: string;
+  sub:   string;
   email: string;
+  role:  string;
 }
 
 export interface ITokenService {
@@ -15,5 +16,11 @@ export interface IHashService {
   compare(plain: string, hashed: string): Promise<boolean>;
 }
 
-export const TOKEN_SERVICE = Symbol('ITokenService');
-export const HASH_SERVICE  = Symbol('IHashService');
+/** Synchronous deterministic hash — for refresh token storage/lookup */
+export interface ITokenHashService {
+  hash(token: string): string;
+}
+
+export const TOKEN_SERVICE      = Symbol('ITokenService');
+export const HASH_SERVICE       = Symbol('IHashService');
+export const TOKEN_HASH_SERVICE = Symbol('ITokenHashService');

@@ -1,3 +1,7 @@
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+SET character_set_connection=utf8mb4;
+
 -- ──────────────────────────────────────────────────────────────────
 -- 2. USERS_DB — User Service (:5002)
 -- ──────────────────────────────────────────────────────────────────

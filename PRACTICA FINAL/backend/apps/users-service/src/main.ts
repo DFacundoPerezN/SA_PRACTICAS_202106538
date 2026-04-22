@@ -1,24 +1,15 @@
 import { NestFactory } from '@nestjs/core';
-<<<<<<< HEAD:PRACTICA FINAL/backend/apps/users-service/src/main.ts
-<<<<<<< HEAD
-=======
->>>>>>> origin/feature/201908327:backend/apps/users-service/src/main.ts
-import { UsersServiceModule } from './users-service.module';
-
-async function bootstrap() {
-  const app = await NestFactory.create(UsersServiceModule);
-  await app.listen(process.env.USERS_GRPC_PORT ?? 5002);
-}
-<<<<<<< HEAD:PRACTICA FINAL/backend/apps/users-service/src/main.ts
-=======
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const grpcPort = process.env.USERS_GRPC_PORT || '50052';
-  const host = '0.0.0.0';
+  const host     = '0.0.0.0';
+  const rmqUrl   = process.env.RABBITMQ_URL   ?? 'amqp://guest:guest@rabbitmq:5672';
+  const rmqQueue = process.env.RABBITMQ_QUEUE ?? 'ticket_assignments';
 
+  // ── Primary transport: gRPC ───────────────────────────────────────────────
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
     transport: Transport.GRPC,
     options: {
@@ -35,11 +26,12 @@ async function bootstrap() {
     },
   });
 
+  // The RabbitMQ ClientProxy registered in UsersModule (USERS_RABBITMQ_CLIENT)
+  // connects lazily on the first emit() call — no additional listen() needed here.
+
   await app.listen();
-  console.log(`User Service running on ${host}:${grpcPort}`);
+  console.log(`User Service (gRPC) running on ${host}:${grpcPort}`);
+  console.log(`User Service (RMQ publisher) targeting queue="${rmqQueue}" at ${rmqUrl}`);
 }
 
->>>>>>> feature/202106538
-=======
->>>>>>> origin/feature/201908327:backend/apps/users-service/src/main.ts
 bootstrap();

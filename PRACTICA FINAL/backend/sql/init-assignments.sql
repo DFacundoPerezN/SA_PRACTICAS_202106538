@@ -1,3 +1,7 @@
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+SET character_set_connection=utf8mb4;
+
 -- ──────────────────────────────────────────────────────────────────
 -- 4. ASSIGNMENTS_DB — Assignment Service (:5004)
 -- ──────────────────────────────────────────────────────────────────

@@ -39,7 +39,7 @@ npm run start:dev
 **Respuesta esperada:**
 ```json
 {
-  "user_id": "uuid-generado",
+  "userId": "uuid-generado",
   "message": "User registered successfully"
 }
 ```
@@ -55,17 +55,17 @@ El rol puede ser:
 
 ```json
 {
-  "email": "juan@example.com",
-  "password": "Segura1234!",
-  "rol": 3
+  "email": "cliente2@gmail.com",
+  "password": "201504070",
+  "rol": 1 //1:cliente, 2:técnico, 3:administrador
 }
 ```
 **Respuesta esperada:**
 ```json
 {
-  "user_id": "d2f336af-b952-49f7-8cf3-4ef319cf2e22",
-  "role": "administrador",
-  "message": "User registered successfully"
+    "user_id": "ea1bc2e6-e1a3-485a-a837-d620c5e7f77f",
+    "role": "cliente",
+    "message": "User registered successfully"
 }
 ```
 
@@ -81,9 +81,10 @@ El rol puede ser:
 **Respuesta esperada:**
 ```json
 {
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI...",
-  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI...",
-  "user_id": "uuid-generado"
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI...",
+    "userId": "uuid-generado",
+  "role": "administrador"
 }
 ```
 
@@ -98,8 +99,8 @@ El rol puede ser:
 **Respuesta esperada:**
 ```json
 {
-  "access_token": "eyJ...",
-  "refresh_token": "eyJ..."
+  "accessToken": "eyJ...",
+  "refreshToken": "eyJ..."
 }
 ```
 
@@ -115,7 +116,7 @@ El rol puede ser:
 ```json
 {
   "valid": true,
-  "user_id": "uuid-generado"
+  "userId": "uuid-generado"
 }
 ```
 
@@ -170,8 +171,8 @@ El rol puede ser:
   "name": "Juan Pérez",
   "email": "juan@example.com",
   "role": "cliente",
-  "is_active": true,
-  "created_at": "2026-04-04T21:00:00.000Z"
+  "isActive": true,
+  "createdAt": "2026-04-04T21:00:00.000Z"
 }
 ```
 
@@ -182,13 +183,38 @@ El rol puede ser:
 Sin body. Query params opcionales:
 - `page` (número, default 1)
 - `limit` (número, default 20)
-- `role` (string, opcional)
+- `role` (string, opcional) // puede ser: "cliente", "administrador" o "tecnico"
 
 **Respuesta esperada:**
 ```json
 {
-  "users": [ { "id": "...", "name": "...", "...": "..." } ],
-  "total": 42
+    "users": [
+        {
+            "id": "993c479f-1d7b-4610-aa0c-4caa372cbb54",
+            "name": "hugo.1997rm",
+            "email": "hugo.1997rm@gmail.com",
+            "role": "cliente",
+            "isActive": true,
+            "createdAt": "2026-04-14T06:05:58.000Z"
+        },
+        {
+            "id": "c1a9812e-bf41-428c-bffe-382635bd38fa",
+            "name": "cliente5",
+            "email": "cliente5@gmail.com",
+            "role": "cliente",
+            "isActive": true,
+            "createdAt": "2026-04-17T07:03:33.000Z"
+        },
+        {
+            "id": "ea1bc2e6-e1a3-485a-a837-d620c5e7f77f",
+            "name": "cliente2",
+            "email": "cliente2@gmail.com",
+            "role": "cliente",
+            "isActive": true,
+            "createdAt": "2026-04-17T05:20:41.000Z"
+        }
+    ],
+    "total": 3
 }
 ```
 
@@ -201,12 +227,12 @@ Sin body.
 **Respuesta esperada:**
 ```json
 {
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "name": "Juan Pérez",
-  "email": "juan@example.com",
-  "role": "cliente",
-  "is_active": true,
-  "created_at": "2026-04-04T21:00:00.000Z"
+    "id": "430578f0-f31b-44db-a391-2c41d99bc5cb",
+    "name": "tecnico2",
+    "email": "tecnico2@gmail.com",
+    "role": "tecnico",
+    "isActive": true,
+    "createdAt": "2026-04-14T22:49:27.000Z"
 }
 ```
 
@@ -215,6 +241,18 @@ Sin body.
 #### GET `/api/users/email/juan@example.com`
 
 Sin body.
+
+**Respuesta esperada:**
+```json
+{
+    "id": "ae5288e1-5e9d-44ef-b473-1b299da9de54",
+    "name": "tecnico",
+    "email": "tecnico@gmail.com",
+    "role": "tecnico",
+    "isActive": true,
+    "createdAt": "2026-04-14T05:35:10.000Z"
+}
+```
 
 ---
 
@@ -227,6 +265,19 @@ Sin body.
 ```
 > Todos los campos son opcionales.
 
+**Respuesta:**
+
+```json
+{
+    "id": "02a292ed-1af4-46bb-a8d3-6d5c59dc4b65",
+    "name": "Juan Pérez Actualizado",
+    "email": "tecnicoreprueba@gmail.com",
+    "role": "tecnico",
+    "isActive": true,
+    "createdAt": "2026-04-17T07:04:14.000Z"
+}
+```
+
 ---
 
 #### DELETE `/api/users/550e8400-e29b-41d4-a716-446655440000`
@@ -236,8 +287,8 @@ Sin body.
 **Respuesta esperada:**
 ```json
 {
-  "success": true,
-  "message": "User deleted"
+    "success": true,
+    "message": "User 02a292ed-1af4-46bb-a8d3-6d5c59dc4b65 deleted successfully"
 }
 ```
 
@@ -287,10 +338,10 @@ Crea un ticket. El sistema asigna automáticamente `created_by` desde el JWT. Pu
   "category": "Correo Electrónico",
   "priority": "media",
   "status": "abierto",
-  "created_by": "550e8400-e29b-41d4-a716-446655440000",
-  "assigned_to": null,
-  "created_at": "2026-04-05T10:00:00.000Z",
-  "updated_at": "2026-04-05T10:00:00.000Z"
+  "createdBy": "550e8400-e29b-41d4-a716-446655440000",
+  "assignedTo": null,
+  "createdAt": "2026-04-05T10:00:00.000Z",
+  "updatedAt": "2026-04-05T10:00:00.000Z"
 }
 ```
 
@@ -312,21 +363,39 @@ Sin body. Query params opcionales:
 **Respuesta esperada:**
 ```json
 {
-  "tickets": [
-    {
-      "id": "a1b2c3d4-...",
-      "title": "No puedo acceder a mi correo corporativo",
-      "status": "abierto",
-      "priority": "alta",
-      "category": "Software",
-      "created_by": "uuid-cliente",
-      "assigned_to": null,
-      "created_at": "2026-04-05T10:00:00.000Z"
-    }
-  ],
-  "total": 87,
-  "page": 1,
-  "limit": 20
+    "tickets": [
+        {
+            "id": "3bc0a3e9-57d0-437d-aedf-6464dfde912f",
+            "title": "esta es una prueba",
+            "description": "segundo ticket creado",
+            "category": "Software",
+            "priority": "media",
+            "status": "abierto",
+            "createdBy": "993c479f-1d7b-4610-aa0c-4caa372cbb54",
+            "assignedTo": "ae5288e1-5e9d-44ef-b473-1b299da9de54",
+            "resolvedAt": "",
+            "closedAt": "",
+            "createdAt": "2026-04-14T09:14:32.000Z",
+            "updatedAt": "2026-04-14T09:14:33.000Z"
+        },
+        {
+            "id": "c5a305ce-b31d-44a6-98a3-f14176eefe45",
+            "title": "No puedo encender la computadora",
+            "description": "La computadora no enciende al presionar el botón",
+            "category": "Hardware",
+            "priority": "critica",
+            "status": "abierto",
+            "createdBy": "993c479f-1d7b-4610-aa0c-4caa372cbb54",
+            "assignedTo": "ae5288e1-5e9d-44ef-b473-1b299da9de54",
+            "resolvedAt": "",
+            "closedAt": "",
+            "createdAt": "2026-04-14T06:06:47.000Z",
+            "updatedAt": "2026-04-14T08:33:25.000Z"
+        }
+    ],
+    "total": 2,
+    "page": 1,
+    "limit": 20
 }
 ```
 
@@ -353,20 +422,20 @@ Sin body. Devuelve el ticket con su historial de cambios.
   "category": "Correo Electrónico",
   "priority": "media",
   "status": "en_progreso",
-  "created_by": "uuid-cliente",
-  "assigned_to": "uuid-tecnico",
-  "resolved_at": null,
-  "closed_at": null,
-  "created_at": "2026-04-05T10:00:00.000Z",
-  "updated_at": "2026-04-05T11:30:00.000Z",
+  "createdBy": "uuid-cliente",
+  "assignedTo": "uuid-tecnico",
+  "resolvedAt": null,
+  "closedAt": null,
+  "createdAt": "2026-04-05T10:00:00.000Z",
+  "updatedAt": "2026-04-05T11:30:00.000Z",
   "history": [
     {
       "id": "uuid-history",
-      "field_changed": "status",
-      "old_value": "abierto",
-      "new_value": "en_progreso",
-      "changed_by": "uuid-tecnico",
-      "changed_at": "2026-04-05T11:30:00.000Z"
+      "fieldChanged": "status",
+      "oldValue": "abierto",
+      "newValue": "en_progreso",
+      "changedBy": "uuid-tecnico",
+      "changedAt": "2026-04-05T11:30:00.000Z"
     }
   ]
 }
@@ -394,7 +463,7 @@ Actualiza campos editables del ticket (descripción, categoría, prioridad). Tod
   "priority": "alta",
   "category": "Accesos y Permisos",
   "status": "abierto",
-  "updated_at": "2026-04-05T12:00:00.000Z"
+  "updatedAt": "2026-04-05T12:00:00.000Z"
 }
 ```
 
@@ -421,7 +490,7 @@ Publica el evento `ticket.status.updated` en RabbitMQ.
 {
   "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
   "status": "en_progreso",
-  "updated_at": "2026-04-05T12:30:00.000Z"
+  "updatedAt": "2026-04-05T12:30:00.000Z"
 }
 ```
 
@@ -441,12 +510,25 @@ Agrega un comentario. Los comentarios `is_internal: true` solo son visibles para
 **Respuesta esperada:**
 ```json
 {
-  "id": "comment-uuid",
-  "ticket_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-  "author_id": "uuid-tecnico",
-  "content": "Revisé el servidor de correo...",
-  "is_internal": true,
-  "created_at": "2026-04-05T13:00:00.000Z"
+    "comments": [
+        {
+            "id": "389d9688-2a17-4acc-9654-3e5f13e9a73c",
+            "ticketId": "c5a305ce-b31d-44a6-98a3-f14176eefe45",
+            "authorId": "993c479f-1d7b-4610-aa0c-4caa372cbb54",
+            "content": "este es un comentario",
+            "isInternal": false,
+            "createdAt": "2026-04-14T09:00:31.000Z"
+        },
+        {
+            "id": "248be37d-1111-4e13-83ac-4a528b92f3b6",
+            "ticketId": "c5a305ce-b31d-44a6-98a3-f14176eefe45",
+            "authorId": "ae5288e1-5e9d-44ef-b473-1b299da9de54",
+            "content": "este es otro comentario",
+            "isInternal": false,
+            "createdAt": "2026-04-14T19:41:40.000Z"
+        }
+    ],
+    "total": 2
 }
 ```
 
@@ -459,16 +541,17 @@ Sin body. Los clientes solo ven comentarios con `is_internal: false`.
 **Respuesta esperada:**
 ```json
 {
-  "comments": [
-    {
-      "id": "comment-uuid",
-      "author_id": "uuid-tecnico",
-      "content": "Revisé el servidor de correo...",
-      "is_internal": true,
-      "created_at": "2026-04-05T13:00:00.000Z"
-    }
-  ],
-  "total": 1
+    "comments": [
+        {
+            "id": "389d9688-2a17-4acc-9654-3e5f13e9a73c",
+            "ticketId": "c5a305ce-b31d-44a6-98a3-f14176eefe45",
+            "authorId": "993c479f-1d7b-4610-aa0c-4caa372cbb54",
+            "content": "este es un comentario",
+            "isInternal": false,
+            "createdAt": "2026-04-14T09:00:31.000Z"
+        }
+    ],
+    "total": 1
 }
 ```
 
@@ -491,7 +574,7 @@ Sin body. Query params:
       "title": "No puedo acceder a mi correo corporativo",
       "status": "abierto",
       "priority": "media",
-      "created_at": "2026-04-05T10:00:00.000Z"
+      "createdAt": "2026-04-05T10:00:00.000Z"
     }
   ],
   "total": 3
@@ -533,13 +616,14 @@ Asignación manual desde el gateway vía gRPC. Registra la asignación en `assig
 **Respuesta esperada:**
 ```json
 {
-  "id": "assignment-uuid",
-  "ticket_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-  "technician_id": "tecnico-uuid-1234",
-  "assigned_by": "admin-uuid",
-  "status": "asignado",
-  "notes": "Asignado por urgencia de categoría...",
-  "assigned_at": "2026-04-05T10:05:00.000Z"
+    "id": "db77da92-fd4c-4c23-a5c2-22ce14ae36aa",
+    "ticketId": "c5a305ce-b31d-44a6-98a3-f14176eefe46",
+    "technicianId": "ae5288e1-5e9d-44ef-b473-1b299da9de55",
+    "assignedBy": "ae5288e1-5e9d-44ef-b473-1b299da9de54",
+    "status": "asignado",
+    "notes": "Asignado por urgencia de categoría. El técnico tiene experiencia en accesos y permisos.",
+    "assignedAt": "2026-04-14T08:52:26.000Z",
+    "closedAt": ""
 }
 ```
 
@@ -557,19 +641,19 @@ Sin body. Query params opcionales:
 **Respuesta esperada:**
 ```json
 {
-  "assignments": [
-    {
-      "id": "assignment-uuid",
-      "ticket_id": "a1b2c3d4-...",
-      "technician_id": "tecnico-uuid-1234",
-      "assigned_by": "admin-uuid",
-      "status": "asignado",
-      "assigned_at": "2026-04-05T10:05:00.000Z",
-      "closed_at": null,
-      "notes": null
-    }
-  ],
-  "total": 15
+    "assignments": [
+        {
+            "id": "ffa1488d-8b05-4001-afd5-bf01dcd909eb",
+            "ticketId": "f275ebba-167a-4bd0-9a45-a88080659d5f",
+            "technicianId": "57e2172b-9833-4882-be2b-da0f1ccbbd33",
+            "assignedBy": "",
+            "status": "asignado",
+            "notes": "Asignación automática por carga de trabajo",
+            "assignedAt": "2026-04-17T23:38:23.000Z",
+            "closedAt": ""
+        }
+    ],
+    "total": 1
 }
 ```
 
@@ -582,11 +666,14 @@ Sin body. Devuelve la asignación activa (`status = asignado` o `reasignado`) de
 **Respuesta esperada:**
 ```json
 {
-  "id": "assignment-uuid",
-  "ticket_id": "a1b2c3d4-...",
-  "technician_id": "tecnico-uuid-1234",
-  "status": "asignado",
-  "assigned_at": "2026-04-05T10:05:00.000Z"
+    "id": "4f12fd1d-cf1a-4f6f-a475-4a8cbf98e72c",
+    "ticketId": "c5a305ce-b31d-44a6-98a3-f14176eefe45",
+    "technicianId": "ae5288e1-5e9d-44ef-b473-1b299da9de54",
+    "assignedBy": "ae5288e1-5e9d-44ef-b473-1b299da9de54",
+    "status": "asignado",
+    "notes": "Asignado por urgencia de categoría. El técnico tiene experiencia en accesos y permisos.",
+    "assignedAt": "2026-04-14T08:33:25.000Z",
+    "closedAt": ""
 }
 ```
 
@@ -602,9 +689,9 @@ Sin body. Lista las asignaciones de un técnico con filtro opcional por estado.
   "assignments": [
     {
       "id": "assignment-uuid",
-      "ticket_id": "a1b2c3d4-...",
+      "ticketId": "a1b2c3d4-...",
       "status": "asignado",
-      "assigned_at": "2026-04-05T10:05:00.000Z"
+      "assignedAt": "2026-04-05T10:05:00.000Z"
     }
   ],
   "total": 5
@@ -620,18 +707,28 @@ Sin body. Devuelve la carga de trabajo activa de todos los técnicos ordenada de
 **Respuesta esperada:**
 ```json
 {
-  "workload": [
-    {
-      "technician_id": "tecnico-uuid-5678",
-      "active_tickets": 2,
-      "last_updated": "2026-04-05T12:00:00.000Z"
-    },
-    {
-      "technician_id": "tecnico-uuid-1234",
-      "active_tickets": 5,
-      "last_updated": "2026-04-05T12:00:00.000Z"
-    }
-  ]
+    "workload": [
+        {
+            "technicianId": "02a292ed-1af4-46bb-a8d3-6d5c59dc4b65",
+            "activeTickets": 0,
+            "lastUpdated": "2026-04-17T07:04:14.000Z"
+        },
+        {
+            "technicianId": "93e13a08-3b5a-44f9-9468-91573789f9c7",
+            "activeTickets": 1,
+            "lastUpdated": "2026-04-17T05:00:52.000Z"
+        },
+        {
+            "technicianId": "ae5288e1-5e9d-44ef-b473-1b299da9de55",
+            "activeTickets": 7,
+            "lastUpdated": "2026-04-17T03:20:41.000Z"
+        },
+        {
+            "technicianId": "ae5288e1-5e9d-44ef-b473-1b299da9de54",
+            "activeTickets": 8,
+            "lastUpdated": "2026-04-17T03:22:17.000Z"
+        }
+    ]
 }
 ```
 
@@ -643,7 +740,7 @@ Reasigna a otro técnico o cierra la asignación.
 
 ```json
 {
-  "technician_id": "tecnico-uuid-5678",
+  "technicianId": "tecnico-uuid-5678",
   "status": "reasignado",
   "notes": "Reasignado porque el técnico original está de vacaciones."
 }
@@ -655,11 +752,11 @@ Reasigna a otro técnico o cierra la asignación.
 ```json
 {
   "id": "assignment-uuid",
-  "ticket_id": "a1b2c3d4-...",
-  "technician_id": "tecnico-uuid-5678",
+  "ticketId": "a1b2c3d4-...",
+  "technicianId": "tecnico-uuid-5678",
   "status": "reasignado",
   "notes": "Reasignado porque el técnico original está de vacaciones.",
-  "assigned_at": "2026-04-05T14:00:00.000Z"
+  "assignedAt": "2026-04-05T14:00:00.000Z"
 }
 ```
 

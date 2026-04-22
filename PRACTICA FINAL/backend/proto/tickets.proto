@@ -1,0 +1,142 @@
+syntax = "proto3";
+
+package tickets;
+
+service TicketsService {
+  rpc CreateTicket        (CreateTicketRequest)     returns (TicketResponse);
+  rpc FindTicketById      (FindByIdRequest)         returns (TicketDetailResponse);
+  rpc FindTickets         (FindTicketsRequest)       returns (FindTicketsResponse);
+  rpc FindMyTickets       (FindMyTicketsRequest)     returns (FindTicketsResponse);
+  rpc UpdateTicket        (UpdateTicketRequest)      returns (TicketResponse);
+  rpc ChangeStatus        (ChangeStatusRequest)      returns (TicketResponse);
+  rpc AssignTicket        (AssignTicketRequest)      returns (TicketResponse);
+  rpc AddComment          (AddCommentRequest)        returns (CommentResponse);
+  rpc FindComments        (FindCommentsRequest)      returns (FindCommentsResponse);
+  rpc SearchTickets       (SearchTicketsRequest)     returns (FindTicketsResponse);
+}
+
+// ── Requests ────────────────────────────────────────────────────────────────
+
+message CreateTicketRequest {
+  string title       = 1;
+  string description = 2;
+  int32  category_id = 3;
+  int32  priority_id = 4;
+  string created_by  = 5;
+}
+
+message FindByIdRequest {
+  string id = 1;
+}
+
+message FindTicketsRequest {
+  string status        = 1;
+  int32  priority_id   = 2;
+  int32  category_id   = 3;
+  string assigned_to   = 4;
+  string created_by    = 5;
+  string from          = 6;
+  string to            = 7;
+  int32  page          = 8;
+  int32  limit         = 9;
+}
+
+message FindMyTicketsRequest {
+  string user_id    = 1;
+  string status     = 2;
+  int32  page       = 3;
+  int32  limit      = 4;
+}
+
+message UpdateTicketRequest {
+  string id          = 1;
+  string description = 2;
+  int32  priority_id = 3;
+  int32  category_id = 4;
+  string changed_by  = 5;
+}
+
+message ChangeStatusRequest {
+  string id         = 1;
+  string status     = 2;
+  string changed_by = 3;
+}
+
+message AssignTicketRequest {
+  string ticket_id     = 1;
+  string technician_id = 2;
+  string assigned_by   = 3;
+}
+
+message AddCommentRequest {
+  string ticket_id   = 1;
+  string author_id   = 2;
+  string content     = 3;
+  bool   is_internal = 4;
+}
+
+message FindCommentsRequest {
+  string ticket_id       = 1;
+  bool   include_internal = 2;
+}
+
+message SearchTicketsRequest {
+  string query       = 1;
+  string status      = 2;
+  int32  priority_id = 3;
+  int32  category_id = 4;
+  int32  page        = 5;
+  int32  limit       = 6;
+}
+
+// ── Responses ───────────────────────────────────────────────────────────────
+
+message TicketResponse {
+  string id          = 1;
+  string title       = 2;
+  string description = 3;
+  string category    = 4;
+  string priority    = 5;
+  string status      = 6;
+  string created_by  = 7;
+  string assigned_to = 8;
+  string resolved_at = 9;
+  string closed_at   = 10;
+  string created_at  = 11;
+  string updated_at  = 12;
+}
+
+message HistoryEntry {
+  string id            = 1;
+  string field_changed = 2;
+  string old_value     = 3;
+  string new_value     = 4;
+  string changed_by    = 5;
+  string changed_at    = 6;
+}
+
+message TicketDetailResponse {
+  TicketResponse         ticket  = 1;
+  repeated HistoryEntry  history = 2;
+}
+
+message FindTicketsResponse {
+  repeated TicketResponse tickets = 1;
+  int32                   total   = 2;
+  int32                   page    = 3;
+  int32                   limit   = 4;
+}
+
+message CommentResponse {
+  string id          = 1;
+  string ticket_id   = 2;
+  string author_id   = 3;
+  string content     = 4;
+  bool   is_internal = 5;
+  string created_at  = 6;
+}
+
+message FindCommentsResponse {
+  repeated CommentResponse comments = 1;
+  int32                    total    = 2;
+}
