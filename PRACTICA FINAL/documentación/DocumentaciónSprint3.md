@@ -179,7 +179,7 @@
 
 ---
 
-## 🔄 Sprint Retrospective
+## 🔄 Sprint Retrospective 3
 
 | Integrante | ¿Qué se hizo bien durante el Sprint? | ¿Qué se hizo mal? | ¿Qué mejoras se deben implementar para el próximo sprint? |
 | ---------- | ------------------------------------ | ----------------- | --------------------------------------------------------- |
