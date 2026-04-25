@@ -23,3 +23,47 @@ resource "google_container_node_pool" "primary_nodes" {
     ]
   }
 }
+
+/*
+resource "google_compute_instance" "vm_instance" {
+  name         = "mi-vm"
+  machine_type = "e2-medium"
+  zone         = "us-central1-a"
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-11"
+    }
+  }
+
+  network_interface {
+    network = "default"
+
+    access_config {
+      # Esto le da IP pública
+    }
+  }
+
+  metadata_startup_script = <<-EOF
+    #!/bin/bash
+    apt-get update
+    apt-get install -y docker.io
+    systemctl start docker
+    systemctl enable docker
+  EOF
+
+  tags = ["http-server", "https-server"]
+}
+
+resource "google_compute_firewall" "default" {
+  name    = "allow-http"
+  network = "default"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["80", "22", "5173"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+}
+*/
